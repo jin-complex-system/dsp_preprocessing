@@ -1,6 +1,7 @@
-## Library
+## Create static library
+# Used for building upper-level libraries
 add_library(
-        utils STATIC
+        utils_static STATIC
 
         include/convert_complex.h
         include/insertion_sort.h
@@ -12,14 +13,33 @@ add_library(
         src/log_approximation.c
         src/square_root_approximation.c
 )
-
 target_include_directories(
-        utils PUBLIC
+        utils_static PUBLIC
 
         include
 )
 
-## Unit Test
+## Create shared library
+add_library(
+        utils_shared SHARED
+
+        include/convert_complex.h
+        include/insertion_sort.h
+        include/log_approximation.h
+        include/square_root_approximation.h
+
+        src/convert_complex.c
+        src/insertion_sort.c
+        src/log_approximation.c
+        src/square_root_approximation.c
+)
+target_include_directories(
+        utils_shared PUBLIC
+
+        include
+)
+
+## Unit Test with GTest
 add_executable(
         UnitTestUtils
 
@@ -45,7 +65,17 @@ target_include_directories(
 target_link_libraries(
         UnitTestUtils
 
-        utils
+        utils_shared
         GTest::gtest_main
 )
+add_test(
+        NAME Utils_CUnitTest
+        COMMAND $<TARGET_FILE:UnitTestUtils>
+)
 
+# Python Test
+add_test(
+        NAME Utils_PythonTest
+        COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_utils.py ${CMAKE_CURRENT_BINARY_DIR}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)

@@ -23,7 +23,7 @@ statistics
 #define STATISTICS_ELEMENT_LENGTH                   (sizeof(struct statistics)/sizeof(float))
 
 /**
- * Compute statistics from input_buffer acrosss different frames
+ * Compute statistics from input_buffer across different frames
  * @param statistics_input_buffer input buffer of length num_frames * bin_length
  * @param num_frames number of frames
  * @param bin_length number of bins

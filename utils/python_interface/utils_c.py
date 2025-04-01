@@ -11,6 +11,12 @@ class utils_c:
     def load_library(
             self,
             library_path):
+        """
+        Load shared library
+        :param library_path:
+        :return:
+        """
+
         assert(library_path is not None and len(library_path) > 0)
         self.libutils = ctypes.CDLL(library_path)
 
@@ -24,8 +30,6 @@ class utils_c:
 
         Assumes that precision loss is acceptable, and
         comparison and fabs() operations are overall cheaper to run
-
-        Formula is log2(real_value ^ 2 + img_value ^ 2) / (2 * log2(10)) + log_scale_factor
 
         :param real_value_float:
         :param img_value_float:
@@ -44,7 +48,7 @@ class utils_c:
             self,
             real_value_float,
             img_value_float,
-            log_scale_factor):
+            log_scale_factor_float):
         """
         Compute logarithmic from complex number
 
@@ -55,7 +59,7 @@ class utils_c:
 
         :param real_value_float:
         :param img_value_float:
-        :param log_scale_factor: scale factor applied to the magnitude
+        :param log_scale_factor_float: scale factor applied to the magnitude
         :return: logarithimic magnitude
         """
 
@@ -63,14 +67,14 @@ class utils_c:
         return self.libutils.compute_log_from_complex(
             ctypes.c_float(real_value_float),
             ctypes.c_float(img_value_float),
-            ctypes.c_float(log_scale_factor),
+            ctypes.c_float(log_scale_factor_float),
         )
 
-    def log_scale_factor(
+    def compute_decibels_from_complex(
             self,
             real_value_float,
             img_value_float,
-            log_scale_factor):
+            log_scale_factor_float):
         """
         Compute decibels from complex number
 
@@ -81,7 +85,7 @@ class utils_c:
 
         :param real_value_float:
         :param img_value_float:
-        :param log_scale_factor: scale factor applied to the magnitude
+        :param log_scale_factor_float: scale factor applied to the magnitude
         :return: decibel magnitude
         """
 
@@ -89,7 +93,7 @@ class utils_c:
         return self.libutils.compute_decibels_from_complex(
             ctypes.c_float(real_value_float),
             ctypes.c_float(img_value_float),
-            ctypes.c_float(log_scale_factor),
+            ctypes.c_float(log_scale_factor_float),
         )
 
     def insertion_sort(
@@ -162,11 +166,3 @@ class utils_c:
         return self.libutils.square_root_approximation(
             ctypes.c_float(target_value_float),
         )
-
-if __name__ == "__main__":
-    UTILS_DLL_LIBRARY = "../../cmake-build-debug/utils/libutils.dll"
-
-    my_types = utils_c(library_path=UTILS_DLL_LIBRARY)
-
-    print(my_types.compute_magnitude_from_complex(1.0, 0.0, 1.0))
-

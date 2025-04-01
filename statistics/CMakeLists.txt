@@ -1,19 +1,38 @@
-## Library
+## Create static library
+# Used for building upper-level libraries
 add_library(
-        statistics STATIC
+        statistics_static SHARED
 
         include/statistics.h
 
         src/statistics.c
 )
 target_link_libraries(
-        statistics PUBLIC
+        statistics_static PUBLIC
 
-        utils
+        utils_static # Use static version
+)
+target_include_directories(
+        statistics_static PUBLIC
+
+        include
 )
 
+## Create shared library
+add_library(
+        statistics_shared SHARED
+
+        include/statistics.h
+
+        src/statistics.c
+)
+target_link_libraries(
+        statistics_shared PUBLIC
+
+        utils_static # Use static version
+)
 target_include_directories(
-        statistics PUBLIC
+        statistics_shared PUBLIC
 
         include
 )
@@ -35,9 +54,20 @@ target_include_directories(
         unit_test/constants
 )
 target_link_libraries(
-        UnitTestStatistics
+        UnitTestStatistics PUBLIC
 
-        statistics
-        utils
+        statistics_shared
+        utils_static
         GTest::gtest_main
+)
+add_test(
+        NAME Statistics_UnitTest
+        COMMAND $<TARGET_FILE:UnitTestStatistics>
+)
+
+# Python Test
+add_test(
+        NAME Statistics_PythonTest
+        COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_statistics.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
