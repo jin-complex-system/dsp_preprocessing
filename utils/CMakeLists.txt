@@ -1,6 +1,6 @@
 ## Library
 add_library(
-        utils SHARED
+        utils STATIC
 
         include/convert_complex.h
         include/insertion_sort.h

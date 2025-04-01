@@ -1,19 +1,19 @@
 ## Library
 add_library(
-        statistics SHARED
+        statistics STATIC
 
         include/statistics.h
 
         src/statistics.c
 )
 target_link_libraries(
-        statistics
+        statistics PUBLIC
 
         utils
 )
 
 target_include_directories(
-        utils PUBLIC
+        statistics PUBLIC
 
         include
 )
@@ -41,4 +41,3 @@ target_link_libraries(
         utils
         GTest::gtest_main
 )
-
