@@ -7,9 +7,8 @@ extern "C" {
 #endif //__cplusplus
 
 /**
- * Performs log10 approximation.
- * Precision loss is acceptable
- * @param target_value Positve floats. If 0.0f, returns -37.929779052734375f immediately
+ * Performs log10 approximation
+ * @param target_value Positive floats. If 0.0f, returns -37.929779052734375f immediately
  * @return
  */
 float
@@ -18,7 +17,7 @@ log10_approximation(
 
 /**
  * Performs log2 approximation
- * @param target_value Positve floats. If 0.0f, returns -126.0f immediately
+ * @param target_value Positive floats. If 0.0f, returns -126.0f immediately
  * @return
  */
 float

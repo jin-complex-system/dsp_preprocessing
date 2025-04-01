@@ -13,5 +13,11 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+# Libraries
 add_subdirectory(utils)
 add_subdirectory(statistics)
+
+## Python unit test
+find_package(Pytest QUIET)
+
+# TODO: Add Pytest to CMake

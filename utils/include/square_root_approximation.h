@@ -9,7 +9,8 @@ extern "C" {
 #endif //__cplusplus
 
 /**
- * Perform square root approximation.
+ * Perform square root approximation
+ *
  * Precision loss is acceptable
  *
  * @param target_value float
