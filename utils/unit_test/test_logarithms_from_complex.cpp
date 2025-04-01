@@ -33,8 +33,8 @@ TEST(ComputeLogarithmsFromComplex, Base) {
             1.0f, 15.0f, -20.0f, -100.0f, 1000.0f, 1200.0f, -3000.0f, 0.1f, 0.2f//, 0.9999f, -0.9999f,
         };
 
-            constexpr uint32_t
-            FLOAT_ARRAY_LENGTH = sizeof(FLOAT_ARRAY) / sizeof(float);
+        constexpr uint32_t
+        FLOAT_ARRAY_LENGTH = sizeof(FLOAT_ARRAY) / sizeof(float);
 
         for (uint32_t first_iterator = 0; first_iterator < FLOAT_ARRAY_LENGTH; first_iterator++) {
             const float &first_float = FLOAT_ARRAY[first_iterator];

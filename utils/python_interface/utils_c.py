@@ -1,4 +1,5 @@
 import ctypes
+import numpy as np
 
 class utils_c:
     libutils = None
@@ -14,7 +15,6 @@ class utils_c:
         """
         Load shared library
         :param library_path:
-        :return:
         """
 
         assert(library_path is not None and len(library_path) > 0)
@@ -34,10 +34,15 @@ class utils_c:
         :param real_value_float:
         :param img_value_float:
         :param scale_factor_float: scale factor applied to the magnitude
-        :return: magnitude
+        :return: float value of magnitude
         """
-
+        # Check parameters
         assert(self.libutils is not None)
+
+        # Set the return types and argument types
+        self.libutils.compute_magnitude_from_complex.restype = ctypes.c_float
+        self.libutils.compute_magnitude_from_complex.argtypes = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
+
         return self.libutils.compute_magnitude_from_complex(
             ctypes.c_float(real_value_float),
             ctypes.c_float(img_value_float),
@@ -60,10 +65,15 @@ class utils_c:
         :param real_value_float:
         :param img_value_float:
         :param log_scale_factor_float: scale factor applied to the magnitude
-        :return: logarithimic magnitude
+        :return: float value of logarithmic magnitude
         """
-
+        # Check parameters
         assert(self.libutils is not None)
+
+        # Set the return types and argument types
+        self.libutils.compute_log_from_complex.restype = ctypes.c_float
+        self.libutils.compute_log_from_complex.argtypes = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
+
         return self.libutils.compute_log_from_complex(
             ctypes.c_float(real_value_float),
             ctypes.c_float(img_value_float),
@@ -86,10 +96,15 @@ class utils_c:
         :param real_value_float:
         :param img_value_float:
         :param log_scale_factor_float: scale factor applied to the magnitude
-        :return: decibel magnitude
+        :return: float value of decibel magnitude
         """
-
+        # Check parameters
         assert(self.libutils is not None)
+
+        # Set the return types and argument types
+        self.libutils.compute_decibels_from_complex.restype = ctypes.c_float
+        self.libutils.compute_decibels_from_complex.argtypes = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
+
         return self.libutils.compute_decibels_from_complex(
             ctypes.c_float(real_value_float),
             ctypes.c_float(img_value_float),
@@ -99,25 +114,32 @@ class utils_c:
     def insertion_sort(
             self,
             target_value_float,
-            sorted_array_float_list):
+            target_array_float_list,
+            target_array_float_list_length_uint32):
         """
         Conduct insertion sort into a sorted array
 
-        :param target_value_float:
-        :param sorted_array_float_list:
-        :return:
+        :param target_value_float: float value to be inserted
+        :param target_array_float_list: target list to be inserted; will be changed after function is called
+        :param target_array_float_list_length_uint32: length of valid values inside target_array_float_list; must be less than len(target_array_float_list)
+        :return: None
         """
 
+        # Check parameters
         assert(self.libutils is not None)
+        assert(target_array_float_list_length_uint32 < len(target_array_float_list))
 
-        sorted_array_float_pointer = ctypes.c_float_p(sorted_array_float_list)
-        array_length = len(sorted_array_float_list)
-        assert(array_length > 0)
+        # Set the return types and argument types
+        self.libutils.insertion_sort.restype = None
+        self.libutils.insertion_sort.argtypes = [
+            ctypes.c_float,
+            np.ctypeslib.ndpointer(dtype=np.float32, ndim=1, flags='C_CONTIGUOUS'),
+            ctypes.c_uint32]
 
-        return self.libutils.insertion_sort(
+        self.libutils.insertion_sort(
             ctypes.c_float(target_value_float),
-            sorted_array_float_pointer,
-            ctypes.uint(array_length),
+            target_array_float_list,
+            ctypes.c_uint32(target_array_float_list_length_uint32),
         )
 
     def log10_approximation(
@@ -127,10 +149,15 @@ class utils_c:
         Performs log10 approximation.
 
         :param target_value_float: Positive floats. If 0.0f, returns -37.929779052734375f immediately
-        :return:
+        :return: float value of log10
         """
-
+        # Check parameters
         assert(self.libutils is not None)
+
+        # Set the return types and argument types
+        self.libutils.log10_approximation.restype = ctypes.c_float
+        self.libutils.log10_approximation.argtypes = [ctypes.c_float]
+
         return self.libutils.log10_approximation(
             ctypes.c_float(target_value_float),
         )
@@ -142,10 +169,15 @@ class utils_c:
         Performs log2 approximation.
 
         :param target_value_float: Positive floats. If 0.0f, returns -126.0f immediately
-        :return:
+        :return: float value of log2
         """
-
+        # Check parameters
         assert(self.libutils is not None)
+
+        # Get the return types and argument types
+        self.libutils.log2_approximation.restype = ctypes.c_float
+        self.libutils.log2_approximation.argtypes = [ctypes.c_float]
+
         return self.libutils.log2_approximation(
             ctypes.c_float(target_value_float),
         )
@@ -161,8 +193,13 @@ class utils_c:
         :param target_value_float:
         :return: sqrt(float)
         """
-
+        # Check parameters
         assert(self.libutils is not None)
+
+        # Set the return types and argument types
+        self.libutils.square_root_approximation.restype = ctypes.c_float
+        self.libutils.square_root_approximation.argtypes = [ctypes.c_float]
+
         return self.libutils.square_root_approximation(
             ctypes.c_float(target_value_float),
         )
