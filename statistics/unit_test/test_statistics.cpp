@@ -98,20 +98,6 @@ TEST(Statistics, ComputeStatsWithinFrame) {
 }
 
 TEST(Statistics, ComputeStatsAcrossFrame) {
-    constexpr uint32_t BIN_LENGTH = 2;
-    constexpr uint32_t NUM_FRAMES = 4u;
-
-    constexpr uint32_t
-    INPUT_LENGTH = BIN_LENGTH * NUM_FRAMES;
-
-    constexpr uint32_t
-    SCRATCH_LENGTH = 2 * NUM_FRAMES;
-
-    constexpr uint32_t
-    OUTPUT_LENGTH = BIN_LENGTH;
-
-    assert(INPUT_LENGTH > 0);
-
     /// General example
     {
         constexpr float FRAME_DIFFERENCE_RECIPROCAL = 1.0f;
@@ -119,8 +105,8 @@ TEST(Statistics, ComputeStatsAcrossFrame) {
         constexpr float input_array[INPUT_LENGTH] = {
             0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
         };
-        constexpr uint32_t
-        SCRATCH_LENGTH = 2 * INPUT_LENGTH;
+        constexpr uint32_t SCRATCH_LENGTH = 2 * INPUT_LENGTH;
+        constexpr uint32_t OUTPUT_LENGTH = 1;
         float scratch_array[SCRATCH_LENGTH] = {};
         struct statistics statistics_output[OUTPUT_LENGTH] = {};
 
@@ -145,6 +131,20 @@ TEST(Statistics, ComputeStatsAcrossFrame) {
 
     /// Use compute_statistics_within_frame() to compare results
     {
+        constexpr uint32_t BIN_LENGTH = 2;
+        constexpr uint32_t NUM_FRAMES = 4u;
+
+        constexpr uint32_t
+        INPUT_LENGTH = BIN_LENGTH * NUM_FRAMES;
+
+        constexpr uint32_t
+        SCRATCH_LENGTH = 2 * NUM_FRAMES;
+
+        constexpr uint32_t
+        OUTPUT_LENGTH = BIN_LENGTH;
+
+        assert(INPUT_LENGTH > 0);
+
         constexpr float FRAME_DIFFERENCE_RECIPROCAL = 1.0f;
         float input_array[INPUT_LENGTH];
 
