@@ -24,12 +24,12 @@ statistics
 
 /**
  * Compute statistics from input_buffer across different frames
- * @param statistics_input_buffer input buffer of length num_frames * bin_length
+ * @param statistics_input_buffer input buffer of length num_frames * bin_length; each buffer is arranged bin first then frame
  * @param num_frames number of frames
  * @param bin_length number of bins
  * @param frame_difference_reciprocal non-zero, positive difference between each frame per bin as a reciprocal
  * @param statistics_output_buffer output buffer containing struct statistics
- * @param statistics_output_buffer_length length * bin_length
+ * @param statistics_output_buffer_length bin_length
  * @param scratch_buffer scratch buffer
  * @param scratch_buffer_length length of at least num_frames * 2
  */
@@ -46,7 +46,7 @@ compute_statistics_across_frames(
 
 /**
  * Compute statistics from input_buffer within one frame
- * @param statistics_input_buffer
+ * @param statistics_input_buffer buffer containing bin_length elements
  * @param bin_length number of bins
  * @param bin_difference_reciprocal non-zero, positive difference between each bin as a reciprocal
  * @param statistics_output_buffer struct statistics
