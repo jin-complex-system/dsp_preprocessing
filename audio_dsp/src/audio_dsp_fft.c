@@ -12,20 +12,28 @@ perform_audio_dsp_rfft_direct(
     assert(n_fft * 2 <= output_buffer_length);
     assert(input_buffer != NULL && output_buffer != NULL);
 
+
+
+#ifdef TEST_ON_DESKTOP
     audio_dsp_rfft_instance rfft_instance;
     initialise_audio_dsp_rfft(
-        rfft_instance,
+        &rfft_instance,
         n_fft);
 
     perform_audio_dsp_rfft(
-        rfft_instance,
+        &rfft_instance,
         input_buffer,
         n_fft,
         output_buffer,
         output_buffer_length
     );
 
-    deinitialise_audio_dsp_rfft(rfft_instance);
+    deinitialise_audio_dsp_rfft(&rfft_instance);
+#else
+    /// Unsupported when not on desktop
+    assert(false);
+
+#endif // TEST_ON_DESKTOP
 }
 
 void
