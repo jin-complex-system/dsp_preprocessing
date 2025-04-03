@@ -1,7 +1,7 @@
 ## Create static library
 # Used for building upper-level libraries
 add_library(
-        statistics_static SHARED
+        statistics_static STATIC
 
         include/statistics.h
 
