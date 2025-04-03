@@ -24,3 +24,7 @@ find_package(Pytest QUIET)
 # Libraries
 add_subdirectory(utils)
 add_subdirectory(statistics)
+add_subdirectory(audio_dsp)
+
+# Add external libraries
+add_subdirectory(external/kissfft)
