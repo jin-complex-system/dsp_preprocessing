@@ -1,16 +1,10 @@
 /*
-Copyright (c) 2003-2010, Mark Borgerding
-
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-    * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-    * Neither the author nor the names of any contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ *  Copyright (c) 2003-2010, Mark Borgerding. All rights reserved.
+ *  This file is part of KISS FFT - https://github.com/mborgerding/kissfft
+ *
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  See COPYING file for more information.
+ */
 
 
 #include "_kiss_fft_guts.h"
@@ -209,6 +203,10 @@ static void kf_bfly_generic(
     int Norig = st->nfft;
 
     kiss_fft_cpx * scratch = (kiss_fft_cpx*)KISS_FFT_TMP_ALLOC(sizeof(kiss_fft_cpx)*p);
+    if (scratch == NULL){
+        // KISS_FFT_ERROR("Memory allocation failed.");
+        return;
+    }
 
     for ( u=0; u<m; ++u ) {
         k=u;
@@ -252,6 +250,7 @@ void kf_work(
 #ifdef _OPENMP
     // use openmp extensions at the 
     // top-level (not recursive)
+    // if (fstride==1 && p<=5 && m!=1) // Unsure if this is needed
     if (fstride==1 && p<=5)
     {
         int k;
@@ -338,9 +337,11 @@ void kf_factor(int n,int * facbuf)
  * */
 kiss_fft_cfg kiss_fft_alloc(int nfft,int inverse_fft,void * mem,size_t * lenmem )
 {
+    KISS_FFT_ALIGN_CHECK(mem)
+
     kiss_fft_cfg st=NULL;
-    size_t memneeded = sizeof(struct kiss_fft_state)
-        + sizeof(kiss_fft_cpx)*(nfft-1); /* twiddle factors*/
+    size_t memneeded = KISS_FFT_ALIGN_SIZE_UP(sizeof(struct kiss_fft_state)
+        + sizeof(kiss_fft_cpx)*(nfft-1)); /* twiddle factors*/
 
     if ( lenmem==NULL ) {
         st = ( kiss_fft_cfg)KISS_FFT_MALLOC( memneeded );
@@ -373,9 +374,19 @@ void kiss_fft_stride(kiss_fft_cfg st,const kiss_fft_cpx *fin,kiss_fft_cpx *fout,
     if (fin == fout) {
         //NOTE: this is not really an in-place FFT algorithm.
         //It just performs an out-of-place FFT into a temp buffer
+        if (fout == NULL){
+            // KISS_FFT_ERROR("fout buffer NULL.");
+            return;
+        }
+
         kiss_fft_cpx * tmpbuf = (kiss_fft_cpx*)KISS_FFT_TMP_ALLOC( sizeof(kiss_fft_cpx)*st->nfft);
+        if (tmpbuf == NULL){
+            // KISS_FFT_ERROR("Memory allocation error.");
+            return;
+        }
+
         kf_work(tmpbuf,fin,1,in_stride, st->factors,st);
-        /* memcpy(fout,tmpbuf,sizeof(kiss_fft_cpx)*st->nfft); */
+        memcpy(fout,tmpbuf,sizeof(kiss_fft_cpx)*st->nfft);
         KISS_FFT_TMP_FREE(tmpbuf);
     }else{
         kf_work( fout, fin, 1,in_stride, st->factors,st );
