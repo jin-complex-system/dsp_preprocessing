@@ -12,7 +12,7 @@ stats_lib = statistics_c(library_path=LIBRARY_PATH)
 FLOAT_ERROR_NUM_PLACES = 5
 
 
-class PythonTestUtils(unittest.TestCase):
+class Statistics_PythonTestCase(unittest.TestCase):
     def test_statistics_structure(self):
         my_statistics_structure = STRUCT_STATISTICS()
         my_statistics_structure_size = ctypes.sizeof(my_statistics_structure)

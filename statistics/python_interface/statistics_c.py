@@ -82,7 +82,7 @@ class statistics_c:
         scratch_buffer_length = int(num_frames_uint32 * 2)
         scratch_buffer = (np.zeros(shape=[scratch_buffer_length], dtype=np.float32))
 
-        # Get the return types and argument types
+        # Set the return types and argument types
         self.libstatistics.compute_statistics_across_frames.restype = None
         self.libstatistics.compute_statistics_across_frames.argtypes = [
             np.ctypeslib.ndpointer(
@@ -142,7 +142,7 @@ class statistics_c:
         scratch_buffer_length = int(bin_length_uint32 * 2)
         scratch_buffer = (np.zeros(shape=[scratch_buffer_length], dtype=np.float32))
 
-        # Get the return types and argument types
+        # Set the return types and argument types
         self.libstatistics.compute_statistics_within_frame.restype = None
         self.libstatistics.compute_statistics_within_frame.argtypes = [
             np.ctypeslib.ndpointer(

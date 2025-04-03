@@ -14,7 +14,7 @@ FLOAT_ERROR_NUM_PLACES = 5
 MINIMUM_VALUE_FOR_LOG = -37.929779052734375
 MINIMUM_FLOAT_VALUE = 1.175494351e-38
 
-class PythonTestUtils(unittest.TestCase):
+class Utils_PythonTestCase(unittest.TestCase):
     def test_compute_magnitude_from_complex(self):
         values_list = [0.0, 1.0, -1.0, 2.0, -2.0]
 
