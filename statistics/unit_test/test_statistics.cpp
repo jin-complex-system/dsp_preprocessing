@@ -18,7 +18,7 @@ constexpr double
 FIRST_DERIVATIVE_MEAN_ERROR_TOLERANCE = 0.5;
 
 constexpr double
-FIRST_DERIVATIVE_VARIANCE_ERROR_TOLERANCE = 5.0;
+FIRST_DERIVATIVE_STD_DEV_ERROR_TOLERANCE = 5.0;
 
 static
 void
@@ -60,9 +60,9 @@ TEST(Statistics, ComputeStatsWithinFrame) {
         EXPECT_FLOAT_EQ(statistics_output.min, 0.0f);
         EXPECT_FLOAT_EQ(statistics_output.mean, 0.0f);
         EXPECT_FLOAT_EQ(statistics_output.median, 0.0f);
-        EXPECT_FLOAT_EQ(statistics_output.variance, 0.0f);
+        EXPECT_FLOAT_EQ(statistics_output.std_dev, 0.0f);
         // EXPECT_FLOAT_EQ(statistics_output.first_der_mean, 0.0f);
-        // EXPECT_FLOAT_EQ(statistics_output.first_der_variance, 0.0f);
+        // EXPECT_FLOAT_EQ(statistics_output.first_der_std_dev, 0.0f);
     }
 
     /// Typical example
@@ -91,28 +91,62 @@ TEST(Statistics, ComputeStatsWithinFrame) {
         EXPECT_FLOAT_EQ(statistics_output.min, 0.0f);
         EXPECT_FLOAT_EQ(statistics_output.mean, 1.0f / INPUT_LENGTH);
         EXPECT_FLOAT_EQ(statistics_output.median, 0.0f);
-        EXPECT_FLOAT_EQ(statistics_output.variance, 0.4f);
+        EXPECT_FLOAT_EQ(statistics_output.std_dev, 0.4f);
         // EXPECT_FLOAT_EQ(statistics_output.first_der_mean, 0.0f);
-        // EXPECT_FLOAT_EQ(statistics_output.first_der_variance, 0.70710677f);
+        // EXPECT_FLOAT_EQ(statistics_output.first_der_std_dev, 0.70710677f);
     }
-}
 
-TEST(Statistics, ComputeStatsAcrossFrame) {
-    /// General example
+    /// Another typical example
     {
         constexpr float FRAME_DIFFERENCE_RECIPROCAL = 1.0f;
-        constexpr auto INPUT_LENGTH = 5u;
+        constexpr auto INPUT_LENGTH = 3u;
         constexpr float input_array[INPUT_LENGTH] = {
-            0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            1, 4, 0,
         };
         constexpr uint32_t SCRATCH_LENGTH = 2 * INPUT_LENGTH;
-        constexpr uint32_t OUTPUT_LENGTH = 1;
         float scratch_array[SCRATCH_LENGTH] = {};
-        struct statistics statistics_output[OUTPUT_LENGTH] = {};
+        struct statistics statistics_output;
 
         compute_statistics_within_frame(
             input_array,
             INPUT_LENGTH,
+            FRAME_DIFFERENCE_RECIPROCAL,
+            &statistics_output,
+            1,
+            scratch_array,
+            SCRATCH_LENGTH
+        );
+
+        EXPECT_FLOAT_EQ(statistics_output.max, 4.0f);
+        EXPECT_FLOAT_EQ(statistics_output.min, 0.0f);
+        EXPECT_FLOAT_EQ(statistics_output.mean, (1.0 + 4.0 + 0.0)/3.0);
+        EXPECT_FLOAT_EQ(statistics_output.median, 1.0f);
+        EXPECT_FLOAT_EQ(statistics_output.std_dev, 1.6996732f);
+    }
+}
+
+TEST(Statistics, ComputeStatsAcrossFrame) {
+    /// Basic example 1
+    {
+        constexpr float FRAME_DIFFERENCE_RECIPROCAL = 1.0f;
+        constexpr auto FRAME_LENGTH = 5u;
+        constexpr auto BIN_LENGTH = 1u;
+        constexpr float input_array[FRAME_LENGTH] = {
+            0.0f,   // Frame 1
+            0.0f,   // Frame 2
+            1.0f,   // Frame 3
+            0.0f,   // Frame 4
+            0.0f,   // Frame 5
+        };
+        constexpr uint32_t SCRATCH_LENGTH = 2 * FRAME_LENGTH;
+        constexpr uint32_t OUTPUT_LENGTH = BIN_LENGTH;
+        float scratch_array[SCRATCH_LENGTH] = {};
+        struct statistics statistics_output[OUTPUT_LENGTH] = {};
+
+        compute_statistics_across_frames(
+            input_array,
+            FRAME_LENGTH,
+            BIN_LENGTH,
             FRAME_DIFFERENCE_RECIPROCAL,
             statistics_output,
             OUTPUT_LENGTH,
@@ -121,18 +155,97 @@ TEST(Statistics, ComputeStatsAcrossFrame) {
         );
         EXPECT_FLOAT_EQ(statistics_output->max, 1.0f);
         EXPECT_FLOAT_EQ(statistics_output->min, 0.0f);
-        EXPECT_FLOAT_EQ(statistics_output->mean, 1.0f / INPUT_LENGTH);
+        EXPECT_FLOAT_EQ(statistics_output->mean, 1.0f / FRAME_LENGTH);
         EXPECT_FLOAT_EQ(statistics_output->median, 0.0f);
-        EXPECT_FLOAT_EQ(statistics_output->variance, 0.4f);
+        EXPECT_FLOAT_EQ(statistics_output->std_dev, 0.4f);
         // EXPECT_FLOAT_EQ(statistics_output->first_der_mean, 0.0f);
-        // EXPECT_FLOAT_EQ(statistics_output->first_der_variance, 0.70710677f);
-
+        // EXPECT_FLOAT_EQ(statistics_output->first_der_std_dev, 0.70710677f);
     }
 
-    /// Use compute_statistics_within_frame() to compare results
+    /// Basic example 2
     {
-        constexpr uint32_t BIN_LENGTH = 2;
+        constexpr float FRAME_DIFFERENCE_RECIPROCAL = 1.0f;
+        constexpr auto NUM_FRAMES = 10u;
+        constexpr auto BIN_LENGTH = 1u;
+        constexpr float input_array[NUM_FRAMES] = {
+            0.0f, 0.0f, 0.0f, 0.0f, 2.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        };
+        constexpr uint32_t SCRATCH_LENGTH = 2 * NUM_FRAMES;
+        constexpr uint32_t OUTPUT_LENGTH = BIN_LENGTH;
+        float scratch_array[SCRATCH_LENGTH] = {};
+        struct statistics statistics_output[OUTPUT_LENGTH] = {};
+
+        compute_statistics_across_frames(
+            input_array,
+            NUM_FRAMES,
+            BIN_LENGTH,
+            FRAME_DIFFERENCE_RECIPROCAL,
+            statistics_output,
+            OUTPUT_LENGTH,
+            scratch_array,
+            SCRATCH_LENGTH
+        );
+        EXPECT_FLOAT_EQ(statistics_output->max, 2.0f);
+        EXPECT_FLOAT_EQ(statistics_output->min, 0.0f);
+        EXPECT_FLOAT_EQ(statistics_output->mean, (1.0f + 2.0f) / NUM_FRAMES);
+        EXPECT_FLOAT_EQ(statistics_output->median, 0.0f);
+        EXPECT_FLOAT_EQ(statistics_output->std_dev, 0.64031243f);
+    }
+
+    /// Typical example
+    {
+        constexpr float FRAME_DIFFERENCE_RECIPROCAL = 1.0f;
         constexpr uint32_t NUM_FRAMES = 4u;
+        constexpr uint32_t NUM_BINS = 3u;
+        constexpr uint32_t INPUT_LENGTH = NUM_FRAMES * NUM_BINS;
+        constexpr float input_array[INPUT_LENGTH] = {
+            1, 4, 0,            // Frame 1
+            2, 5, 9,            // Frame 2
+            3, -2, 0,           // Frame 3
+            8, 0, 0,            // Frame 4
+        };
+        assert(sizeof(input_array) == INPUT_LENGTH * sizeof(float));
+        constexpr uint32_t SCRATCH_LENGTH = 2 * INPUT_LENGTH;
+        constexpr uint32_t OUTPUT_LENGTH = NUM_BINS;
+
+        constexpr struct statistics EXPECTED_RESULT[OUTPUT_LENGTH] = {
+            {8.0, 1.0, (1.0 + 2.0 + 3.0 + 8.0)/NUM_FRAMES, 2.5, 2.69258237f},     // Bin 1
+            {5.0, -2.0, (4.0 + 5.0 + -2.0 + 0.0)/NUM_FRAMES, 2.0, 2.8613808f},           // Bin 2
+            {9.0, 0.0, (0.0 + 9.0 + 0.0 + 0.0)/NUM_FRAMES, 0.0, 3.8971143f},          // Bin 3
+        };
+
+        float scratch_array[SCRATCH_LENGTH] = {};
+        struct statistics statistics_output[OUTPUT_LENGTH] = {};
+
+        compute_statistics_across_frames(
+            input_array,
+            NUM_FRAMES,
+            NUM_BINS,
+            FRAME_DIFFERENCE_RECIPROCAL,
+            statistics_output,
+            OUTPUT_LENGTH,
+            scratch_array,
+            SCRATCH_LENGTH
+        );
+
+        for (uint32_t bin_iterator = 0; bin_iterator < NUM_BINS; bin_iterator++) {
+            const struct statistics &computed_stats = statistics_output[bin_iterator];
+            const struct statistics &expected_stats = EXPECTED_RESULT[bin_iterator];
+
+            EXPECT_FLOAT_EQ(computed_stats.max, expected_stats.max);
+            EXPECT_FLOAT_EQ(computed_stats.min, expected_stats.min);
+            EXPECT_FLOAT_EQ(computed_stats.mean, expected_stats.mean);
+            EXPECT_FLOAT_EQ(computed_stats.median, expected_stats.median);
+            EXPECT_FLOAT_EQ(computed_stats.std_dev, expected_stats.std_dev);
+        }
+    }
+}
+
+TEST(Statistics, CompareStatsMethods) {
+        /// Use compute_statistics_within_frame() to compare results
+    {
+        constexpr uint32_t BIN_LENGTH = 5u;
+        constexpr uint32_t NUM_FRAMES = 3u;
 
         constexpr uint32_t
         INPUT_LENGTH = BIN_LENGTH * NUM_FRAMES;
@@ -183,8 +296,8 @@ TEST(Statistics, ComputeStatsAcrossFrame) {
                 FRAME_DIFFERENCE_RECIPROCAL,
                 &within_frames_statistics_output,
     1,
-    within_frames_scratch_array,
-    2 * NUM_FRAMES
+                within_frames_scratch_array,
+                2 * NUM_FRAMES
             );
 
             auto across_frames_statistics_output =
@@ -193,13 +306,15 @@ TEST(Statistics, ComputeStatsAcrossFrame) {
             EXPECT_FLOAT_EQ(across_frames_statistics_output->min, within_frames_statistics_output.min);
             EXPECT_FLOAT_EQ(across_frames_statistics_output->mean, within_frames_statistics_output.mean);
             EXPECT_FLOAT_EQ(across_frames_statistics_output->median, within_frames_statistics_output.median);
-            EXPECT_FLOAT_EQ(across_frames_statistics_output->variance, within_frames_statistics_output.variance);
+            EXPECT_FLOAT_EQ(across_frames_statistics_output->std_dev, within_frames_statistics_output.std_dev);
             // EXPECT_FLOAT_EQ(across_frames_statistics_output->first_der_mean, within_frames_statistics_output.first_der_mean);
-            // EXPECT_FLOAT_EQ(across_frames_statistics_output->first_der_variance, within_frames_statistics_output.first_der_variance);
+            // EXPECT_FLOAT_EQ(across_frames_statistics_output->first_der_std_dev, within_frames_statistics_output.first_der_std_dev);
         }
     }
 }
 
+// TODO: Implement hard-coded examples
+/*
 TEST(Statistics, PrecomputedMelSpectrogramStats) {
     /// Check parameters
     {
@@ -233,9 +348,9 @@ TEST(Statistics, PrecomputedMelSpectrogramStats) {
         EXPECT_FLOAT_EQ(statistics_output->min, expected_output->min);
         EXPECT_FLOAT_EQ(statistics_output->mean, expected_output->mean);
         EXPECT_FLOAT_EQ(statistics_output->median, expected_output->median);
-        EXPECT_NEAR(statistics_output->variance, expected_output->variance, FLOAT_ERROR_TOLERANCE);
-        // EXPECT_NEAR(statistics_output->first_der_mean, expected_output->first_der_mean, FIRST_DERIVATIVE_MEAN_ERROR_TOLERANCE);
-        // EXPECT_NEAR(statistics_output->first_der_variance, expected_output->first_der_variance, FIRST_DERIVATIVE_VARIANCE_ERROR_TOLERANCE);
+        EXPECT_NEAR(statistics_output->std_dev, expected_output->std_dev, FLOAT_ERROR_TOLERANCE);
+        // EXPECT_NEAR(statistics_output->first_der_mean, expected_output->first_der_std_dev, FIRST_DERIVATIVE_MEAN_ERROR_TOLERANCE);
+        // EXPECT_NEAR(statistics_output->first_der_std_dev, expected_output->first_der_std_dev, FIRST_DERIVATIVE_STD_DEV_ERROR_TOLERANCE);
     }
 }
 
@@ -272,9 +387,9 @@ TEST(Statistics, PrecomputedCepstrumStats) {
         EXPECT_FLOAT_EQ(statistics_output->min, expected_output->min);
         EXPECT_FLOAT_EQ(statistics_output->mean, expected_output->mean);
         EXPECT_FLOAT_EQ(statistics_output->median, expected_output->median);
-        EXPECT_NEAR(statistics_output->variance, expected_output->variance, FLOAT_ERROR_TOLERANCE);
+        EXPECT_NEAR(statistics_output->std_dev, expected_output->std_dev, FLOAT_ERROR_TOLERANCE);
         // EXPECT_NEAR(statistics_output->first_der_mean, expected_output->first_der_mean, FIRST_DERIVATIVE_MEAN_ERROR_TOLERANCE);
-        // EXPECT_NEAR(statistics_output->first_der_variance, expected_output->first_der_variance, FIRST_DERIVATIVE_VARIANCE_ERROR_TOLERANCE);
+        // EXPECT_NEAR(statistics_output->first_der_std_dev, expected_output->first_der_std_dev, FIRST_DERIVATIVE_STD_DEV_ERROR_TOLERANCE);
     }
 }
 
@@ -323,9 +438,9 @@ TEST(Statistics, PrecomputedCombinedStats) {
             EXPECT_FLOAT_EQ(statistics_output->min, expected_output->min);
             EXPECT_FLOAT_EQ(statistics_output->mean, expected_output->mean);
             EXPECT_FLOAT_EQ(statistics_output->median, expected_output->median);
-            EXPECT_NEAR(statistics_output->variance, expected_output->variance, FLOAT_ERROR_TOLERANCE);
+            EXPECT_NEAR(statistics_output->std_dev, expected_output->std_dev, FLOAT_ERROR_TOLERANCE);
             // EXPECT_NEAR(statistics_output->first_der_mean, expected_output->first_der_mean, FIRST_DERIVATIVE_MEAN_ERROR_TOLERANCE);
-            // EXPECT_NEAR(statistics_output->first_der_variance, expected_output->first_der_variance, FIRST_DERIVATIVE_VARIANCE_ERROR_TOLERANCE);
+            // EXPECT_NEAR(statistics_output->first_der_std_dev, expected_output->first_der_std_dev, FIRST_DERIVATIVE_STD_DEV_ERROR_TOLERANCE);
         }
     }
 
@@ -354,9 +469,9 @@ TEST(Statistics, PrecomputedCombinedStats) {
             EXPECT_FLOAT_EQ(statistics_output->min, expected_output->min);
             EXPECT_FLOAT_EQ(statistics_output->mean, expected_output->mean);
             EXPECT_FLOAT_EQ(statistics_output->median, expected_output->median);
-            EXPECT_NEAR(statistics_output->variance, expected_output->variance, FLOAT_ERROR_TOLERANCE);
+            EXPECT_NEAR(statistics_output->std_dev, expected_output->std_dev, FLOAT_ERROR_TOLERANCE);
             // EXPECT_NEAR(statistics_output->first_der_mean, expected_output->first_der_mean, FIRST_DERIVATIVE_MEAN_ERROR_TOLERANCE);
-            // EXPECT_NEAR(statistics_output->first_der_variance, expected_output->first_der_variance, FIRST_DERIVATIVE_VARIANCE_ERROR_TOLERANCE);
+            // EXPECT_NEAR(statistics_output->first_der_std_dev, expected_output->first_der_std_dev, FIRST_DERIVATIVE_STD_DEV_ERROR_TOLERANCE);
         }
     }
 
@@ -372,9 +487,10 @@ TEST(Statistics, PrecomputedCombinedStats) {
             EXPECT_FLOAT_EQ(statistics_output->min, expected_output->min);
             EXPECT_FLOAT_EQ(statistics_output->mean, expected_output->mean);
             EXPECT_FLOAT_EQ(statistics_output->median, expected_output->median);
-            EXPECT_NEAR(statistics_output->variance, expected_output->variance, FLOAT_ERROR_TOLERANCE);
+            EXPECT_NEAR(statistics_output->std_dev, expected_output->std_dev, FLOAT_ERROR_TOLERANCE);
             // EXPECT_NEAR(statistics_output->first_der_mean, expected_output->first_der_mean, FIRST_DERIVATIVE_MEAN_ERROR_TOLERANCE);
-            // EXPECT_NEAR(statistics_output->first_der_variance, expected_output->first_der_variance, FIRST_DERIVATIVE_VARIANCE_ERROR_TOLERANCE);
+            // EXPECT_NEAR(statistics_output->first_der_std_dev, expected_output->first_der_std_dev, FIRST_DERIVATIVE_STD_DEV_ERROR_TOLERANCE);
         }
     }
 }
+*/

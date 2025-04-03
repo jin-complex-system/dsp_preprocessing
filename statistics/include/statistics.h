@@ -15,9 +15,9 @@ statistics
     float min;
     float mean;
     float median;
-    float variance;
+    float std_dev;
     // float first_der_mean;
-    // float first_der_variance;
+    // float first_der_std_dev;
 };
 
 #define STATISTICS_ELEMENT_LENGTH                   (sizeof(struct statistics)/sizeof(float))
@@ -51,7 +51,7 @@ compute_statistics_across_frames(
  * @param bin_difference_reciprocal non-zero, positive difference between each bin as a reciprocal
  * @param statistics_output_buffer struct statistics
  * @param statistics_output_buffer_length length of bin_length
- * @param scratch_buffer
+ * @param scratch_buffer scratch buffer
  * @param scratch_buffer_length length of at least bin_length * 2
  */
 void

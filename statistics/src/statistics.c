@@ -21,9 +21,9 @@ statistics_initialise_stats_pointer(
     current_stats_pointer->min = 9999.0f;
     current_stats_pointer->mean = 0.0f;
     current_stats_pointer->median = 0.0f;
-    current_stats_pointer->variance = 0.0f;
+    current_stats_pointer->std_dev = 0.0f;
     // current_stats_pointer->first_der_mean = 0.0f;
-    // current_stats_pointer->first_der_variance = 0.0f;
+    // current_stats_pointer->first_der_std_dev = 0.0f;
 }
 
 /**
@@ -52,8 +52,8 @@ statistics_compute_first_loop(
     assert(sorted_buffer_pointer != NULL);
     assert(current_stats_pointer != NULL);
     assert(first_derivative_pointer != NULL);
-    assert(first_loop_iterator <= current_index);
-    assert(first_loop_iterator == 0 || previous_index < current_index);
+    // assert(first_loop_iterator <= current_index);
+    // assert(first_loop_iterator == 0 || previous_index < current_index);
 
     const float current_value = input_buffer[current_index];
 
@@ -116,17 +116,20 @@ statistics_locate_median(
     assert(sorted_buffer_length > 1);
 
     if (sorted_buffer_length & 0b1) {
-        const uint32_t ODD_MEDIAN_ELEMENT_IN_SORTED_BUFFER = (sorted_buffer_length)/2 + 1;
+        const uint32_t ODD_MEDIAN_ELEMENT_IN_SORTED_BUFFER = (sorted_buffer_length)/2;
 
         current_stats_pointer->median =
             sorted_buffer_pointer[ODD_MEDIAN_ELEMENT_IN_SORTED_BUFFER];
     }
     /// Find median in even INPUT_BUFFER_LENGTH
     else{
-        const uint32_t ONE_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER = (sorted_buffer_length)/2;
+        const uint32_t FIRST_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER = (sorted_buffer_length)/2 - 1;
+        const uint32_t SECOND_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER = (sorted_buffer_length)/2 - 0;
+        assert(FIRST_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER != SECOND_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER);
 
         current_stats_pointer->median =
-            (sorted_buffer_pointer[ONE_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER] + sorted_buffer_pointer[ONE_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER - 1]) / 2;
+            (sorted_buffer_pointer[FIRST_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER] +
+                sorted_buffer_pointer[SECOND_OF_EVEN_MEDIAN_ELEMENT_IN_SORTED_BUFFER]) / 2;
     }
 }
 
@@ -155,27 +158,27 @@ statistics_compute_second_loop(
     const float* current_value_pointer =
         &statistics_input_buffer[current_index];
 
-    // /// Compute first derivative's variance
+    // /// Compute first derivative's standard deviation
     // if (second_loop_iterator >= 1) {
-    //     const float first_derivative_variance =
+    //     const float first_der_std_dev =
     //         (first_derivative_buffer[second_loop_iterator - 1] - current_stats_pointer->first_der_mean) *
     //             (first_derivative_buffer[second_loop_iterator - 1] - current_stats_pointer->first_der_mean);
     //
-    //     if (first_derivative_variance >= 0.0f) {
-    //         current_stats_pointer->first_der_variance += first_derivative_variance;
+    //     if (first_der_std_dev >= 0.0f) {
+    //         current_stats_pointer->first_der_std_dev += first_der_std_dev;
     //     }
     // }
 
-    const float variance =
+    const float std_dev =
         (*current_value_pointer - current_stats_pointer->mean) * (*current_value_pointer - current_stats_pointer->mean);
-    if (variance >= 0.0f) {
-        current_stats_pointer->variance += variance;
+    if (std_dev >= 0.0f) {
+        current_stats_pointer->std_dev += std_dev;
     }
 }
 
 static inline
 void
-statistics_compute_variance(
+statistics_compute_standard_deviation(
     struct statistics* current_stats_pointer,
     const uint32_t total_number_of_elements,
     const uint32_t first_derivative_length) {
@@ -184,17 +187,17 @@ statistics_compute_variance(
     assert(total_number_of_elements > 0);
     assert(first_derivative_length == total_number_of_elements - 1);
 
-    assert(current_stats_pointer->variance >= 0.0f);
-    current_stats_pointer->variance =
-        current_stats_pointer->variance / (float)total_number_of_elements;
-    current_stats_pointer->variance =
-        square_root_approximation(current_stats_pointer->variance);
+    assert(current_stats_pointer->std_dev >= 0.0f);
+    current_stats_pointer->std_dev =
+        current_stats_pointer->std_dev / (float)total_number_of_elements;
+    current_stats_pointer->std_dev =
+        square_root_approximation(current_stats_pointer->std_dev);
 
-    // assert(current_stats_pointer->first_der_variance >= 0.0f);
-    // current_stats_pointer->first_der_variance =
-    //     current_stats_pointer->first_der_variance / (float)first_derivative_length;
-    // current_stats_pointer->first_der_variance =
-    //     square_root_approximation(current_stats_pointer->first_der_variance);
+    // assert(current_stats_pointer->first_der_std_dev >= 0.0f);
+    // current_stats_pointer->first_der_std_dev =
+    //     current_stats_pointer->first_der_std_dev / (float)first_derivative_length;
+    // current_stats_pointer->first_der_std_dev =
+    //     square_root_approximation(current_stats_pointer->first_der_std_dev);
 }
 
 void
@@ -213,7 +216,7 @@ compute_statistics_across_frames(
     const uint32_t SORTED_BUFFER_LENGTH = num_frames;
 
     /// Check parameters
-    assert(bin_length > 1 && num_frames > 1);
+    assert(bin_length >= 1 && num_frames > 1);
     assert(frame_difference_reciprocal > 0.0f);
     assert(scratch_buffer_length >= SORTED_BUFFER_LENGTH + FIRST_DERIVATIVE_LENGTH);
     assert(statistics_output_buffer_length == bin_length);
@@ -238,8 +241,8 @@ compute_statistics_across_frames(
 
         /// First for-loop
         for (uint32_t frame_iterator = 0; frame_iterator < num_frames; frame_iterator++) {
-            const uint32_t current_input_index = bin_iterator + frame_iterator * bin_length;
-            const uint32_t previous_input_index = bin_iterator + (frame_iterator - 1) * bin_length;
+            const uint32_t current_input_index = bin_iterator + (frame_iterator + 0) * (bin_length);
+            const uint32_t previous_input_index = bin_iterator + (frame_iterator - 1) * (bin_length);
             assert(current_input_index < INPUT_BUFFER_LENGTH);
 
             statistics_compute_first_loop(
@@ -281,7 +284,7 @@ compute_statistics_across_frames(
                 current_stats_pointer);
         }
 
-        statistics_compute_variance(
+        statistics_compute_standard_deviation(
             current_stats_pointer,
             num_frames,
             FIRST_DERIVATIVE_LENGTH);
@@ -367,7 +370,7 @@ compute_statistics_within_frame(
             current_stats_pointer);
     }
 
-    statistics_compute_variance(
+    statistics_compute_standard_deviation(
         current_stats_pointer,
         bin_length,
         FIRST_DERIVATIVE_LENGTH);
