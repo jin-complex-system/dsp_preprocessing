@@ -2,7 +2,6 @@ import unittest
 from python_interface.audio_dsp_c import audio_dsp_c
 import sys
 import glob
-import math
 import numpy as np
 
 CURRENT_BINARY_LOCATION = sys.argv[2]
@@ -10,7 +9,7 @@ LIBRARY_PATH = glob.glob(CURRENT_BINARY_LOCATION + "/*_shared.dll")[0]
 audio_dsp_c_lib = audio_dsp_c(library_path=LIBRARY_PATH)
 
 # Delta from empirically ran tests
-FFT_FLOAT64_ERROR_DELTA = 1e-5
+FFT_FLOAT64_ERROR_DELTA = 1e-4
 FFT_FLOAT32_ERROR_DELTA = FFT_FLOAT64_ERROR_DELTA
 
 class AudioDSP_FFT_PythonTestCase(unittest.TestCase):

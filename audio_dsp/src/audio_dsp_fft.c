@@ -12,8 +12,6 @@ perform_audio_dsp_rfft_direct(
     assert(n_fft * 2 <= output_buffer_length);
     assert(input_buffer != NULL && output_buffer != NULL);
 
-
-
 #ifdef TEST_ON_DESKTOP
     audio_dsp_rfft_instance rfft_instance;
     initialise_audio_dsp_rfft(
@@ -92,8 +90,6 @@ perform_audio_dsp_rfft(
         (kiss_fft_cpx*)output_buffer);
 #endif // TEST_ON_DESKTOP
 }
-
-
 
 void
 deinitialise_audio_dsp_rfft(

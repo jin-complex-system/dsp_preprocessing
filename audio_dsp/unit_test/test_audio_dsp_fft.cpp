@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
 #include <audio_dsp_fft.h>
-#include <FFT_audio/rfft_input.h>
-#include <FFT_audio/rfft_output.h>
-#include <FFT_mels/rfft_input.h>
-#include <FFT_mels/rfft_output.h>
+#include <test_audio/FFT_audio/rfft_input.h>
+#include <test_audio/FFT_audio/rfft_output.h>
+#include <test_audio/FFT_mels/rfft_input.h>
+#include <test_audio/FFT_mels/rfft_output.h>
 
 constexpr double
 FFT_AUDIO_FLOAT_ERROR_TOLERANCE = 5.0f * 1e-6;
