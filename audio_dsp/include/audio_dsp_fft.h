@@ -24,21 +24,19 @@ typedef kiss_fftr_cfg audio_dsp_rfft_instance;
 #endif //__ARM_ARCH
 
 /**
- * Initialise audio DSP Real FFT. Uses hardware DSP algorithms if possible
+ * Initialise audio DSP Real FFT. Uses hardware DSP algorithm if possible
  * @param p_instance
  * @param n_fft must be a power of 2 value
- * @param inverse If 1, perform inverse of real FFT
  */
 void
 initialise_audio_dsp_rfft(
     audio_dsp_rfft_instance *p_instance,
-    const uint16_t n_fft,
-    const int8_t inverse);
+    const uint16_t n_fft);
 
 /**
- * Perform real FFT on input buffer
+ * Perform real FFT on input buffer with given audio_dsp_rfft_instance
  * @param p_instance
- * @param input_buffer real values
+ * @param input_buffer real values of float
  * @param input_buffer_length same value as n_fft set during initialisation
  * @param output_buffer contains valid complex values of (input_buffer_length / 2) + 1
  * @param output_buffer_length must be input_buffer_length * 2
@@ -48,6 +46,20 @@ perform_audio_dsp_rfft(
     audio_dsp_rfft_instance *p_instance,
     float* input_buffer,
     const uint32_t input_buffer_length,
+    float* output_buffer,
+    const uint32_t output_buffer_length);
+
+/**
+ * Perform real FFT on input buffer. Does initialisation and deinitialisation by itself
+ * @param input_buffer real values of float
+ * @param n_fft length of input buffer; must be power of 2
+ * @param output_buffer contains valid complex values of (input_buffer_length / 2) + 1
+ * @param output_buffer_length must be input_buffer_length * 2
+ */
+void
+perform_audio_dsp_rfft_direct(
+    float* input_buffer,
+    const uint16_t n_fft,
     float* output_buffer,
     const uint32_t output_buffer_length);
 
