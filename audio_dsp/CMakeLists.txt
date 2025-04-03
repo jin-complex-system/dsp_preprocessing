@@ -53,7 +53,7 @@ add_test(
 
 # Python Test
 add_test(
-        NAME SAudioDSP_PythonTest
+        NAME AudioDSP_FFT_PythonTest
         COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_audio_fft.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
