@@ -74,7 +74,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                     a=sample_frame_through_hann_window,
                     n=n_fft)
                 assert (len(rfft_result) == NUM_FREQUENCY_BINS)
-                expected_results = librosa.amplitude_to_db(S=rfft_result)
+                expected_results = librosa.amplitude_to_db(S=np.abs(rfft_result))
                 assert (len(expected_results) == NUM_FREQUENCY_BINS)
 
                 # Run compute_power_spectrum()
