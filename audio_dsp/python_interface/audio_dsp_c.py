@@ -289,3 +289,59 @@ class audio_dsp_c:
         assert (frequency_float is not None and isinstance(frequency_float, float))
 
         return frequency_float
+
+    def compute_power_spectrum_into_mel_spectrogram(
+            self,
+            power_spectrum_array,
+            n_mel_uint16):
+        """
+        Compute power spectrum into mel spectrogram
+        :param power_spectrum_array:
+        :param n_mel_uint16:
+        :return: mel_spectrogram
+        """
+        # Check parameters
+        assert (self.libaudiodsp is not None)
+        assert (
+                len(power_spectrum_array) >= n_mel_uint16 and
+                power_spectrum_array.shape[0] == len(power_spectrum_array))
+        assert (power_spectrum_array.dtype == np.float32)
+        assert (isinstance(n_mel_uint16, int))
+
+        # Set constants
+        input_buffer_length = len(power_spectrum_array)
+        output_buffer_length = n_mel_uint16
+
+        # Make a deep copy to prepare input buffer
+        input_buffer = np.copy(power_spectrum_array, order='C')
+        assert (
+                input_buffer.dtype == power_spectrum_array.dtype and
+                len(input_buffer) == input_buffer_length and
+                input_buffer.shape[0] == input_buffer_length)
+
+
+        # Prepare output buffer
+        output_buffer = np.zeros(shape=output_buffer_length, dtype=np.float32)
+        assert (
+                len(output_buffer) == output_buffer_length and
+                output_buffer.shape[0] == output_buffer_length)
+
+        # Set the return types and argument types
+        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram.restype = None
+        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram.argtypes = [
+            np.ctypeslib.ndpointer(
+                shape=input_buffer_length, dtype=np.float32, ndim=1),
+            ctypes.c_uint16,
+            np.ctypeslib.ndpointer(
+                shape=output_buffer_length, dtype=np.float32, ndim=1),
+            ctypes.c_uint16,
+        ]
+
+        # Run function
+        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram(
+            input_buffer,
+            ctypes.c_uint16(input_buffer_length),
+            output_buffer,
+            ctypes.c_uint16(output_buffer_length)
+        )
+        return output_buffer
