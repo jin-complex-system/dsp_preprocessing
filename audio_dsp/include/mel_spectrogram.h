@@ -11,19 +11,32 @@ extern "C" {
 
 
 /**
- * For a given frequency, compute the equivalent mels
+ * For a given frequency, compute the equivalent mels using HTK method
  *
- * Formula is 1125 * log(1 + frequency / 700)
+ * Formula is 2595 * log10(1 + frequency / 700)
  *
  * @param frequency
  * @return mels as a float
  */
 float
-convert_frequency_to_mel(
+convert_frequency_to_mel_htk(
 	const float frequency);
 
 /**
- * For a given mel, compute the equivalent frequency
+ * For a given frequency, compute the equivalent mels using Slaney method
+ *
+ * For frequency < 1000, use the formula 3 * frequency / 200
+ * For frequency >= 1000, use the formula 15 + 27 * log6.4(frequency / 1000)
+ *
+ * @param frequency
+ * @return mels as a float
+ */
+float
+convert_frequency_to_mel_slaney(
+	const float frequency);
+
+/**
+ * For a given mel, compute the equivalent frequency back using htk method
  *
  * Formula is frequency = 700 * ((exp(mel / 1125)) - 1)
  *
@@ -31,7 +44,19 @@ convert_frequency_to_mel(
  * @return frequency as a float
  */
 float
-convert_mel_to_frequency(
+convert_mel_to_frequency_htk(
+	const float mel);
+
+/**
+ * For a given mel, compute the equivalent frequency back using Slaney method
+ *
+ * Formula is frequency = 700 * ((exp(mel / 1125)) - 1)
+ *
+ * @param mel
+ * @return frequency as a float
+ */
+float
+convert_mel_to_frequency_slaney(
 	const float mel);
 
 /**

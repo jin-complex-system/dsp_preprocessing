@@ -205,3 +205,87 @@ class audio_dsp_c:
 
         # Prepare output buffer by chopping off invalid elements
         return np.copy(output_buffer[0:valid_output_buffer_length])
+
+    def convert_frequency_to_mel(
+            self,
+            frequency,
+            htk=False):
+        """
+        Convert frequency to its equivalent mel, either using HTK or Slaney method
+
+        :param frequency: frequency; will be converted to np.float32
+        :param htk: If True, use HTK method instead of Slaney
+        :return: mel as np.float32
+        """
+        # Check parameters
+        assert (self.libaudiodsp is not None)
+        assert (frequency is not None)
+
+        # Prepare input
+        frequency_float = np.float32(float(frequency))
+
+        # Use HTK method
+        if htk:
+            # Set the return types and argument types
+            self.libaudiodsp.convert_frequency_to_mel_htk.restype = ctypes.c_float
+            self.libaudiodsp.convert_frequency_to_mel_htk.argtypes = [ctypes.c_float]
+
+            # Run function
+            mel_float = self.libaudiodsp.convert_frequency_to_mel_htk(
+                ctypes.c_float(frequency_float),
+            )
+        else:
+            # Set the return types and argument types
+            self.libaudiodsp.convert_frequency_to_mel_slaney.restype = ctypes.c_float
+            self.libaudiodsp.convert_frequency_to_mel_slaney.argtypes = [ctypes.c_float]
+
+            # Run function
+            mel_float = self.libaudiodsp.convert_frequency_to_mel_slaney(
+                ctypes.c_float(frequency_float),
+            )
+
+        assert (mel_float is not None and isinstance(mel_float, float))
+
+        return mel_float
+
+    def convert_mel_to_frequency(
+            self,
+            mel,
+            htk=False):
+        """
+        Convert mel to its equivalent frequency, either using HTK or Slaney method
+
+        :param mel: mel; will be converted to np.float32
+        :param htk: If True, use HTK method instead of Slaney
+        :return: mel as np.float32
+        """
+        # Check parameters
+        assert (self.libaudiodsp is not None)
+        assert (mel is not None)
+
+        # Prepare input
+        mel_float = np.float32(float(mel))
+
+        # Use HTK method
+        if htk:
+            # Set the return types and argument types
+            self.libaudiodsp.convert_mel_to_frequency_htk.restype = ctypes.c_float
+            self.libaudiodsp.convert_mel_to_frequency_htk.argtypes = [ctypes.c_float]
+
+            # Run function
+            frequency_float = self.libaudiodsp.convert_mel_to_frequency_htk(
+                ctypes.c_float(mel_float),
+            )
+        else:
+            # Set the return types and argument types
+            self.libaudiodsp.convert_mel_to_frequency_slaney.restype = ctypes.c_float
+            self.libaudiodsp.convert_mel_to_frequency_slaney.argtypes = [ctypes.c_float]
+
+            # Run function
+            frequency_float = self.libaudiodsp.convert_mel_to_frequency_slaney(
+                ctypes.c_float(mel_float),
+            )
+
+        assert (frequency_float is not None and isinstance(frequency_float, float))
+
+        return frequency_float
