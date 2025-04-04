@@ -1,0 +1,49 @@
+#include <gtest/gtest.h>
+#include <mel_spectrogram.h>
+#include <power_spectrum.h>
+
+#include <limits>
+#include <mel_spectrogram_unit_test/mel_spectrogram_unit_test.h>
+#include <test_audio/audio_as_integer.h>
+#include <test_audio/power_spectrum.h>
+#include <test_audio/mel_spectrogram.h>
+
+constexpr uint32_t
+COMPUTED_NUM_FRAMES = (
+    AUDIO_INTEGER_BUFFER_LENGTH / PRECOMPUTED_POWER_SPECTRUM_HOP_LENGTH -
+    PRECOMPUTED_POWER_SPECTRUM_N_FFT / PRECOMPUTED_POWER_SPECTRUM_HOP_LENGTH) + 1;
+
+constexpr auto
+MAX_AUDIO_DATA_TYPE = std::numeric_limits<audio_data_type>::max();
+
+constexpr double
+MEL_SPECTROGRAM_ERROR_TOLERANCE = 1e-3;
+
+TEST(MelSpectrogram, PrecomputedMelSpectrogram)
+{
+    /// Check parameters
+    {
+        assert(COMPUTED_NUM_FRAMES == PRECOMPUTED_POWER_SPECTRUM_NUM_FRAMES && COMPUTED_NUM_FRAMES == PRECOMPUTED_MEL_SPECTROGRAM_NUM_FRAMES);
+        assert(PRECOMPUTED_MEL_SPECTROGRAM_N_MELS > 0);
+    }
+
+    for (uint32_t frame_iterator = 0; frame_iterator < COMPUTED_NUM_FRAMES; frame_iterator++) {
+        const float* current_power_spectrum = &PRECOMPUTED_POWER_SPECTRUM_BUFFER[frame_iterator * PRECOMPUTED_POWER_SPECTRUM_BINS];
+        float mel_spectrogram_buffer[MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH];
+
+        compute_power_spectrum_into_mel_spectrogram(
+            current_power_spectrum,
+            PRECOMPUTED_POWER_SPECTRUM_BINS,
+            mel_spectrogram_buffer,
+            MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH);
+
+        for (uint32_t mel_bin_iterator = 0; mel_bin_iterator < PRECOMPUTED_MEL_SPECTROGRAM_N_MELS; mel_bin_iterator++) {
+            const float
+            expected_mel_bin_value = PRECOMPUTED_MEL_SPECTROGRAM_BUFFER[mel_bin_iterator + PRECOMPUTED_MEL_SPECTROGRAM_N_MELS * frame_iterator];
+            EXPECT_NEAR(
+                expected_mel_bin_value,
+                mel_spectrogram_buffer[mel_bin_iterator],
+                MEL_SPECTROGRAM_ERROR_TOLERANCE);
+        }
+    }
+}

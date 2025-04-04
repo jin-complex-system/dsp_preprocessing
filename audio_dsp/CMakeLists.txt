@@ -4,16 +4,29 @@ add_compile_definitions(TEST_ON_DESKTOP)
 add_library(
         audio_dsp_shared SHARED
 
-        # Precomputed Constants
+        # Precomputed Constants - Hann Window
         include/hann_window_no_scale_1024.h
         include/hann_window_with_scale_1024.h
 
+        # Precomputed Constants - Mel Buffers
+        include/precomputed_mel/mel_centre_frequencies_float_32.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin_32.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin_32.h
+        include/precomputed_mel/mel_frequency_weights_32.h
+
+        # Header files
         include/audio_dsp_fft.h
         include/hann_window_compute.h
+        include/mel_spectrogram.h
         include/power_spectrum.h
 
+        # Source files
         src/audio_dsp_fft.c
         src/hann_window_compute.c
+        src/mel_get_precompute.c
+        src/mel_compute.c
+        src/mel_spectrogram.c
+        src/mel_utils.c
         src/power_spectrum.c
 )
 target_link_libraries(
@@ -36,6 +49,8 @@ add_executable(
 
         unit_test/test_audio_dsp_fft.cpp
         unit_test/test_hann_window.cpp
+        unit_test/test_mel_spectrogram.cpp
+        unit_test/test_mel_precompute.cpp
         unit_test/test_power_spectrum.cpp
 
         unit_test/constants/power_spectrum_unit_test/power_spectrum_unit_test.h
