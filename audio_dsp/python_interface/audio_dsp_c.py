@@ -137,7 +137,7 @@ class audio_dsp_c:
 
         :param input_samples_array: np.array. Only supports np.int16 at the moment
         :param n_fft_uint16: length of input_samples_array; must be power of 2
-        :param hann_window_list: If set, use this window. Otherwise, will use hann_window_compute(n_fft_uint16, 1.0 /np.iinfo(input_samples_array.dtype).max)
+        :param window_list: If set, use this window. Otherwise, will use hann_window_compute(n_fft_uint16, 1.0 /np.iinfo(input_samples_array.dtype).max)
         :return: power spectrum array in decibels
         """
 
@@ -151,7 +151,7 @@ class audio_dsp_c:
         # Constants
         input_buffer_length = n_fft_uint16
         output_buffer_length = n_fft_uint16 * 2
-        valid_output_buffer_length = (n_fft_uint16 / 2) + 1
+        valid_output_buffer_length = int(n_fft_uint16 / 2) + 1
         window_buffer_length = input_buffer_length
 
         # Prepare hann window buffer if window_list is not provided
@@ -177,7 +177,7 @@ class audio_dsp_c:
         output_buffer = np.zeros(shape=output_buffer_length, dtype=np.float32)
         assert (
                 len(output_buffer) == output_buffer_length and
-                output_buffer.shape[0] == input_buffer_length)
+                output_buffer.shape[0] == output_buffer_length)
 
         # Set the return types and argument types
         self.libaudiodsp.compute_power_spectrum_audio_samples_direct.restype = None
@@ -198,7 +198,7 @@ class audio_dsp_c:
             input_buffer,
             ctypes.c_uint16(input_buffer_length),
             output_buffer,
-            ctypes.c_uint16(output_buffer_length),
+            ctypes.c_uint32(output_buffer_length),
             window_buffer,
             ctypes.c_uint32(window_buffer_length),
         )

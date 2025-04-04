@@ -1,3 +1,5 @@
 # pytest-cmake
 numpy
 librosa
+scipy
+matplotlib
