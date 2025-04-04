@@ -5,8 +5,8 @@ add_library(
         audio_dsp_shared SHARED
 
         # Precomputed Constants - Hann Window
-        include/hann_window_no_scale_1024.h
-        include/hann_window_with_scale_1024.h
+        include/precomputed_hann/hann_window_no_scale_1024.h
+        include/precomputed_hann/hann_window_with_scale_1024.h
 
         # Precomputed Constants - Mel Buffers
         include/precomputed_mel/mel_centre_frequencies_float_32.h

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <power_spectrum.h>
-#include <hann_window_with_scale_1024.h>
+#include <precomputed_hann/hann_window_with_scale_1024.h>
 
 #include <limits>
 #include <test_audio/audio_as_integer.h>

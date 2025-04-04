@@ -4,8 +4,8 @@
 #include <cmath>
 #include <power_spectrum.h>
 #include <hann_window_compute.h>
-#include <hann_window_no_scale_1024.h>
-#include <hann_window_with_scale_1024.h>
+#include <precomputed_hann/hann_window_no_scale_1024.h>
+#include <precomputed_hann/hann_window_with_scale_1024.h>
 
 // Empirically determined
 constexpr double
