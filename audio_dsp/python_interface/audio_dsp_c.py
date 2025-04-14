@@ -1,6 +1,7 @@
 import ctypes
 import numpy as np
 
+
 class audio_dsp_c:
     libaudiodsp = None
 
@@ -45,7 +46,7 @@ class audio_dsp_c:
         input_buffer = np.reshape(
             real_input_array,
             shape=-1,
-            copy=True,).astype(np.float32)
+            copy=True, ).astype(np.float32)
         assert (len(input_buffer) == len(real_input_array))
         assert (len(input_buffer) == input_buffer.shape[0])
         assert (input_buffer.dtype == np.float32)
@@ -56,7 +57,7 @@ class audio_dsp_c:
 
         # Prepare output buffer
         output_buffer = np.zeros(shape=[output_buffer_length], dtype=np.float32)
-        assert(output_buffer.shape[0] == output_buffer_length)
+        assert (output_buffer.shape[0] == output_buffer_length)
 
         # Set the return types and argument types
         self.libaudiodsp.perform_audio_dsp_rfft_direct.restype = None
@@ -78,7 +79,7 @@ class audio_dsp_c:
         )
 
         # Process the output buffer before returning
-        num_actual_valid_results = int(n_fft /2 + 1) * 2
+        num_actual_valid_results = int(n_fft / 2 + 1) * 2
         output_buffer = output_buffer[0:num_actual_valid_results]
 
         return output_buffer
@@ -318,7 +319,6 @@ class audio_dsp_c:
                 input_buffer.dtype == power_spectrum_array.dtype and
                 len(input_buffer) == input_buffer_length and
                 input_buffer.shape[0] == input_buffer_length)
-
 
         # Prepare output buffer
         output_buffer = np.zeros(shape=output_buffer_length, dtype=np.float32)
