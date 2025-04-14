@@ -58,7 +58,7 @@ convert_mel_to_frequency_htk(
     assert(mel > 0.0f);
 
     // TODO: Optimise the following
-    return 700.0f * (expf(mel / 1127.0f) - 1.0f);
+    return (float)700.0 * (pow(10.0, (double)mel / 2595.0) - 1.0);
 }
 
 float
