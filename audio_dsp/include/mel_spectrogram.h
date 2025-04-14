@@ -9,7 +9,6 @@
 extern "C" {
 #endif
 
-
 /**
  * For a given frequency, compute the equivalent mels using HTK method
  *
@@ -101,18 +100,20 @@ compute_mel_spectrogram_bins(
 /**
  * Convert power spectrum into mel spectrogram.
  *
- * Will compute the necessary mel freq if needed
+ * Will compute the necessary mel freq if needed unless specified otherwise
  * @param power_spectrum_buffer
  * @param power_spectrum_buffer_length
  * @param mel_spectrogram_buffer
  * @param n_mels must be power_spectrum_buffer_length or less
+ * @param force_recompute if True, compute coefficients even if it has been precomputed; only used for debugging
  */
 void
 compute_power_spectrum_into_mel_spectrogram(
     const float* power_spectrum_buffer,
 	const uint16_t power_spectrum_buffer_length,
     float* mel_spectrogram_buffer,
-	const uint16_t n_mels);
+	const uint16_t n_mels,
+	const bool force_recompute);
 
 /* Provide C++ Compatibility */
 #ifdef __cplusplus

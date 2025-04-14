@@ -8,7 +8,8 @@ compute_power_spectrum_into_mel_spectrogram(
     const float* power_spectrum_buffer,
 	const uint16_t power_spectrum_buffer_length,
     float* mel_spectrogram_buffer,
-	const uint16_t n_mels) {
+	const uint16_t n_mels,
+	const bool force_recompute) {
 	/// Check parameters
 	{
 	    assert(n_mels > 0 && power_spectrum_buffer_length > 0);
@@ -22,19 +23,20 @@ compute_power_spectrum_into_mel_spectrogram(
     uint16_t* mel_centre_freq_prev_bin_buffer = NULL;
     float* mel_freq_weights_buffer = NULL;
 
-    const bool
-    found_precomputed_values = get_mel_spectrogram_precomputed_values(
-        n_mels,
-        &mel_centre_freq_float_buffer,
-        &mel_centre_freq_next_bin_buffer,
-        &mel_centre_freq_prev_bin_buffer,
-        &mel_freq_weights_buffer
-    );
 
-    if (!found_precomputed_values)
-    {
-        assert(found_precomputed_values); // only support precomputed values at this time
+    bool
+    found_precomputed_values = false;
+    if (!force_recompute) {
+        found_precomputed_values = get_mel_spectrogram_precomputed_values(
+            n_mels,
+            &mel_centre_freq_float_buffer,
+            &mel_centre_freq_next_bin_buffer,
+            &mel_centre_freq_prev_bin_buffer,
+            &mel_freq_weights_buffer
+        );
+    }
 
+    if (force_recompute || !found_precomputed_values) {
         compute_mel_spectrogram_bins(
             n_mels,
             mel_centre_freq_float_buffer,

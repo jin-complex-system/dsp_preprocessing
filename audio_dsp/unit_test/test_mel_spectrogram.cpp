@@ -35,7 +35,8 @@ TEST(MelSpectrogram, UnitFilterDistribution_32) {
         FFT_UNIT_INPUT_BUFFER,
         FFT_UNIT_INPUT_BUFFER_LENGTH,
         mel_spectrogram_buffer,
-        MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH);
+        MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH,
+        false);
 
     /// Check against mel spectrogram
     for (uint32_t mel_bin_iterator = 0; mel_bin_iterator < MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH; mel_bin_iterator++) {
@@ -62,7 +63,8 @@ TEST(MelSpectrogram, PrecomputedMelSpectrogram)
             current_power_spectrum,
             PRECOMPUTED_POWER_SPECTRUM_BINS,
             mel_spectrogram_buffer,
-            MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH);
+            MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH,
+            false);
 
         for (uint32_t mel_bin_iterator = 0; mel_bin_iterator < PRECOMPUTED_MEL_SPECTROGRAM_N_MELS; mel_bin_iterator++) {
             const float
