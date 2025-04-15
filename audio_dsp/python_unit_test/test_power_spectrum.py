@@ -147,25 +147,25 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
             # After exporting visual results, do comparison
             for frame_iterator in range(NUM_FRAMES):
                 # Prepare failure message
-                assert_fail_prefix_msg = "\r\nn_fft={}, hop_length={}, frame={}\r\n".format(
+                assert_fail_prefix_msg = "\r\nn_fft={}, hop_length={}, frame={} mismatch:\r\n".format(
                     n_fft,
                     HOP_LENGTH,
                     frame_iterator)
 
                 for bin_iterator in range(0, NUM_FREQUENCY_BINS):
-                    expected_result = expected_spectrum[bin_iterator, frame_iterator]
+                    librosa_result = power_spectrum_librosa[bin_iterator, frame_iterator]
                     computed_result = power_spectrum[bin_iterator, frame_iterator]
 
-                    assert_fail_msg = "{} mismatch {} vs {} at bin {}".format(
+                    assert_fail_msg = "{} librosa{} vs computed {} at bin {}".format(
                         assert_fail_prefix_msg,
-                        expected_result,
+                        librosa_result,
                         computed_result,
                         bin_iterator
                     )
 
                     # TODO: Investigate why expected_result does not meet expectations
                     self.assertAlmostEqual(
-                        first=expected_result,
+                        first=librosa_result,
                         second=computed_result,
                         delta=POWER_SPECTRUM_FLOAT_ERROR_DELTA,
                         msg=assert_fail_msg,
