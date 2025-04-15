@@ -91,19 +91,23 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
 
             # Compute librosa version
             samples_librosa, _ = librosa.load(
+                sr=sample_rate,
                 path=TEST_AUDIO_FILEPATH,
                 mono=True)
             audio_stft = librosa.stft(
                 samples_librosa,
                 hop_length=HOP_LENGTH,
                 n_fft=n_fft,
-                win_length=n_fft
+                win_length=n_fft,
+                center=False,
             )
+
             power_spectrum_librosa = librosa.amplitude_to_db(np.abs(audio_stft))
 
             # Visually compare the results
-            assert(expected_spectrum.shape == power_spectrum.shape)
-            assert(len(TEST_MAIN_DIRECTORY) > 0)
+            assert (expected_spectrum.shape == power_spectrum.shape)
+            # assert (power_spectrum_librosa.shape == expected_spectrum.shape)
+            assert (len(TEST_MAIN_DIRECTORY) > 0)
             test_output_directory = os.path.join(TEST_MAIN_DIRECTORY, "power_spectrum_numpy_fft")
             os.makedirs(test_output_directory, exist_ok=True)
 
