@@ -53,21 +53,28 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
 
                 mel_spectrogram_computed = np.zeros(
                     shape=mel_spectrogram_librosa.shape, dtype=np.float32)
+                mel_spectrogram_raw = np.zeros(
+                    shape=mel_spectrogram_librosa.shape, dtype=np.float32)
                 for frame_iterator in range(0, num_frames):
                     one_frame = audio_stft_magnitude[:, frame_iterator]
-                    print(one_frame.shape)
                     assert(one_frame.shape[0] == len(one_frame))
 
                     mel_spectrogram_computed[:, frame_iterator] = (
                         audio_dsp_c_lib.compute_power_spectrum_into_mel_spectrogram(
                             power_spectrum_array=one_frame,
                             n_mel_uint16=n_mel,
-                    ))
-                print(mel_spectrogram_librosa.shape)
-                print(mel_spectrogram_computed.shape)
+                        ))
+
+                    mel_spectrogram_raw[:, frame_iterator] = (
+                        audio_dsp_c_lib.compute_power_spectrum_into_mel_spectrogram_raw(
+                            power_spectrum_array=one_frame,
+                            n_mel_uint16=n_mel,
+                            n_fft_uint16=n_fft,
+                            sample_rate_uint16=22048,
+                        ))
 
                 # Visually compare the results
-                assert(len(TEST_MAIN_DIRECTORY) > 0)
+                assert (len(TEST_MAIN_DIRECTORY) > 0)
                 test_output_directory = os.path.join(TEST_MAIN_DIRECTORY, "mel_spectrogram")
                 os.makedirs(test_output_directory, exist_ok=True)
 
@@ -94,6 +101,17 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
                 plt.axis("off")
                 plt.savefig(
                     os.path.join(test_output_directory, "{}_computed.png".format(common_filename)),
+                    bbox_inches='tight',
+                    pad_inches=0)
+                plt.close()
+
+                plt.figure()
+                librosa.display.specshow(
+                    mel_spectrogram_raw,
+                    cmap="magma")
+                plt.axis("off")
+                plt.savefig(
+                    os.path.join(test_output_directory, "{}_raw.png".format(common_filename)),
                     bbox_inches='tight',
                     pad_inches=0)
                 plt.close()

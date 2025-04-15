@@ -78,11 +78,15 @@ get_mel_spectrogram_precomputed_values(
 );
 
 /**
- * For a given n_mels, compute the values for the buffers.
+ * For a given n_mels and sample rate, compute the values for the buffers using Slaney method
+ *
+ * Minimum frequency is 0.0 for all intents and purposes
  *
  * Not recommended for repeated operations
  *
- * @param n_mels
+ * @param n_mel
+ * @param n_fft number of FFT bins; must be power of 2
+ * @param sample_rate the range of mel spectrogram up to sample_rate / 2
  * @param mel_centre_freq_float_buffer
  * @param mel_centre_freq_next_bin_buffer
  * @param mel_centre_freq_prev_bin_buffer
@@ -90,12 +94,37 @@ get_mel_spectrogram_precomputed_values(
  */
 void
 compute_mel_spectrogram_bins(
-	const uint16_t n_mels,
+	const uint16_t n_mel,
+	const uint16_t n_fft,
+	const uint16_t sample_rate,
 	float* mel_centre_freq_float_buffer,
 	uint16_t* mel_centre_freq_next_bin_buffer,
 	uint16_t* mel_centre_freq_prev_bin_buffer,
-	float* mel_freq_weights_buffer
-);
+	float* mel_freq_weights_buffer);
+
+/**
+ * Convert power spectrum into mel spectrogram. Compute necessary parameters
+ *
+ * Will compute the necessary mel freq if needed
+ * @param power_spectrum_buffer
+ * @param power_spectrum_buffer_length
+ * @param n_fft
+ * @param sample_rate
+ * @param mel_spectrogram_buffer
+ * @param n_mels must be power_spectrum_buffer_length or less
+ * @param scratch_buffer store the computed values
+ * @param scratch_buffer_length length of at least n_mels * 4 - 2)
+ */
+void
+compute_power_spectrum_into_mel_spectrogram_raw(
+	const float* power_spectrum_buffer,
+	const uint16_t power_spectrum_buffer_length,
+	const uint16_t n_fft,
+	const uint16_t sample_rate,
+	float* mel_spectrogram_buffer,
+	const uint16_t n_mels,
+	float* scratch_buffer,
+	const uint16_t scratch_buffer_length);
 
 /**
  * Convert power spectrum into mel spectrogram.
@@ -105,15 +134,13 @@ compute_mel_spectrogram_bins(
  * @param power_spectrum_buffer_length
  * @param mel_spectrogram_buffer
  * @param n_mels must be power_spectrum_buffer_length or less
- * @param force_recompute if True, compute coefficients even if it has been precomputed; only used for debugging
  */
 void
 compute_power_spectrum_into_mel_spectrogram(
     const float* power_spectrum_buffer,
 	const uint16_t power_spectrum_buffer_length,
     float* mel_spectrogram_buffer,
-	const uint16_t n_mels,
-	const bool force_recompute);
+	const uint16_t n_mels);
 
 /* Provide C++ Compatibility */
 #ifdef __cplusplus

@@ -291,12 +291,161 @@ class audio_dsp_c:
 
         return frequency_float
 
+    def compute_mel_spectrogram_bins(
+            self,
+            n_mel_uint16,
+            n_fft_uint16,
+            sample_rate_uint16):
+        """
+        Compute the mel spectrogram bins
+        :param n_mel: number of mel bins
+        :param n_fft: number of FFT bins; must be power of 2
+        :param sample_rate:
+        :return:
+        """
+        # Check parameters
+        assert (self.libaudiodsp is not None)
+        assert (n_mel_uint16 > 0 and isinstance(n_mel_uint16, int))
+        assert (n_fft_uint16 % 2 == 0 and n_fft_uint16 > 1 and isinstance(n_fft_uint16, int))
+        assert (sample_rate_uint16 > 0 and isinstance(sample_rate_uint16, int))
+
+        # Prepare constants
+        mel_centre_freq_float_buffer_length = n_mel_uint16 + 1
+        mel_centre_freq_next_bin_buffer_length = n_mel_uint16 - 1
+        mel_centre_freq_prev_bin_buffer_length = n_mel_uint16 - 1
+        mel_freq_weights_buffer_length = n_mel_uint16 - 1
+
+        # Prepare buffers
+        mel_centre_freq_float_buffer = np.zeros(shape=mel_centre_freq_float_buffer_length, dtype=np.float32)
+        assert (
+            len(mel_centre_freq_float_buffer) == mel_centre_freq_float_buffer_length and
+            mel_centre_freq_float_buffer.shape[0] == mel_centre_freq_float_buffer_length)
+        mel_centre_freq_next_bin_buffer = np.zeros(shape=mel_centre_freq_next_bin_buffer_length, dtype=np.uint16)
+        assert (
+                len(mel_centre_freq_next_bin_buffer) == mel_centre_freq_next_bin_buffer_length and
+                mel_centre_freq_next_bin_buffer.shape[0] == mel_centre_freq_next_bin_buffer_length)
+        mel_centre_freq_prev_bin_buffer = np.zeros(shape=mel_centre_freq_prev_bin_buffer_length, dtype=np.uint16)
+        assert (
+                len(mel_centre_freq_prev_bin_buffer) == mel_centre_freq_prev_bin_buffer_length and
+                mel_centre_freq_prev_bin_buffer.shape[0] == mel_centre_freq_prev_bin_buffer_length)
+        mel_freq_weights_buffer = np.zeros(shape=mel_freq_weights_buffer_length, dtype=np.float32)
+        assert (
+                len(mel_freq_weights_buffer) == mel_freq_weights_buffer_length and
+                mel_freq_weights_buffer.shape[0] == mel_freq_weights_buffer_length)
+
+        # Set the return types and argument types
+        self.libaudiodsp.compute_mel_spectrogram_bins.restype = None
+        self.libaudiodsp.compute_mel_spectrogram_bins.argtypes = [
+            ctypes.c_uint16,
+            ctypes.c_uint16,
+            ctypes.c_uint16,
+            np.ctypeslib.ndpointer(
+                shape=mel_centre_freq_float_buffer_length, dtype=np.float32, ndim=1),
+            np.ctypeslib.ndpointer(
+                shape=mel_centre_freq_next_bin_buffer_length, dtype=np.uint16, ndim=1),
+            np.ctypeslib.ndpointer(
+                shape=mel_centre_freq_prev_bin_buffer_length, dtype=np.uint16, ndim=1),
+            np.ctypeslib.ndpointer(
+                shape=mel_freq_weights_buffer_length, dtype=np.float32, ndim=1),
+        ]
+
+        # Run function
+        self.libaudiodsp.compute_mel_spectrogram_bins(
+            ctypes.c_uint16(n_mel_uint16),
+            ctypes.c_uint16(n_fft_uint16),
+            ctypes.c_uint16(sample_rate_uint16),
+            mel_centre_freq_float_buffer,
+            mel_centre_freq_next_bin_buffer,
+            mel_centre_freq_prev_bin_buffer,
+            mel_freq_weights_buffer,
+        )
+
+        return (
+            mel_centre_freq_float_buffer,
+            mel_centre_freq_next_bin_buffer,
+            mel_centre_freq_prev_bin_buffer,
+            mel_freq_weights_buffer)
+
+    def compute_power_spectrum_into_mel_spectrogram_raw(
+            self,
+            power_spectrum_array,
+            n_mel_uint16,
+            n_fft_uint16,
+            sample_rate_uint16):
+        """
+        Compute power spectrum into
+        :param n_mel_uint16:
+        :param n_fft_uint16:
+        :param sample_rate_uint16:
+        :return: mel_spectrogram
+        """
+        # Check parameters
+        assert (self.libaudiodsp is not None)
+        assert (
+                n_mel_uint16 <= len(power_spectrum_array) == power_spectrum_array.shape[0])
+        assert (power_spectrum_array.dtype == np.float32)
+        assert (isinstance(n_mel_uint16, int))
+
+        # Set constants
+        input_buffer_length = len(power_spectrum_array)
+        output_buffer_length = n_mel_uint16
+        scratch_buffer_length = n_mel_uint16 * 4 - 2
+
+        # Make a deep copy to prepare input buffer
+        input_buffer = np.copy(power_spectrum_array, order='C')
+        assert (
+                input_buffer.dtype == power_spectrum_array.dtype and
+                len(input_buffer) == input_buffer_length and
+                input_buffer.shape[0] == input_buffer_length)
+
+        # Prepare output buffer
+        output_buffer = np.zeros(shape=output_buffer_length, dtype=np.float32)
+        assert (
+                len(output_buffer) == output_buffer_length and
+                output_buffer.shape[0] == output_buffer_length)
+
+        # Prepare scratch buffer
+        scratch_buffer = np.zeros(shape=scratch_buffer_length, dtype=np.float32)
+        assert (
+                len(scratch_buffer) == scratch_buffer_length and
+                scratch_buffer.shape[0] == scratch_buffer_length)
+
+        # Set the return types and argument types
+        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram_raw.restype = None
+        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram_raw.argtypes = [
+            np.ctypeslib.ndpointer(
+                shape=input_buffer_length, dtype=np.float32, ndim=1),
+            ctypes.c_uint16,
+            ctypes.c_uint16,
+            ctypes.c_uint16,
+            np.ctypeslib.ndpointer(
+                shape=output_buffer_length, dtype=np.float32, ndim=1),
+            ctypes.c_uint16,
+            np.ctypeslib.ndpointer(
+                shape=scratch_buffer_length, dtype=np.float32, ndim=1),
+            ctypes.c_uint16,
+        ]
+
+        # Run function
+        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram_raw(
+            input_buffer,
+            ctypes.c_uint16(input_buffer_length),
+            ctypes.c_uint16(n_fft_uint16),
+            ctypes.c_uint16(sample_rate_uint16),
+            output_buffer,
+            ctypes.c_uint16(output_buffer_length),
+            scratch_buffer,
+            ctypes.c_uint16(scratch_buffer_length),
+        )
+
+        return output_buffer
+
     def compute_power_spectrum_into_mel_spectrogram(
             self,
             power_spectrum_array,
             n_mel_uint16):
         """
-        Compute power spectrum into mel spectrogram
+        Compute power spectrum into mel spectrogram with precomputed values
         :param power_spectrum_array:
         :param n_mel_uint16:
         :return: mel_spectrogram
@@ -304,8 +453,7 @@ class audio_dsp_c:
         # Check parameters
         assert (self.libaudiodsp is not None)
         assert (
-                len(power_spectrum_array) >= n_mel_uint16 and
-                power_spectrum_array.shape[0] == len(power_spectrum_array))
+                n_mel_uint16 <= len(power_spectrum_array) == power_spectrum_array.shape[0])
         assert (power_spectrum_array.dtype == np.float32)
         assert (isinstance(n_mel_uint16, int))
 
@@ -342,6 +490,7 @@ class audio_dsp_c:
             input_buffer,
             ctypes.c_uint16(input_buffer_length),
             output_buffer,
-            ctypes.c_uint16(output_buffer_length)
+            ctypes.c_uint16(output_buffer_length),
         )
+
         return output_buffer

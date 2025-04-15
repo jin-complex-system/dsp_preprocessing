@@ -12,11 +12,14 @@ audio_dsp_c_lib = audio_dsp_c(library_path=LIBRARY_PATH)
 FREQ_TO_MEL_CONVERSION_ERROR_DELTA = 1
 MEL_TO_FREQ_CONVERSION_ERROR_DELTA = 1
 
+MIN_FREQUENCY = 0
+MAX_FREQUENCY = 48000
+
 class AudioDSP_MelCompute_PythonTestCase(unittest.TestCase):
     def test_convert_freq_to_mel(self):
         htk_values = [True, False]
 
-        frequencies = np.linspace(1, 44100).astype(np.uint32)
+        frequencies = np.linspace(MIN_FREQUENCY, MAX_FREQUENCY).astype(np.uint32)
         for use_htk in htk_values:
             for iterator in range(0, len(frequencies)):
                 frequency = frequencies[iterator]
@@ -45,7 +48,7 @@ class AudioDSP_MelCompute_PythonTestCase(unittest.TestCase):
     def test_convert_mel_to_freq(self):
         htk_values = [True, False]
 
-        frequencies = np.linspace(1, 44100).astype(np.uint32)
+        frequencies = np.linspace(MIN_FREQUENCY, MAX_FREQUENCY).astype(np.uint32)
         for use_htk in htk_values:
             for iterator in range(0, len(frequencies)):
                 original_frequency = frequencies[iterator]
@@ -66,6 +69,24 @@ class AudioDSP_MelCompute_PythonTestCase(unittest.TestCase):
                         freq_from_mel_float
                     )
                 )
+
+    def test_compute_mel_spectrogram_bins(self):
+        n_ffts = [1024]
+        sample_rates = [22048]
+        n_mels = [32]
+
+        for n_fft in n_ffts:
+            for sample_rate in sample_rates:
+                for n_mel in n_mels:
+
+                    # Compute spectrogram constants
+                    m_float, m_prev, m_next, m_weights = audio_dsp_c_lib.compute_mel_spectrogram_bins(
+                        n_mel_uint16=n_mel,
+                        n_fft_uint16=n_fft,
+                        sample_rate_uint16=sample_rate,
+                    )
+                     # TODO: Compare to librosa
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -97,5 +97,30 @@ TEST(MelPrecomputed, ConversionSlaneyMelToFreq) {
 }
 
 TEST(MelPrecomputed, ComputeMelBins) {
-    // TODO: Implement this unit test
+    constexpr uint16_t n_ffts[] = {1024u};
+    constexpr uint16_t sample_rates[] = {22048u};
+    constexpr uint16_t n_mels[] = {32u};
+
+    for (const auto n_fft : n_ffts) {
+        for (const auto sample_rate : sample_rates) {
+            for (const auto n_mel : n_mels) {
+                float mel_centre_freq_float_buffer[n_mel + 1];
+                uint16_t mel_centre_freq_next_bin_buffer[n_mel - 1];
+                uint16_t mel_centre_freq_prev_bin_buffer[n_mel - 1];
+                float mel_freq_weights_buffer[n_mel - 1];
+
+                compute_mel_spectrogram_bins(
+                    n_mel,
+                    n_fft,
+                    sample_rate,
+                    mel_centre_freq_float_buffer,
+                    mel_centre_freq_next_bin_buffer,
+                    mel_centre_freq_prev_bin_buffer,
+                    mel_freq_weights_buffer
+                );
+
+                // TODO: Implement this unit test
+            }
+        }
+    }
 }

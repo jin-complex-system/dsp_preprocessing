@@ -24,7 +24,6 @@ add_library(
         src/audio_dsp_fft.c
         src/hann_window_compute.c
         src/mel_get_precompute.c
-        src/mel_compute.c
         src/mel_spectrogram.c
         src/mel_utils.c
         src/power_spectrum.c
