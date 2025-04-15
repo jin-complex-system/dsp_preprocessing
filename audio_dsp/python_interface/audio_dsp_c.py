@@ -310,10 +310,10 @@ class audio_dsp_c:
         assert (sample_rate_uint16 > 0 and isinstance(sample_rate_uint16, int))
 
         # Prepare constants
-        mel_centre_freq_float_buffer_length = n_mel_uint16 + 1
-        mel_centre_freq_next_bin_buffer_length = n_mel_uint16 - 1
-        mel_centre_freq_prev_bin_buffer_length = n_mel_uint16 - 1
-        mel_freq_weights_buffer_length = n_mel_uint16 - 1
+        mel_centre_freq_float_buffer_length = n_mel_uint16 + 2
+        mel_centre_freq_next_bin_buffer_length = n_mel_uint16 - 0
+        mel_centre_freq_prev_bin_buffer_length = n_mel_uint16 - 0
+        mel_freq_weights_buffer_length = n_mel_uint16 - 0
 
         # Prepare buffers
         mel_centre_freq_float_buffer = np.zeros(shape=mel_centre_freq_float_buffer_length, dtype=np.float32)
@@ -389,7 +389,7 @@ class audio_dsp_c:
         # Set constants
         input_buffer_length = len(power_spectrum_array)
         output_buffer_length = n_mel_uint16
-        scratch_buffer_length = n_mel_uint16 * 4 - 2
+        scratch_buffer_length = n_mel_uint16 * 4 + 2
 
         # Make a deep copy to prepare input buffer
         input_buffer = np.copy(power_spectrum_array, order='C')

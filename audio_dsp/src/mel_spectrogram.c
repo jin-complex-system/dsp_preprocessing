@@ -12,7 +12,7 @@ static inline
 uint16_t
 get_mel_centre_freq_float_buffer_length(
     const uint16_t n_mels) {
-    return n_mels + 1;
+    return n_mels + 2;
 }
 
 /**
@@ -24,7 +24,7 @@ static inline
 uint16_t
 get_mel_centre_next_prev_bin_buffer_length(
     const uint16_t n_mels) {
-    return n_mels - 1;
+    return n_mels - 0;
 }
 
 /**
@@ -36,7 +36,7 @@ static inline
 uint16_t
 get_mel_freq_weights_buffer_length(
     const uint16_t n_mels) {
-    return n_mels - 1;
+    return n_mels - 0;
 }
 
 /**
@@ -157,14 +157,12 @@ _compute_power_spectrum_into_mel_spectrogram(
 
     /// Clear the output buffer
     memset(mel_spectrogram_buffer, 0, sizeof(float) * n_mels);
-    for (uint32_t mel_iterator = 1; mel_iterator < n_mels; mel_iterator++) {
-        const uint16_t current_bin_index = mel_iterator - 1;
-        assert(current_bin_index < n_mels - 1);
+    for (uint32_t current_bin_index = 0; current_bin_index < n_mels; current_bin_index++) {
 
         /// Retrieve pre-computed values
-        const float* prev_centre_filterbank = &mel_centre_freq_float_buffer[mel_iterator - 1];
-        const float* current_centre_filterbank = &mel_centre_freq_float_buffer[mel_iterator];
-        const float* next_centre_filterbank = &mel_centre_freq_float_buffer[mel_iterator + 1];
+        const float* prev_centre_filterbank = &mel_centre_freq_float_buffer[current_bin_index + 0];
+        const float* current_centre_filterbank = &mel_centre_freq_float_buffer[current_bin_index + 1];
+        const float* next_centre_filterbank = &mel_centre_freq_float_buffer[current_bin_index + 2];
         const float* weight = &mel_freq_weights_buffer[current_bin_index];
 
         const uint16_t next_bin_index = mel_centre_freq_next_bin_buffer[current_bin_index];
@@ -220,13 +218,15 @@ compute_power_spectrum_into_mel_spectrogram_raw(
     const uint16_t n_mels,
     float* scratch_buffer,
     const uint16_t scratch_buffer_length) {
+    const uint16_t MINIMUM_SCRATCH_BUFFER_LENGTH = get_minimum_scratch_buffer_length(n_mels);
+
     /// Check parameters
     {
         assert(n_mels > 0 && power_spectrum_buffer_length > 0);
         assert(power_spectrum_buffer_length >= n_mels);
         assert(power_spectrum_buffer != NULL);
         assert(mel_spectrogram_buffer != NULL);
-        assert(scratch_buffer_length >= get_minimum_scratch_buffer_length(n_mels) && scratch_buffer != NULL);
+        assert(scratch_buffer_length >= MINIMUM_SCRATCH_BUFFER_LENGTH && scratch_buffer != NULL);
     }
 
     /// Compute constants
@@ -275,6 +275,8 @@ compute_power_spectrum_into_mel_spectrogram(
 	    assert(power_spectrum_buffer != NULL);
 	    assert(mel_spectrogram_buffer != NULL);
 	}
+    // TODO: Update precomputed values
+    assert(false);
 
     const float* mel_centre_freq_float_buffer = NULL;
     const uint16_t* mel_centre_freq_next_bin_buffer = NULL;

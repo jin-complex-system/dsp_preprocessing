@@ -20,8 +20,8 @@ TEST_MAIN_DIRECTORY = "_test_output"
 
 class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
     def test_mel_spectrogram_to_librosa(self):
-        n_ffts = [1024]
-        n_mels = [32]
+        n_ffts = [512, 1024, 2048]
+        n_mels = [32, 64, 128]
 
         # Load the wave file as float and mono
         samples, sample_rate = librosa.load(
@@ -51,26 +51,18 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
                 )
                 assert(mel_spectrogram_librosa.shape[0] == n_mel)
 
-                mel_spectrogram_computed = np.zeros(
-                    shape=mel_spectrogram_librosa.shape, dtype=np.float32)
                 mel_spectrogram_raw = np.zeros(
                     shape=mel_spectrogram_librosa.shape, dtype=np.float32)
                 for frame_iterator in range(0, num_frames):
                     one_frame = audio_stft_magnitude[:, frame_iterator]
                     assert(one_frame.shape[0] == len(one_frame))
 
-                    mel_spectrogram_computed[:, frame_iterator] = (
-                        audio_dsp_c_lib.compute_power_spectrum_into_mel_spectrogram(
-                            power_spectrum_array=one_frame,
-                            n_mel_uint16=n_mel,
-                        ))
-
                     mel_spectrogram_raw[:, frame_iterator] = (
                         audio_dsp_c_lib.compute_power_spectrum_into_mel_spectrogram_raw(
                             power_spectrum_array=one_frame,
                             n_mel_uint16=n_mel,
                             n_fft_uint16=n_fft,
-                            sample_rate_uint16=22048,
+                            sample_rate_uint16=sample_rate,
                         ))
 
                 # Visually compare the results
@@ -96,7 +88,7 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
 
                 plt.figure()
                 librosa.display.specshow(
-                    mel_spectrogram_computed,
+                    mel_spectrogram_raw,
                     cmap="magma")
                 plt.axis("off")
                 plt.savefig(
@@ -104,20 +96,6 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
                     bbox_inches='tight',
                     pad_inches=0)
                 plt.close()
-
-                plt.figure()
-                librosa.display.specshow(
-                    mel_spectrogram_raw,
-                    cmap="magma")
-                plt.axis("off")
-                plt.savefig(
-                    os.path.join(test_output_directory, "{}_raw.png".format(common_filename)),
-                    bbox_inches='tight',
-                    pad_inches=0)
-                plt.close()
-
-                # TODO: Make comparison between computed and librosa mel spectrogram
-
 
 if __name__ == '__main__':
     unittest.main()
