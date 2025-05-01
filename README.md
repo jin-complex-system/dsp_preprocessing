@@ -1,9 +1,28 @@
 # dsp_preprocessing
 DSP algorithms for preprocessing
 
-# Unit Test
+# Set up Python environment
 
-1. Install the required Python packages:
+1. Create and enter a virtual environment
+```bash
+python3 -m venv .venv
+
+# Active virtual environment in Windows
+.\.venv\Scripts\Activate.ps1
+
+# Active virtual environment in Linux
+source .venv/bin/activate
+```
+2. Install the required Python packages
 ```bash
 pip3 install -r requirements.txt
+```
+
+# Run Unit Test
+
+# Run tools to precompile headers
+1. Update parameters inside [tools/parameters.py] to specify what values will be pre-computed
+2. Inside your virtual environment, run the following:
+```bash
+<python_venv_interpreter> tools\generate_headers.py <path_to_library> audio_dsp\python_interface\audio_dsp_c.py
 ```

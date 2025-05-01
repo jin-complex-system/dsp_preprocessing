@@ -1,4 +1,7 @@
-## Test output files
+# Generated headers
+_output_processed/*
+
+# Test output files
 *_test_output*
 
 ## C++/C .gitignore
