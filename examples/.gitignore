@@ -1,0 +1,11 @@
+# Directories
+_output/*
+
+# Images
+*.png
+*.jpg
+
+# C/C++ files
+*.cpp
+*.c
+*.h
