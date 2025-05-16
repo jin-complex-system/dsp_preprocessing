@@ -1,6 +1,7 @@
 import numpy
 from cogapp import Cog
 
+
 def get_empty_cog_dict():
     """
     Get empty cog dict
@@ -12,6 +13,7 @@ def get_empty_cog_dict():
         "float_array": None,
         "comment_strings": "/n"
     }
+
 
 def export_ndarray(
         target_filepath,
@@ -27,6 +29,9 @@ def export_ndarray(
     assert (len(target_filepath) > 0)
     import os
     from pathlib import Path
+
+    # Create target directory, if it does not exist
+    os.makedirs(name=os.path.dirname(target_filepath), exist_ok=True)
 
     # Note that template folder is always relative to this file
     template_filepath = os.path.join(

@@ -79,52 +79,56 @@ class GenerateAudioDSP:
         )
 
         # Export centre float
-        mel_centre_prefix = "mel_centre_frequencies_float_{}_{}_{}".format(n_mel, n_fft, sample_rate)
+        mel_centre_prefix = "mel_centre_frequencies_float_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
         mel_constants_cog_dict["file_prefix"] = mel_centre_prefix
         mel_constants_cog_dict["float_array"] = mel_centre_float
         mel_constants_cog_dict["comment_strings"] = ""
         eb.export_ndarray(
             target_filepath=os.path.join(
                 mel_target_directory,
+                "mel_centre_frequencies_float",
                 "{}.h".format(mel_centre_prefix)
             ),
             cog_dict=mel_constants_cog_dict,
         )
 
         # Export centre next
-        mel_next_bin_prefix = "mel_centre_frequencies_next_bin_{}_{}_{}".format(n_mel, n_fft, sample_rate)
+        mel_next_bin_prefix = "mel_centre_frequencies_next_bin_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
         mel_constants_cog_dict["file_prefix"] = mel_next_bin_prefix
         mel_constants_cog_dict["float_array"] = mel_centre_next
         mel_constants_cog_dict["comment_strings"] = ""
         eb.export_ndarray(
             target_filepath=os.path.join(
                 mel_target_directory,
+                "mel_centre_frequencies_next_bin",
                 "{}.h".format(mel_next_bin_prefix)
             ),
             cog_dict=mel_constants_cog_dict,
         )
 
         # Export centre prev
-        mel_prev_bin_prefix = "mel_centre_frequencies_next_bin_{}_{}_{}".format(n_mel, n_fft, sample_rate)
+        mel_prev_bin_prefix = "mel_centre_frequencies_prev_bin_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
         mel_constants_cog_dict["file_prefix"] = mel_prev_bin_prefix
         mel_constants_cog_dict["float_array"] = mel_centre_prev
         mel_constants_cog_dict["comment_strings"] = ""
         eb.export_ndarray(
             target_filepath=os.path.join(
                 mel_target_directory,
+                "mel_centre_frequencies_prev_bin",
                 "{}.h".format(mel_prev_bin_prefix)
             ),
             cog_dict=mel_constants_cog_dict,
         )
 
         # Export weights
-        mel_weights_prefix = "mel_frequency_weights_{}_{}_{}".format(n_mel, n_fft, sample_rate)
+        mel_weights_prefix = "mel_frequency_weights_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
         mel_constants_cog_dict["file_prefix"] = mel_weights_prefix
         mel_constants_cog_dict["float_array"] = mel_weights
         mel_constants_cog_dict["comment_strings"] = ""
         eb.export_ndarray(
             target_filepath=os.path.join(
                 mel_target_directory,
+                "mel_weights",
                 "{}.h".format(mel_weights_prefix)
             ),
             cog_dict=mel_constants_cog_dict,
