@@ -6,12 +6,12 @@ from _library.generate_headers_audio_dsp import GenerateAudioDSP
 
 class MyParameters(parameters.DefaultParameters):
     def __init__(self):
-
         # Load default parameters
         super().__init__()
 
         # Custom parameters
         # If needed, update your parameters here
+
 
 def generate_headers_main():
     BINARY_LOCATION = sys.argv[1]

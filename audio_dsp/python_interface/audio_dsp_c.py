@@ -298,10 +298,15 @@ class audio_dsp_c:
             sample_rate_uint16):
         """
         Compute the mel spectrogram bins
-        :param n_mel: number of mel bins
-        :param n_fft: number of FFT bins; must be power of 2
-        :param sample_rate:
+        :param n_mel_uint16: number of mel bins in uint16_t
+        :param n_fft_uint16: number of FFT bins in uint16_t; must be power of 2
+        :param sample_rate_uint16: sample rate of the audio frequency
+
         :return:
+        mel_centre_freq_float_buffer - for the current index the actual centre of bin as a float
+        mel_centre_freq_next_bin_buffer - for the current index the next bin centre position index
+        mel_centre_freq_prev_bin_buffer - for the current index the prev bin centre position index
+        mel_freq_weights_buffer - for the current index the weights assigned to the mel bin
         """
         # Check parameters
         assert (self.libaudiodsp is not None)
@@ -373,10 +378,11 @@ class audio_dsp_c:
             n_fft_uint16,
             sample_rate_uint16):
         """
-        Compute power spectrum into
-        :param n_mel_uint16:
-        :param n_fft_uint16:
-        :param sample_rate_uint16:
+        Compute power spectrum into mel spectrogram; do not use precomputed values
+        :param power_spectrum_array: power spectrum computed with compute_power_spectrum()
+        :param n_mel_uint16: number of mel bins in uint16_t
+        :param n_fft_uint16: number of FFT bins in uint16_t; must be power of 2
+        :param sample_rate_uint16: sample rate of the audio frequency
         :return: mel_spectrogram
         """
         # Check parameters
@@ -445,8 +451,8 @@ class audio_dsp_c:
             power_spectrum_array,
             n_mel_uint16):
         """
-        Compute power spectrum into mel spectrogram with precomputed values
-        :param power_spectrum_array:
+        Compute power spectrum into mel spectrogram with precomputed values (if available)
+        :param power_spectrum_array: power spectrum computed with compute_power_spectrum()
         :param n_mel_uint16:
         :return: mel_spectrogram
         """

@@ -34,7 +34,7 @@ def export_ndarray(
         "templates",
         "np_array_header.h"
     )
-    print(template_filepath)
+    # print(template_filepath)
 
     myCog = Cog()
     myCog.options.bDeleteCode = True
