@@ -21,12 +21,114 @@ class GenerateAudioDSP:
     def generate_headers(
             self,
             params):
+        """
+        Given the parameters, precompute values and export them
+        :param params: defined in parameters.py
+        :return:
+        """
+
         for n_fft in params.n_ffts:
-            # Generate Hann Window
             self._generate_audio_dsp_hann_window(
                 n_fft=n_fft,
                 output_directory=params.output_directory,
                 scaling_factor_float=params.scaling_factor_float)
+
+            for sample_rate in params.sample_rates:
+                for n_mel in params.n_mels:
+                    self._generate_audio_dsp_mel_constants(
+                        n_mel=n_mel,
+                        n_fft=n_fft,
+                        sample_rate=sample_rate,
+                        output_directory=params.output_directory,
+                    )
+
+    def _generate_audio_dsp_mel_constants(
+            self,
+            n_mel,
+            n_fft,
+            sample_rate,
+            output_directory
+    ):
+        """
+        Generate mel constants for given values
+
+        :param n_mel:
+        :param n_fft:
+        :param sample_rate:
+        :param output_directory:
+
+        :return:
+        """
+        # Create directory for mel constants
+        mel_target_directory = os.path.join(
+            output_directory,
+            "precomputed_mel"
+        )
+        os.makedirs(mel_target_directory, exist_ok=True)
+
+        mel_constants_cog_dict = eb.get_empty_cog_dict()
+
+        # Generate mel constants
+        (mel_centre_float,
+         mel_centre_next,
+         mel_centre_prev,
+         mel_weights) = self.audio_dsp_c.compute_mel_spectrogram_bins(
+            n_mel_uint16=n_mel,
+            n_fft_uint16=n_fft,
+            sample_rate_uint16=sample_rate,
+        )
+
+        # Export centre float
+        mel_centre_prefix = "mel_centre_frequencies_float_{}_{}_{}".format(n_mel, n_fft, sample_rate)
+        mel_constants_cog_dict["file_prefix"] = mel_centre_prefix
+        mel_constants_cog_dict["float_array"] = mel_centre_float
+        mel_constants_cog_dict["comment_strings"] = ""
+        eb.export_ndarray(
+            target_filepath=os.path.join(
+                mel_target_directory,
+                "{}.h".format(mel_centre_prefix)
+            ),
+            cog_dict=mel_constants_cog_dict,
+        )
+
+        # Export centre next
+        mel_next_bin_prefix = "mel_centre_frequencies_next_bin_{}_{}_{}".format(n_mel, n_fft, sample_rate)
+        mel_constants_cog_dict["file_prefix"] = mel_next_bin_prefix
+        mel_constants_cog_dict["float_array"] = mel_centre_next
+        mel_constants_cog_dict["comment_strings"] = ""
+        eb.export_ndarray(
+            target_filepath=os.path.join(
+                mel_target_directory,
+                "{}.h".format(mel_next_bin_prefix)
+            ),
+            cog_dict=mel_constants_cog_dict,
+        )
+
+        # Export centre prev
+        mel_prev_bin_prefix = "mel_centre_frequencies_next_bin_{}_{}_{}".format(n_mel, n_fft, sample_rate)
+        mel_constants_cog_dict["file_prefix"] = mel_prev_bin_prefix
+        mel_constants_cog_dict["float_array"] = mel_centre_prev
+        mel_constants_cog_dict["comment_strings"] = ""
+        eb.export_ndarray(
+            target_filepath=os.path.join(
+                mel_target_directory,
+                "{}.h".format(mel_prev_bin_prefix)
+            ),
+            cog_dict=mel_constants_cog_dict,
+        )
+
+        # Export weights
+        mel_weights_prefix = "mel_frequency_weights_{}_{}_{}".format(n_mel, n_fft, sample_rate)
+        mel_constants_cog_dict["file_prefix"] = mel_weights_prefix
+        mel_constants_cog_dict["float_array"] = mel_weights
+        mel_constants_cog_dict["comment_strings"] = ""
+        eb.export_ndarray(
+            target_filepath=os.path.join(
+                mel_target_directory,
+                "{}.h".format(mel_weights_prefix)
+            ),
+            cog_dict=mel_constants_cog_dict,
+        )
 
     def _generate_audio_dsp_hann_window(
             self,
@@ -41,7 +143,7 @@ class GenerateAudioDSP:
         :return:
         """
 
-        # Create directory for hann window if necessary
+        # Create directory for hann window
         hann_target_directory = os.path.join(
             output_directory,
             "precomputed_hann"
