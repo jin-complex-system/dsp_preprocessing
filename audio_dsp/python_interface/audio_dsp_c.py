@@ -138,7 +138,8 @@ class audio_dsp_c:
 
         :param input_samples_array: np.array. Only supports np.int16 at the moment
         :param n_fft_uint16: length of input_samples_array; must be power of 2
-        :param window_list: If set, use this window. Otherwise, will use hann_window_compute(n_fft_uint16, 1.0 /np.iinfo(input_samples_array.dtype).max)
+        :param window_list: If set, use this window. Otherwise,
+        use hann_window_compute(n_fft_uint16, 1.0 /np.iinfo(input_samples_array.dtype).max)
         :return: power spectrum array in decibels
         """
 
