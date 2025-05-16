@@ -33,7 +33,7 @@ TEST(PowerSpectrum, NormaliseIntegerToFloat) {
     /// Normalise integer to float
     {
         for (uint32_t iterator = 0; iterator < AUDIO_INTEGER_BUFFER_LENGTH; iterator++) {
-            const float normalised_value = (float)AUDIO_INTEGER_BUFFER[iterator] / MAX_AUDIO_DATA_TYPE;
+            const auto normalised_value = (float)AUDIO_INTEGER_BUFFER[iterator] / MAX_AUDIO_DATA_TYPE;
 
             EXPECT_NEAR(
                 normalised_value,
