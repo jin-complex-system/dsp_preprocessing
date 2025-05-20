@@ -9,18 +9,26 @@ add_library(
         include/precomputed_window/hann_window/hann_window_scale_1024.h
 
         # Precomputed Constants - Mel float
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_22048.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_44100.h
         include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_22048.h
         include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_44100.h
 
         # Precomputed Constants - Mel next bin
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_22048.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_44100.h
         include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_22048.h
         include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_44100.h
 
         # Precomputed Constants - Mel prev bin
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_22048.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_44100.h
         include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_22048.h
         include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_44100.h
 
         # Precomputed Constants - Mel weights
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_22048.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_44100.h
         include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_22048.h
         include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_44100.h
 
