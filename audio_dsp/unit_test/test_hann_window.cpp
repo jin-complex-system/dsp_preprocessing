@@ -17,7 +17,11 @@ MAX_AUDIO_DATA_TYPE = std::numeric_limits<audio_data_type>::max();
 TEST(HannWindow, ScalingAndNoScaling1024) {
     constexpr uint16_t N_FFT = 1024u;
     constexpr float SCALE_FACTOR = 1.0f / MAX_AUDIO_DATA_TYPE;
-    constexpr double COS_VALUE = (2 * M_PI) / (N_FFT - 1);
+
+    /// Match librosa's python implementation,
+    /// which favours scipy.signal.get_window() implementation rather than scipy.signal.windows.hann()
+    constexpr double COS_VALUE = (2 * M_PI) / (N_FFT);
+    // constexpr double COS_VALUE = (2 * M_PI) / (N_FFT - 1);
 
     /// Check parameters
     {

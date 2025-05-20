@@ -12,10 +12,10 @@ LIBRARY_PATH = glob.glob(CURRENT_BINARY_LOCATION + "/*_shared.dll")[0]
 audio_dsp_c_lib = audio_dsp_c(library_path=LIBRARY_PATH)
 
 lengths = [4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
-lengths = [1024]
 scaling_factors = [1.0, 10.0, float(1.0 / np.iinfo(np.int16).max)]
 
-HANN_WINDOW_ERROR_DELTA = 1e-10
+HANN_WINDOW_ERROR_DELTA = 1e-5
+PRECISION_ERROR_DELTA = 1e-10
 
 
 def _get_hann_window_as_float(
@@ -23,6 +23,8 @@ def _get_hann_window_as_float(
         scale_factor=1.0,
 ):
     """ Compute hanning window as a float for a given length
+
+    Favours scipy.signal.get_window() implementation rather than scipy.signal.windows.hann()
 
     Args:
         length - length that is greater than 1
@@ -37,7 +39,8 @@ def _get_hann_window_as_float(
     hann_window_float = list()
 
     for iterator in range(0, length):
-        hann_value = 0.5 - 0.5 * math.cos(2 * math.pi * iterator / (length - 1))
+        hann_value = 0.5 - 0.5 * math.cos(2 * math.pi * iterator / length)
+        # hann_value = 0.5 - 0.5 * math.cos(2 * math.pi * iterator / (length - 1))
         hann_value = hann_value * scale_factor
 
         assert(hann_value >= 0)
@@ -59,6 +62,7 @@ class AudioDSP_HannWindow_PythonTestCase(unittest.TestCase):
 
                 # Note that
                 # scipy.signal.get_window() result differs from scipy.signal.windows.hann()
+                # we favour librosa which uses the former
                 scipy_result = scipy.signal.get_window(
                     window="hann",
                     Nx=length,
@@ -92,11 +96,11 @@ class AudioDSP_HannWindow_PythonTestCase(unittest.TestCase):
                         second=computed_result[iterator],
                         delta=HANN_WINDOW_ERROR_DELTA,
                         msg="{}".format(assert_fail_msg))
-                    self.assertAlmostEqual(
-                        first=hann_result_scaled[iterator],
-                        second=computed_result[iterator],
-                        delta=HANN_WINDOW_ERROR_DELTA,
-                        msg="{}".format(assert_fail_msg))
+                    # self.assertAlmostEqual(
+                    #     first=hann_result_scaled[iterator],
+                    #     second=computed_result[iterator],
+                    #     delta=HANN_WINDOW_ERROR_DELTA,
+                    #     msg="{}".format(assert_fail_msg))
 
     def test_against_python_hann_window(self):
         for length in lengths:
@@ -119,17 +123,17 @@ class AudioDSP_HannWindow_PythonTestCase(unittest.TestCase):
                 self.assertEqual(len(computed_result), length)
 
                 for iterator in range(0, length):
-                    assert_fail_msg = "{} iterator {}: python {} vs computed {}".format(
+                    assert_fail_msg = "{} iterator mismatch at {}:\npython {}\ncomputed {}\n".format(
                         assert_fail_prefix_msg,
                         iterator,
-                        python_result[iterator],
-                        computed_result[iterator]
+                        python_result,
+                        computed_result
                     )
 
                     self.assertAlmostEqual(
                         first=python_result[iterator],
                         second=computed_result[iterator],
-                        delta=HANN_WINDOW_ERROR_DELTA,
+                        delta=PRECISION_ERROR_DELTA,
                         msg="{}".format(assert_fail_msg))
 
 

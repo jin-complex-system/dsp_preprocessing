@@ -18,7 +18,11 @@ hann_window_compute(
     assert(scaling_factor > 0.0f);
 
     for (uint32_t iterator = 0; iterator < hann_window_buffer_length; iterator++) {
-        double hann_value_double = 0.5 - 0.5 * cos((MY_2_PI * iterator) / (hann_window_buffer_length - 1));
+
+        /// Match librosa's python implementation,
+        /// which favours scipy.signal.get_window() implementation rather than scipy.signal.windows.hann()
+        double hann_value_double = 0.5 - 0.5 * cos((MY_2_PI * iterator) / hann_window_buffer_length);
+        // double hann_value_double = 0.5 - 0.5 * cos((MY_2_PI * iterator) / (hann_window_buffer_length - 1));
         hann_value_double = hann_value_double * scaling_factor;
 
         float hann_value_float = 0.0f;
