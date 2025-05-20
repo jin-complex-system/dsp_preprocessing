@@ -59,8 +59,10 @@ convert_mel_to_frequency_slaney(
 	const float mel);
 
 /**
- * For a given n_mels, get the precomputed values if available
- * @param n_mels
+ * For a given parameters, get the precomputed values if available
+ * @param n_mel
+ * @param n_fft
+ * @param sample_rate
  * @param mel_centre_freq_float_buffer
  * @param mel_centre_freq_next_bin_buffer
  * @param mel_centre_freq_prev_bin_buffer
@@ -70,7 +72,9 @@ convert_mel_to_frequency_slaney(
 const
 bool
 get_mel_spectrogram_precomputed_values(
-	const uint16_t n_mels,
+	const uint16_t n_mel,
+	const uint16_t n_fft,
+	const uint16_t sample_rate,
 	const float** mel_centre_freq_float_buffer,
 	const uint16_t** mel_centre_freq_next_bin_buffer,
 	const uint16_t** mel_centre_freq_prev_bin_buffer,
@@ -111,7 +115,7 @@ compute_mel_spectrogram_bins(
  * @param n_fft
  * @param sample_rate
  * @param mel_spectrogram_buffer
- * @param n_mels must be power_spectrum_buffer_length or less
+ * @param n_mel must be power_spectrum_buffer_length or less
  * @param scratch_buffer store the computed values
  * @param scratch_buffer_length length of at least n_mels * 4 - 2)
  */
@@ -122,7 +126,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
 	const uint16_t n_fft,
 	const uint16_t sample_rate,
 	float* mel_spectrogram_buffer,
-	const uint16_t n_mels,
+	const uint16_t n_mel,
 	float* scratch_buffer,
 	const uint16_t scratch_buffer_length);
 
@@ -133,14 +137,18 @@ compute_power_spectrum_into_mel_spectrogram_raw(
  * @param power_spectrum_buffer
  * @param power_spectrum_buffer_length
  * @param mel_spectrogram_buffer
- * @param n_mels must be power_spectrum_buffer_length or less
+ * @param n_fft
+ * @param sample_rate
+ * @param n_mel must be power_spectrum_buffer_length or less
  */
 void
 compute_power_spectrum_into_mel_spectrogram(
     const float* power_spectrum_buffer,
 	const uint16_t power_spectrum_buffer_length,
     float* mel_spectrogram_buffer,
-	const uint16_t n_mels);
+	const uint16_t n_fft,
+	const uint16_t sample_rate,
+	const uint16_t n_mel);
 
 /* Provide C++ Compatibility */
 #ifdef __cplusplus

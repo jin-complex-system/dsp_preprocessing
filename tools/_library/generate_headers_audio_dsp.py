@@ -3,6 +3,7 @@ import sys
 import _library.export_buffer as eb
 import os
 
+
 class GenerateAudioDSP:
     def __init__(
             self,
@@ -27,8 +28,11 @@ class GenerateAudioDSP:
         :return:
         """
 
+        mel_precompute_dict = eb.get_empty_mel_precompute_cog_dict()
+        assert (mel_precompute_dict["data_structures"] == list())
+
         for n_fft in params.n_ffts:
-            self._generate_audio_dsp_hann_window(
+            self._generate_audio_dsp_window(
                 n_fft=n_fft,
                 output_directory=params.output_directory,
                 scaling_factor_float=params.scaling_factor_float)
@@ -41,6 +45,19 @@ class GenerateAudioDSP:
                         sample_rate=sample_rate,
                         output_directory=params.output_directory,
                     )
+
+                    mel_precompute_struct = eb.MelPrecomputeStructure()
+                    mel_precompute_struct.n_mel = n_mel
+                    mel_precompute_struct.n_fft = n_fft
+                    mel_precompute_struct.sample_rate = sample_rate
+
+                    mel_precompute_dict["data_structures"].append(mel_precompute_struct)
+
+        # Export .c file
+        eb.export_mel_precompute_c_file(
+            target_filepath=os.path.join(params.output_directory, "mel_get_precomputed.c"),
+            mel_precompute_cog_dict=mel_precompute_dict,
+        )
 
     def _generate_audio_dsp_mel_constants(
             self,
@@ -81,7 +98,7 @@ class GenerateAudioDSP:
         # Export centre float
         mel_centre_prefix = "mel_centre_frequencies_float_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
         mel_constants_cog_dict["file_prefix"] = mel_centre_prefix
-        mel_constants_cog_dict["float_array"] = mel_centre_float
+        mel_constants_cog_dict["data_array"] = mel_centre_float
         mel_constants_cog_dict["comment_strings"] = ""
         eb.export_ndarray(
             target_filepath=os.path.join(
@@ -89,13 +106,14 @@ class GenerateAudioDSP:
                 "mel_centre_frequencies_float",
                 "{}.h".format(mel_centre_prefix)
             ),
+            ndarray_type="float",
             cog_dict=mel_constants_cog_dict,
         )
 
         # Export centre next
         mel_next_bin_prefix = "mel_centre_frequencies_next_bin_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
         mel_constants_cog_dict["file_prefix"] = mel_next_bin_prefix
-        mel_constants_cog_dict["float_array"] = mel_centre_next
+        mel_constants_cog_dict["data_array"] = mel_centre_next
         mel_constants_cog_dict["comment_strings"] = ""
         eb.export_ndarray(
             target_filepath=os.path.join(
@@ -103,13 +121,14 @@ class GenerateAudioDSP:
                 "mel_centre_frequencies_next_bin",
                 "{}.h".format(mel_next_bin_prefix)
             ),
+            ndarray_type="uint16",
             cog_dict=mel_constants_cog_dict,
         )
 
         # Export centre prev
         mel_prev_bin_prefix = "mel_centre_frequencies_prev_bin_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
         mel_constants_cog_dict["file_prefix"] = mel_prev_bin_prefix
-        mel_constants_cog_dict["float_array"] = mel_centre_prev
+        mel_constants_cog_dict["data_array"] = mel_centre_prev
         mel_constants_cog_dict["comment_strings"] = ""
         eb.export_ndarray(
             target_filepath=os.path.join(
@@ -117,13 +136,14 @@ class GenerateAudioDSP:
                 "mel_centre_frequencies_prev_bin",
                 "{}.h".format(mel_prev_bin_prefix)
             ),
+            ndarray_type="uint16",
             cog_dict=mel_constants_cog_dict,
         )
 
         # Export weights
         mel_weights_prefix = "mel_frequency_weights_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
         mel_constants_cog_dict["file_prefix"] = mel_weights_prefix
-        mel_constants_cog_dict["float_array"] = mel_weights
+        mel_constants_cog_dict["data_array"] = mel_weights
         mel_constants_cog_dict["comment_strings"] = ""
         eb.export_ndarray(
             target_filepath=os.path.join(
@@ -131,10 +151,11 @@ class GenerateAudioDSP:
                 "mel_weights",
                 "{}.h".format(mel_weights_prefix)
             ),
+            ndarray_type="float",
             cog_dict=mel_constants_cog_dict,
         )
 
-    def _generate_audio_dsp_hann_window(
+    def _generate_audio_dsp_window(
             self,
             n_fft,
             output_directory,
@@ -147,10 +168,10 @@ class GenerateAudioDSP:
         :return:
         """
 
-        # Create directory for hann window
+        # Create directory for precomputed window
         hann_target_directory = os.path.join(
             output_directory,
-            "precomputed_hann"
+            "precomputed_window"
         )
         os.makedirs(hann_target_directory, exist_ok=True)
 
@@ -159,7 +180,7 @@ class GenerateAudioDSP:
         # Export hann window without scaling
         hann_window_name_prefix = "hann_window_no_scale_{}".format(n_fft)
         hann_window_cog_dict["file_prefix"] = hann_window_name_prefix
-        hann_window_cog_dict["float_array"] = self.audio_dsp_c.hann_window_compute(
+        hann_window_cog_dict["data_array"] = self.audio_dsp_c.hann_window_compute(
             length_uint32=n_fft,
             scaling_factor_float=1.0,
         )
@@ -170,13 +191,14 @@ class GenerateAudioDSP:
                 "hann_window",
                 "{}.h".format(hann_window_name_prefix)
             ),
+            ndarray_type="float",
             cog_dict=hann_window_cog_dict,
         )
 
         # Export hann window with scaling
         hann_window_name_prefix = "hann_window_scale_{}".format(n_fft)
         hann_window_cog_dict["file_prefix"] = hann_window_name_prefix
-        hann_window_cog_dict["float_array"] = self.audio_dsp_c.hann_window_compute(
+        hann_window_cog_dict["data_array"] = self.audio_dsp_c.hann_window_compute(
             length_uint32=n_fft,
             scaling_factor_float=scaling_factor_float,
         )
@@ -187,5 +209,6 @@ class GenerateAudioDSP:
                 "hann_window",
                 "{}.h".format(hann_window_name_prefix)
             ),
+            ndarray_type="float",
             cog_dict=hann_window_cog_dict,
         )

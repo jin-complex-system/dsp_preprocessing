@@ -5,14 +5,20 @@ add_library(
         audio_dsp_shared SHARED
 
         # Precomputed Constants - Hann Window
-        include/precomputed_hann/hann_window_no_scale_1024.h
-        include/precomputed_hann/hann_window_with_scale_1024.h
+        include/precomputed_window/hann_window/hann_window_no_scale_1024.h
+        include/precomputed_window/hann_window/hann_window_scale_1024.h
 
-        # Precomputed Constants - Mel Buffers
-        include/precomputed_mel/mel_centre_frequencies_float_32.h
-        include/precomputed_mel/mel_centre_frequencies_next_bin_32.h
-        include/precomputed_mel/mel_centre_frequencies_prev_bin_32.h
-        include/precomputed_mel/mel_frequency_weights_32.h
+        # Precomputed Constants - Mel float
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_22048.h
+
+        # Precomputed Constants - Mel next bin
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_22048.h
+
+        # Precomputed Constants - Mel prev bin
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_22048.h
+
+        # Precomputed Constants - Mel weights
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_22048.h
 
         # Header files
         include/audio_dsp_fft.h
@@ -23,7 +29,7 @@ add_library(
         # Source files
         src/audio_dsp_fft.c
         src/hann_window_compute.c
-        src/mel_get_precompute.c
+        src/mel_get_precomputed.c
         src/mel_spectrogram.c
         src/mel_utils.c
         src/power_spectrum.c

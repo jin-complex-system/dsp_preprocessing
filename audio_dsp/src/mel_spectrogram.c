@@ -215,15 +215,17 @@ compute_power_spectrum_into_mel_spectrogram_raw(
     const uint16_t n_fft,
     const uint16_t sample_rate,
     float* mel_spectrogram_buffer,
-    const uint16_t n_mels,
+    const uint16_t n_mel,
     float* scratch_buffer,
     const uint16_t scratch_buffer_length) {
-    const uint16_t MINIMUM_SCRATCH_BUFFER_LENGTH = get_minimum_scratch_buffer_length(n_mels);
+    const uint16_t MINIMUM_SCRATCH_BUFFER_LENGTH = get_minimum_scratch_buffer_length(n_mel);
 
     /// Check parameters
     {
-        assert(n_mels > 0 && power_spectrum_buffer_length > 0);
-        assert(power_spectrum_buffer_length >= n_mels);
+        assert(n_mel > 0 && power_spectrum_buffer_length > 0);
+        assert(n_fft > 0 && n_fft % 2 == 0);
+        assert(sample_rate > 0);
+        assert(power_spectrum_buffer_length >= n_mel);
         assert(power_spectrum_buffer != NULL);
         assert(mel_spectrogram_buffer != NULL);
         assert(scratch_buffer_length >= MINIMUM_SCRATCH_BUFFER_LENGTH && scratch_buffer != NULL);
@@ -231,9 +233,9 @@ compute_power_spectrum_into_mel_spectrogram_raw(
 
     /// Compute constants
     const uint16_t mel_centre_start_iter = 0;
-    const uint16_t mel_next_start_iter = get_mel_centre_freq_float_buffer_length(n_mels) + mel_centre_start_iter;
-    const uint16_t mel_prev_start_iter = get_mel_centre_next_prev_bin_buffer_length(n_mels) + mel_next_start_iter;
-    const uint16_t mel_weights_start_iter = get_mel_centre_next_prev_bin_buffer_length(n_mels) + mel_prev_start_iter;
+    const uint16_t mel_next_start_iter = get_mel_centre_freq_float_buffer_length(n_mel) + mel_centre_start_iter;
+    const uint16_t mel_prev_start_iter = get_mel_centre_next_prev_bin_buffer_length(n_mel) + mel_next_start_iter;
+    const uint16_t mel_weights_start_iter = get_mel_centre_next_prev_bin_buffer_length(n_mel) + mel_prev_start_iter;
 
     float* mel_centre_freq_float_buffer = &scratch_buffer[mel_centre_start_iter];
     uint16_t* mel_centre_freq_next_bin_buffer = (uint16_t*)&scratch_buffer[mel_next_start_iter];
@@ -241,7 +243,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
     float* mel_freq_weights_buffer = &scratch_buffer[mel_weights_start_iter];
 
     compute_mel_spectrogram_bins(
-        n_mels,
+        n_mel,
         n_fft,
         sample_rate,
         mel_centre_freq_float_buffer,
@@ -254,7 +256,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
         power_spectrum_buffer,
         power_spectrum_buffer_length,
         mel_spectrogram_buffer,
-        n_mels,
+        n_mel,
         mel_centre_freq_float_buffer,
         mel_centre_freq_next_bin_buffer,
         mel_centre_freq_prev_bin_buffer,
@@ -267,16 +269,18 @@ compute_power_spectrum_into_mel_spectrogram(
     const float* power_spectrum_buffer,
 	const uint16_t power_spectrum_buffer_length,
     float* mel_spectrogram_buffer,
-	const uint16_t n_mels) {
+    const uint16_t n_fft,
+    const uint16_t sample_rate,
+	const uint16_t n_mel) {
 	/// Check parameters
 	{
-	    assert(n_mels > 0 && power_spectrum_buffer_length > 0);
-		assert(power_spectrum_buffer_length >= n_mels);
+	    assert(n_mel > 0 && power_spectrum_buffer_length > 0);
+	    assert(n_fft > 0 && n_fft % 2 == 0);
+	    assert(sample_rate > 0);
+		assert(power_spectrum_buffer_length >= n_mel);
 	    assert(power_spectrum_buffer != NULL);
 	    assert(mel_spectrogram_buffer != NULL);
 	}
-    // TODO: Update precomputed values
-    assert(false);
 
     const float* mel_centre_freq_float_buffer = NULL;
     const uint16_t* mel_centre_freq_next_bin_buffer = NULL;
@@ -285,7 +289,9 @@ compute_power_spectrum_into_mel_spectrogram(
 
     const bool
     found_precomputed_values = get_mel_spectrogram_precomputed_values(
-            n_mels,
+            n_mel,
+            n_fft,
+            sample_rate,
             &mel_centre_freq_float_buffer,
             &mel_centre_freq_next_bin_buffer,
             &mel_centre_freq_prev_bin_buffer,
@@ -301,7 +307,7 @@ compute_power_spectrum_into_mel_spectrogram(
         power_spectrum_buffer,
         power_spectrum_buffer_length,
         mel_spectrogram_buffer,
-        n_mels,
+        n_mel,
         mel_centre_freq_float_buffer,
         mel_centre_freq_next_bin_buffer,
         mel_centre_freq_prev_bin_buffer,

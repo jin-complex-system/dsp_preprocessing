@@ -1,11 +1,11 @@
 #include "mel_spectrogram.h"
 #include <assert.h>
 
-/// n_mels = 32
-#include <precomputed_mel/mel_centre_frequencies_float_32.h>
-#include <precomputed_mel/mel_centre_frequencies_next_bin_32.h>
-#include <precomputed_mel/mel_centre_frequencies_prev_bin_32.h>
-#include <precomputed_mel/mel_frequency_weights_32.h>
+/// Generated library headers
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_22048.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_22048.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_22048.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_22048.h>
 
 /**
  * Assert that the precomputed buffer is as expected
@@ -27,65 +27,59 @@ assert_buffer(
 #endif //N_DEBUG
 }
 
-/**
- * For n_mels = 32, get the precomputed values
- * @param n_mels
- * @param mel_centre_freq_float_buffer
- * @param mel_centre_freq_next_bin_buffer
- * @param mel_centre_freq_prev_bin_buffer
- * @param mel_freq_weights_buffer
- */
+/// Generated functions
 static inline
 void
-get_mel_spectrogram_precomputed_values_32(
-    const uint16_t n_mels,
+get_mel_precomputed_values_mel_64_nfft_1024_sr_22048(
+    const uint16_t n_mel,
     const float** mel_centre_freq_float_buffer,
     const uint16_t** mel_centre_freq_next_bin_buffer,
     const uint16_t** mel_centre_freq_prev_bin_buffer,
     const float** mel_freq_weights_buffer) {
     /// Check parameters
-    assert(n_mels == 32u);
     assert(*mel_centre_freq_float_buffer == NULL);
     assert(*mel_centre_freq_next_bin_buffer == NULL);
     assert(*mel_centre_freq_prev_bin_buffer == NULL);
     assert(*mel_freq_weights_buffer == NULL);
 
-    /// Check precomputed
     assert_buffer(
-        MEL_CENTRE_FREQUENCIES_FLOAT_32,
-        MEL_CENTRE_FREQUENCIES_FLOAT_32_LENGTH,
-        n_mels + 1);
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_22048_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_22048_BUFFER_LENGTH,
+        n_mel + 1);
     assert_buffer(
-    MEL_CENTRE_FREQUENCIES_NEXT_BIN_32,
-    MEL_CENTRE_FREQUENCIES_NEXT_BIN_32_LENGTH,
-    n_mels - 1);
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_22048_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_22048_BUFFER_LENGTH,
+        n_mel - 1);
     assert_buffer(
-    MEL_CENTRE_FREQUENCIES_PREV_BIN_32,
-    MEL_CENTRE_FREQUENCIES_PREV_BIN_32_LENGTH,
-    n_mels - 1);
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_22048_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_22048_BUFFER_LENGTH,
+        n_mel - 1);
     assert_buffer(
-    MEL_FREQUENCY_WEIGHTS_32,
-    MEL_FREQUENCY_WEIGHTS_32_LENGTH,
-    n_mels - 1);
-
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_22048_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_22048_BUFFER_LENGTH,
+        n_mel - 1);
     /// Assign values
-    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_32;
-    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_32;
-    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_32;
-    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_32;
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_22048_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_22048_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_22048_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_22048_BUFFER;
 }
 
 const
 bool
 get_mel_spectrogram_precomputed_values(
-    const uint16_t n_mels,
+    const uint16_t n_mel,
+    const uint16_t n_fft,
+    const uint16_t sample_rate,
     const float** mel_centre_freq_float_buffer,
     const uint16_t** mel_centre_freq_next_bin_buffer,
     const uint16_t** mel_centre_freq_prev_bin_buffer,
     const float** mel_freq_weights_buffer
 ) {
     /// Check parameters
-    assert(n_mels >= 2);
+    assert(n_mel >= 2 && n_mel % 2 == 0);
+    assert(n_fft > 0 && n_fft % 2 == 0);
+    assert(sample_rate > 0);
     assert(*mel_centre_freq_float_buffer == NULL);
     assert(*mel_centre_freq_next_bin_buffer == NULL);
     assert(*mel_centre_freq_prev_bin_buffer == NULL);
@@ -93,20 +87,22 @@ get_mel_spectrogram_precomputed_values(
 
     /// Locate precomputed values
     bool found_precomputed_value = false;
-    switch(n_mels)
-    {
-        default:
-            break;
-        case 32u:
-            get_mel_spectrogram_precomputed_values_32(
-                n_mels,
-                mel_centre_freq_float_buffer,
-                mel_centre_freq_next_bin_buffer,
-                mel_centre_freq_prev_bin_buffer,
-                mel_freq_weights_buffer
-            );
-            found_precomputed_value = true;
-    }
+
+    /// Generated if conditionals
+if (
+    n_mel == 64u &&
+    n_fft == 1024u &&
+    sample_rate == 22048u) {
+
+    get_mel_precomputed_values_mel_64_nfft_1024_sr_22048(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
 
 #ifndef N_DEBUG
     if (found_precomputed_value)
@@ -128,5 +124,3 @@ get_mel_spectrogram_precomputed_values(
 
     return found_precomputed_value;
 }
-
-

@@ -450,11 +450,15 @@ class audio_dsp_c:
     def compute_power_spectrum_into_mel_spectrogram(
             self,
             power_spectrum_array,
-            n_mel_uint16):
+            n_mel_uint16,
+            n_fft_uint16,
+            sample_rate_uint16):
         """
         Compute power spectrum into mel spectrogram with precomputed values (if available)
         :param power_spectrum_array: power spectrum computed with compute_power_spectrum()
         :param n_mel_uint16:
+        :param n_fft_uint16:
+        :param sample_rate_uint16:
         :return: mel_spectrogram
         """
         # Check parameters
@@ -490,6 +494,8 @@ class audio_dsp_c:
             np.ctypeslib.ndpointer(
                 shape=output_buffer_length, dtype=np.float32, ndim=1),
             ctypes.c_uint16,
+            ctypes.c_uint16,
+            ctypes.c_uint16,
         ]
 
         # Run function
@@ -497,6 +503,8 @@ class audio_dsp_c:
             input_buffer,
             ctypes.c_uint16(input_buffer_length),
             output_buffer,
+            ctypes.c_uint16(n_fft_uint16),
+            ctypes.c_uint16(sample_rate_uint16),
             ctypes.c_uint16(output_buffer_length),
         )
 

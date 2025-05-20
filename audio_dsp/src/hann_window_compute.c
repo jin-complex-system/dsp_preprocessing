@@ -34,6 +34,5 @@ hann_window_compute(
 
         assert(hann_value_float >= 0.0f);
         hann_window_buffer[iterator] = hann_value_float;
-
     }
 }

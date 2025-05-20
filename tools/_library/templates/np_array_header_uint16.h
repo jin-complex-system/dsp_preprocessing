@@ -2,9 +2,9 @@
 import cog
 
 # Global constants expected
-assert(file_prefix is not None)
-assert(len(float_array) > 0)
-assert(len(comment_strings) >= 0)
+assert (file_prefix is not None)
+assert (len(data_array) > 0)
+assert (len(comment_strings) >= 0)
 
 # Setting constants
 uppercase_file_prefix = file_prefix.upper()
@@ -30,18 +30,18 @@ if (len(comment_strings) > 0):
     cog.outl("{}".format(comment_strings))
 cog.outl("#define {}_BUFFER_LENGTH {}".format(
     uppercase_file_prefix,
-    len(float_array)))
+    len(data_array)))
 ]]]*/
 //[[[end]]]
-const float
+const uint16_t
 /*[[[cog
 
 cog.outl("{}_BUFFER[{}_BUFFER_LENGTH] = {}".format(
     uppercase_file_prefix,
     uppercase_file_prefix,
     "{"))
-for float_value in float_array:
-    cog.outl("    {:.24f}f,".format(float(float_value)))
+for data_value in data_array:
+    cog.outl("    {}u,".format(data_value))
 ]]]*/
 //[[[end]]]
 };
