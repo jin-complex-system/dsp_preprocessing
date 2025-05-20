@@ -392,6 +392,8 @@ class audio_dsp_c:
                 n_mel_uint16 <= len(power_spectrum_array) == power_spectrum_array.shape[0])
         assert (power_spectrum_array.dtype == np.float32)
         assert (isinstance(n_mel_uint16, int))
+        assert (isinstance(n_fft_uint16, int))
+        assert (isinstance(sample_rate_uint16, int))
 
         # Set constants
         input_buffer_length = len(power_spectrum_array)
@@ -467,6 +469,8 @@ class audio_dsp_c:
                 n_mel_uint16 <= len(power_spectrum_array) == power_spectrum_array.shape[0])
         assert (power_spectrum_array.dtype == np.float32)
         assert (isinstance(n_mel_uint16, int))
+        assert (isinstance(n_fft_uint16, int))
+        assert (isinstance(sample_rate_uint16, int))
 
         # Set constants
         input_buffer_length = len(power_spectrum_array)
@@ -505,7 +509,7 @@ class audio_dsp_c:
             output_buffer,
             ctypes.c_uint16(n_fft_uint16),
             ctypes.c_uint16(sample_rate_uint16),
-            ctypes.c_uint16(output_buffer_length),
+            ctypes.c_uint16(n_mel_uint16),
         )
 
         return output_buffer

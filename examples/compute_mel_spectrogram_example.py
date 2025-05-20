@@ -153,6 +153,8 @@ def compute_and_plot_audio_dsp_c(
                 audio_dsp_c_lib.compute_power_spectrum_into_mel_spectrogram(
                     power_spectrum_array=power_spectrum[:, frame_iterator],
                     n_mel_uint16=n_mel,
+                    n_fft_uint16=n_fft,
+                    sample_rate_uint16=sample_rate,
                 ))
         else:
             mel_spectrogram[:, frame_iterator] = (
@@ -216,8 +218,8 @@ def _main():
 
     # Parameters are powers of 2 to take advantage of hardware
     n_fft = 1024
-    n_mel = 32
-    hop_length = int(n_fft / 2)
+    n_mel = 64
+    hop_length = int(n_fft / 4)
     scaling_factor_int16 = float(1.0 / np.iinfo(samples.dtype).max)
 
     print("sample_rate - {}, number of samples - {}, n_fft - {}, hop_length - {}, n_mel - {}, ".format(
