@@ -167,10 +167,10 @@ _compute_power_spectrum_into_mel_spectrogram(
 
         const uint16_t next_bin_index = mel_centre_freq_next_bin_buffer[current_bin_index];
         const uint16_t prev_bin_index = mel_centre_freq_prev_bin_buffer[current_bin_index];
-        assert(next_bin_index > prev_bin_index && next_bin_index <= power_spectrum_buffer_length);
+        assert(next_bin_index <= power_spectrum_buffer_length);
 
         float mel_spectrogram_value = 0.0f;
-        for (uint16_t iterator_freq_bin = prev_bin_index; iterator_freq_bin <= next_bin_index; iterator_freq_bin++) {
+        for (uint16_t iterator_freq_bin = prev_bin_index; iterator_freq_bin < next_bin_index; iterator_freq_bin++) {
             const float iterator_freq_bin_float = iterator_freq_bin;
             assert(iterator_freq_bin <= power_spectrum_buffer_length);
 

@@ -26,3 +26,6 @@ pip3 install -r requirements.txt
 ```bash
 <python_venv_interpreter> tools\generate_headers.py <path_to_library> audio_dsp\python_interface\audio_dsp_c.py
 ```
+
+# Known issues
+1. Precomputed mel spectrogram's last bin differs to raw computation; just discard the last bin
