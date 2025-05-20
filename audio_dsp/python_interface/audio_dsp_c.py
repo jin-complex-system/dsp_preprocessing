@@ -316,10 +316,10 @@ class audio_dsp_c:
         assert (sample_rate_uint16 > 0 and isinstance(sample_rate_uint16, int))
 
         # Prepare constants
-        mel_centre_freq_float_buffer_length = n_mel_uint16 + 2
-        mel_centre_freq_next_bin_buffer_length = n_mel_uint16 - 0
-        mel_centre_freq_prev_bin_buffer_length = n_mel_uint16 - 0
-        mel_freq_weights_buffer_length = n_mel_uint16 - 0
+        mel_centre_freq_float_buffer_length = n_mel_uint16 + 1
+        mel_centre_freq_next_bin_buffer_length = n_mel_uint16 - 1
+        mel_centre_freq_prev_bin_buffer_length = n_mel_uint16 - 1
+        mel_freq_weights_buffer_length = n_mel_uint16 - 1
 
         # Prepare buffers
         mel_centre_freq_float_buffer = np.zeros(shape=mel_centre_freq_float_buffer_length, dtype=np.float32)
