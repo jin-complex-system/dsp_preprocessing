@@ -2,9 +2,14 @@ import os
 import sys
 import time
 
+
 def save_plots(
         power_spectrum,
         mel_spectrogram,
+        sample_rate,
+        hop_length,
+        n_fft,
+        win_length,
         target_directory,
         postfix_str,
 ):
@@ -12,6 +17,10 @@ def save_plots(
     Save plots of power spectrum and mel spectrogram
     :param power_spectrum:
     :param mel_spectrogram:
+    :param sample_rate:
+    :param hop_length:
+    :param n_fft:
+    :param win_length:
     :param target_directory:
     :param postfix_str: Identifier to distinguish figures
     :return:
@@ -27,6 +36,10 @@ def save_plots(
     plt.figure()
     librosa.display.specshow(
         power_spectrum,
+        sr=sample_rate,
+        hop_length=hop_length,
+        win_length=win_length,
+        n_fft=n_fft,
         cmap="magma")
     plt.axis("off")
     plt.savefig(
@@ -41,6 +54,9 @@ def save_plots(
     plt.figure()
     librosa.display.specshow(
         mel_spectrogram,
+        hop_length=hop_length,
+        win_length=win_length,
+        n_fft=n_fft,
         cmap="magma")
     plt.axis("off")
     plt.savefig(
@@ -159,6 +175,10 @@ def compute_and_plot_audio_dsp_c(
     save_plots(
         power_spectrum=power_spectrum,
         mel_spectrogram=mel_spectrogram,
+        sample_rate=sample_rate,
+        hop_length=hop_length,
+        n_fft=n_fft,
+        win_length=n_fft,
         target_directory=os.path.join(
             "examples", "_output", postfix_str),
         postfix_str=postfix_str,
@@ -168,6 +188,7 @@ def compute_and_plot_audio_dsp_c(
         power_spectrum_total_time,
         mel_spectrogram_total_time,
     ))
+
 
 def _main():
     # Load libraries
@@ -262,6 +283,10 @@ def _main():
     save_plots(
         power_spectrum=power_spectrum_librosa,
         mel_spectrogram=mel_spectrogram_librosa,
+        sample_rate=sample_rate,
+        hop_length=hop_length,
+        n_fft=n_fft,
+        win_length=n_fft,
         target_directory=os.path.join(
             "examples", "_output", "librosa"),
         postfix_str="librosa",

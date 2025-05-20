@@ -19,6 +19,7 @@ TEST_MAIN_DIRECTORY = "_test_output"
 
 POWER_SPECTRUM_FLOAT_ERROR_DELTA = 50
 
+
 class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
     def test_against_numpy_fft(self):
         n_fft_list = [
@@ -68,17 +69,20 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
 
                 # Compute expected result
                 sample_frame_through_hann_window = (hann_window * sample_frame).astype(np.float32)
-                assert(sample_frame_through_hann_window.dtype == np.float32)
-                assert(len(sample_frame_through_hann_window) == n_fft)
+                assert (sample_frame_through_hann_window.dtype == np.float32)
+                assert (len(sample_frame_through_hann_window) == n_fft)
                 rfft_result = np.fft.rfft(
                     a=sample_frame_through_hann_window,
                     n=n_fft)
+                expected_result = librosa.power_to_db(
+                    S=np.abs(rfft_result) ** 2,
+                )
+
                 assert (len(rfft_result) == NUM_FREQUENCY_BINS)
-                expected_results = librosa.amplitude_to_db(S=np.abs(rfft_result))
-                assert (len(expected_results) == NUM_FREQUENCY_BINS)
+                assert (len(expected_result) == NUM_FREQUENCY_BINS)
 
                 # Run compute_power_spectrum()
-                power_spectrum_results = audio_dsp_c_lib.compute_power_spectrum(
+                power_spectrum_result = audio_dsp_c_lib.compute_power_spectrum(
                     input_samples_array=sample_frame,
                     n_fft_uint16=n_fft,
                     window_list=hann_window
@@ -86,8 +90,8 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                 self.assertEqual(len(power_spectrum), NUM_FREQUENCY_BINS)
 
                 # Store the results to be exported
-                expected_spectrum[:, frame_iterator] = expected_results
-                power_spectrum[:, frame_iterator] = power_spectrum_results
+                expected_spectrum[:, frame_iterator] = expected_result
+                power_spectrum[:, frame_iterator] = power_spectrum_result
 
             # Compute librosa version
             samples_librosa, _ = librosa.load(
@@ -99,14 +103,14 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                 hop_length=HOP_LENGTH,
                 n_fft=n_fft,
                 win_length=n_fft,
-                center=False,
             )
 
-            power_spectrum_librosa = librosa.amplitude_to_db(np.abs(audio_stft))
+            power_spectrum_librosa = librosa.power_to_db(
+                S=np.abs(audio_stft) ** 2,
+            )
 
             # Visually compare the results
             assert (expected_spectrum.shape == power_spectrum.shape)
-            # assert (power_spectrum_librosa.shape == expected_spectrum.shape)
             assert (len(TEST_MAIN_DIRECTORY) > 0)
             test_output_directory = os.path.join(TEST_MAIN_DIRECTORY, "power_spectrum_numpy_fft")
             os.makedirs(test_output_directory, exist_ok=True)
@@ -170,6 +174,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                     #     delta=POWER_SPECTRUM_FLOAT_ERROR_DELTA,
                     #     msg=assert_fail_msg,
                     # )
+
 
 if __name__ == '__main__':
     unittest.main()
