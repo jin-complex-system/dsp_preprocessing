@@ -1,7 +1,9 @@
 # dsp_preprocessing
 DSP algorithms for preprocessing
 
-# Set up Python environment
+# Requirements
+
+## Set up Python environment
 
 1. Create and enter a virtual environment
 ```bash
@@ -18,14 +20,30 @@ source .venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-# Run example
+# Build
+
+## Building library
+1. Use CMake to prepare:
+```bash
+mkdir build
+cmake -B build -S . 
+```
+2. Inside `build`, build the libraries:
+```bash
+cd build
+make -j16
+```
+
+# Python Scripts
+
+## Run example
 1. Inside your virtual environment, run the following:
 ```bash
 <python_venv_interpreter> examples/compute_mel_spectrogram_example.py <path_to_library> audio_dsp\python_interface\audio_dsp_c.py
 ```
 2. Observe the results in `examples/_output`
 
-# Run tools to precompile headers
+## Run tools to precompile headers
 1. Update parameters inside [tools/parameters.py] to specify what values will be pre-computed
 2. Inside your virtual environment, run the following:
 ```bash
