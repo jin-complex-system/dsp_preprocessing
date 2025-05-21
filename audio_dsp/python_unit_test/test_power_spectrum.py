@@ -103,6 +103,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                 hop_length=HOP_LENGTH,
                 n_fft=n_fft,
                 win_length=n_fft,
+                center=False,
             )
 
             power_spectrum_librosa = librosa.power_to_db(

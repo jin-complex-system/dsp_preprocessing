@@ -17,10 +17,11 @@ FFT_FLOAT32_ERROR_DELTA = FFT_FLOAT64_ERROR_DELTA
 
 n_ffts = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
 
+
 class AudioDSP_FFT_PythonTestCase(unittest.TestCase):
     def test_against_librosa_stft(self):
         for n_fft in n_ffts:
-            assert(n_fft % 2 == 0)
+            assert (n_fft % 2 == 0)
             expected_output_complex_length = int(n_fft / 2 + 1)
             expected_output_buffer_length = expected_output_complex_length * 2
 
@@ -28,7 +29,7 @@ class AudioDSP_FFT_PythonTestCase(unittest.TestCase):
             random_input_float64 = np.random.uniform(
                 low=-1.0,
                 high=1.0,
-                size=n_fft,)
+                size=n_fft, )
             np.reshape(random_input_float64, shape=-1, copy=True)
             assert (random_input_float64.shape[0] == n_fft and len(random_input_float64) == n_fft)
             assert (len(random_input_float64.shape) == 1)
@@ -47,7 +48,7 @@ class AudioDSP_FFT_PythonTestCase(unittest.TestCase):
                 hop_length=n_fft,
                 win_length=n_fft,
                 center=False,
-            )[:, 0] # Only use the first frame
+            )[:, 0]  # Only use the first frame
             computed_result_float32 = audio_dsp_c_lib.perform_audio_dsp_rfft(
                 real_input_array=random_input_float32_with_hann,
             )
@@ -84,7 +85,7 @@ class AudioDSP_FFT_PythonTestCase(unittest.TestCase):
     def test_against_np_rfft(self):
 
         for n_fft in n_ffts:
-            assert(n_fft % 2 == 0)
+            assert (n_fft % 2 == 0)
             expected_output_complex_length = int(n_fft / 2 + 1)
             expected_output_buffer_length = expected_output_complex_length * 2
 
@@ -181,6 +182,7 @@ class AudioDSP_FFT_PythonTestCase(unittest.TestCase):
                         np.imag(np_rfft_result_float64[iterator]),
                         computed_result_float32[img_value_iterator])
                 )
+
 
 if __name__ == '__main__':
     unittest.main()
