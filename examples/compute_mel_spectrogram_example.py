@@ -231,18 +231,17 @@ def _main():
     ))
 
     # Using audio_dsp's python interface (precompute and no precompute)
-    # TODO: Update precomputed values
-    # compute_and_plot_audio_dsp_c(
-    #     library_binary_location=library_binary_location,
-    #     audio_dsp_python_interface_filepath=audio_python_interface_filepath,
-    #     samples=samples,
-    #     sample_rate=sample_rate,
-    #     scaling_factor=scaling_factor_int16,
-    #     n_fft=n_fft,
-    #     hop_length=hop_length,
-    #     n_mel=n_mel,
-    #     use_precompute=True,
-    # )
+    compute_and_plot_audio_dsp_c(
+        library_binary_location=library_binary_location,
+        audio_dsp_python_interface_filepath=audio_python_interface_filepath,
+        samples=samples,
+        sample_rate=sample_rate,
+        scaling_factor=scaling_factor_int16,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        n_mel=n_mel,
+        use_precompute=True,
+    )
     compute_and_plot_audio_dsp_c(
         library_binary_location=library_binary_location,
         audio_dsp_python_interface_filepath=audio_python_interface_filepath,
@@ -264,6 +263,7 @@ def _main():
         n_fft=n_fft,
         hop_length=hop_length,
         win_length=n_fft,
+        center=False,
         # dtype=np.float32, # Gives a warning about casting complex values to real
     )
     power_spectrum_librosa = librosa.power_to_db(
