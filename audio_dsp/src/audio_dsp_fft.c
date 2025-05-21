@@ -1,5 +1,6 @@
 #include "audio_dsp_fft.h"
 #include <assert.h>
+#include <stddef.h>
 
 void
 perform_audio_dsp_rfft_direct(

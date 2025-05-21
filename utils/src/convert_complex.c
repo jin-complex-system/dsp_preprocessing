@@ -2,6 +2,7 @@
 #include "log_approximation.h"
 #include "square_root_approximation.h"
 #include <math.h>
+#include <assert.h>
 
 const
 float

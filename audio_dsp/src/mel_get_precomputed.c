@@ -1,5 +1,6 @@
 #include "mel_spectrogram.h"
 #include <assert.h>
+#include <stddef.h>
 
 /// Generated library headers
 #include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_22048.h>

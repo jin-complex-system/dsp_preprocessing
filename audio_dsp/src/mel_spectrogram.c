@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <math.h>
 #include <string.h>
+#include <stddef.h>
 
 /**
  * Get the mel centre freq float buffer length from n_mels

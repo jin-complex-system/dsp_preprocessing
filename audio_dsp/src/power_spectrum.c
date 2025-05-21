@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <convert_complex.h>
 #include "audio_dsp_fft.h"
+#include <stddef.h>
 
 static
 audio_dsp_rfft_instance

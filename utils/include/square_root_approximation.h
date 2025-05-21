@@ -1,8 +1,6 @@
 #ifndef SQUARE_ROOT_APPROXIMATION_H
 #define SQUARE_ROOT_APPROXIMATION_H
 
-#include <assert.h>
-
 /* Provide C++ Compatibility */
 #ifdef __cplusplus
 extern "C" {

@@ -1,5 +1,6 @@
 #include "mel_spectrogram.h"
 #include <assert.h>
+#include <stddef.h>
 
 /// Generated library headers
 /*[[[cog
