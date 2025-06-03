@@ -2,11 +2,11 @@
 #include <math.h>
 #include <assert.h>
 
-// const double
-// MY_2_PI = 6.28318530717958623199592693708837032318115234375;
-
 const double
-MY_2_PI = 2 * M_PI;
+MY_2_PI = 6.28318530717958623199592693708837032318115234375;
+
+// const double
+// MY_2_PI = 2 * M_PI;
 
 void
 hann_window_compute(
