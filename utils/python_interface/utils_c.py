@@ -1,12 +1,14 @@
 import ctypes
 import numpy as np
 
+
 class utils_c:
     libutils = None
+
     def __init__(
             self,
             library_path=""):
-        if (library_path != ""):
+        if library_path != "":
             self.load_library(library_path=library_path)
 
     def load_library(
@@ -17,37 +19,61 @@ class utils_c:
         :param library_path:
         """
 
-        assert(library_path is not None and len(library_path) > 0)
+        assert (library_path is not None and len(library_path) > 0)
         self.libutils = ctypes.CDLL(library_path)
 
-    def compute_magnitude_from_complex(
+    def compute_magnitude_from_complex_arrays(
             self,
-            real_value_float,
-            img_value_float,
+            complex_array_float,
             scale_factor_float):
         """
-        Compute magnitude from a complex number
+        Compute magnitude from an array of complex numbers
 
-        Assumes that precision loss is acceptable, and
-        comparison and fabs() operations are overall cheaper to run
-
-        :param real_value_float:
-        :param img_value_float:
+        :param complex_array_float:
         :param scale_factor_float: scale factor applied to the magnitude
         :return: float value of magnitude
         """
         # Check parameters
-        assert(self.libutils is not None)
+        assert (self.libutils is not None)
+        assert (len(complex_array_float) > 0 and len(complex_array_float) % 2 == 0)
+        assert (scale_factor_float != 0.0)
+
+        # Grab constants
+        input_buffer_length = len(complex_array_float)
+        output_buffer_length = np.uint32(int(input_buffer_length / 2))
+
+        # Prepare input buffer with a deep copy
+        input_buffer = np.reshape(
+            complex_array_float,
+            shape=-1,
+            copy=True, ).astype(np.float32)
+        assert (len(input_buffer) == input_buffer_length)
+        assert (len(input_buffer) == input_buffer.shape[0])
+        assert (input_buffer.dtype == np.float32)
+
+        # Prepare output buffer
+        output_buffer = np.zeros(shape=[output_buffer_length], dtype=np.float32)
+        assert (output_buffer.shape[0] == output_buffer_length)
 
         # Set the return types and argument types
-        self.libutils.compute_magnitude_from_complex.restype = ctypes.c_float
-        self.libutils.compute_magnitude_from_complex.argtypes = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
+        self.libutils.compute_magnitude_from_complex_arrays.restype = None
+        self.libutils.compute_magnitude_from_complex_arrays.argtypes = [
+            np.ctypeslib.ndpointer(
+                shape=[input_buffer_length], dtype=np.float32, ndim=1),
+            np.ctypeslib.ndpointer(
+                shape=[output_buffer_length], dtype=np.float32, ndim=1),
+            ctypes.c_uint32,
+            ctypes.c_float
+        ]
 
-        return self.libutils.compute_magnitude_from_complex(
-            ctypes.c_float(real_value_float),
-            ctypes.c_float(img_value_float),
+        self.libutils.compute_magnitude_from_complex_arrays(
+            input_buffer,
+            output_buffer,
+            ctypes.c_uint32(output_buffer_length),
             ctypes.c_float(scale_factor_float),
         )
+
+        return output_buffer
 
     def compute_log_from_complex(
             self,
@@ -68,7 +94,7 @@ class utils_c:
         :return: float value of logarithmic magnitude
         """
         # Check parameters
-        assert(self.libutils is not None)
+        assert (self.libutils is not None)
 
         # Set the return types and argument types
         self.libutils.compute_log_from_complex.restype = ctypes.c_float
@@ -99,7 +125,7 @@ class utils_c:
         :return: float value of decibel magnitude
         """
         # Check parameters
-        assert(self.libutils is not None)
+        assert (self.libutils is not None)
 
         # Set the return types and argument types
         self.libutils.compute_decibels_from_complex.restype = ctypes.c_float
@@ -126,8 +152,8 @@ class utils_c:
         """
 
         # Check parameters
-        assert(self.libutils is not None)
-        assert(target_array_float_list_length_uint32 < len(target_array_float_list))
+        assert (self.libutils is not None)
+        assert (target_array_float_list_length_uint32 < len(target_array_float_list))
 
         # Set the return types and argument types
         self.libutils.insertion_sort.restype = None
@@ -152,7 +178,7 @@ class utils_c:
         :return: float value of log10
         """
         # Check parameters
-        assert(self.libutils is not None)
+        assert (self.libutils is not None)
 
         # Set the return types and argument types
         self.libutils.log10_approximation.restype = ctypes.c_float
@@ -172,7 +198,7 @@ class utils_c:
         :return: float value of log2
         """
         # Check parameters
-        assert(self.libutils is not None)
+        assert (self.libutils is not None)
 
         # Get the return types and argument types
         self.libutils.log2_approximation.restype = ctypes.c_float
@@ -194,7 +220,7 @@ class utils_c:
         :return: sqrt(float)
         """
         # Check parameters
-        assert(self.libutils is not None)
+        assert (self.libutils is not None)
 
         # Set the return types and argument types
         self.libutils.square_root_approximation.restype = ctypes.c_float

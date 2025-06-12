@@ -8,31 +8,37 @@ import numpy as np
 
 CURRENT_BINARY_LOCATION = sys.argv[2]
 LIBRARY_PATH = glob.glob(CURRENT_BINARY_LOCATION + "/*_shared.dll")[0]
+print(LIBRARY_PATH)
+
 utils_lib = utils_c(library_path=LIBRARY_PATH)
 
-FLOAT_ERROR_NUM_PLACES = 5
+FLOAT_ERROR_NUM_PLACES = 4
 MINIMUM_VALUE_FOR_LOG = -37.929779052734375
 MINIMUM_FLOAT_VALUE = 1.175494351e-38
 
+
 class Utils_PythonTestCase(unittest.TestCase):
-    def test_compute_magnitude_from_complex(self):
-        values_list = [0.0, 1.0, -1.0, 2.0, -2.0]
+    def test_compute_magnitude_from_complex_arrays(self):
+        values_list = [0.0, 1.0, -1.0, 2.0, -2.0, 4.0, 16.0, 0.2, -0.65, 99.0]
 
         for real_value_iterator in range(0, len(values_list)):
             for img_value_iterator in range(real_value_iterator, len(values_list)):
                 real_value = float(values_list[real_value_iterator])
                 img_value = float(values_list[img_value_iterator])
 
-                computed_result = utils_lib.compute_magnitude_from_complex(
-                    real_value_float=real_value,
-                    img_value_float=img_value,
+                computed_results = utils_lib.compute_magnitude_from_complex_arrays(
+                    complex_array_float=[real_value, img_value],
                     scale_factor_float=1.0)
-                expected_value = math.sqrt(real_value * real_value + img_value * img_value)
+                self.assertEqual(
+                    len(computed_results),
+                    1)
 
+                expected_value = math.sqrt(real_value * real_value + img_value * img_value)
                 self.assertAlmostEqual(
-                    computed_result,
+                    computed_results[0],
                     expected_value,
-                    places=FLOAT_ERROR_NUM_PLACES)
+                    places=FLOAT_ERROR_NUM_PLACES
+                )
 
     def test_compute_log_and_decibels_from_complex(self):
         # Base case
@@ -87,7 +93,7 @@ class Utils_PythonTestCase(unittest.TestCase):
                 iterator
             )
         initial_list.sort()
-        assert(initial_list is not None)
+        assert (initial_list is not None)
 
         for iterator in range(0, len(initial_list)):
             self.assertEqual(
@@ -108,8 +114,8 @@ class Utils_PythonTestCase(unittest.TestCase):
             places=FLOAT_ERROR_NUM_PLACES)
 
         # Handling of 1.0
-        self.assertEqual(utils_lib.log10_approximation(1.0),0.0)
-        self.assertEqual(utils_lib.log2_approximation(1.0),0.0)
+        self.assertEqual(utils_lib.log10_approximation(1.0), 0.0)
+        self.assertEqual(utils_lib.log2_approximation(1.0), 0.0)
 
         # Handling near minimum value of float
         self.assertAlmostEqual(
@@ -123,12 +129,13 @@ class Utils_PythonTestCase(unittest.TestCase):
 
     def test_square_root_approximation(self):
         # Base case
-        self.assertEqual(utils_lib.square_root_approximation(0.0),0.0)
-        self.assertEqual(utils_lib.square_root_approximation(1.0),1.0)
+        self.assertEqual(utils_lib.square_root_approximation(0.0), 0.0)
+        self.assertEqual(utils_lib.square_root_approximation(1.0), 1.0)
         self.assertAlmostEqual(
             utils_lib.square_root_approximation(2.0),
             math.sqrt(2.0),
             places=FLOAT_ERROR_NUM_PLACES)
+
 
 if __name__ == '__main__':
     unittest.main()

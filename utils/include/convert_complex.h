@@ -1,26 +1,30 @@
 #ifndef CONVERT_COMPLEX_H
 #define CONVERT_COMPLEX_H
 
+#include <stdint.h>
+
+#ifdef __ARM_ARCH
+#include "arm_math.h"
+#endif //__ARM_ARCH
+
 /* Provide C++ Compatibility */
 #ifdef __cplusplus
 extern "C" {
 #endif //__cplusplus
 
 /**
- * Compute magnitude from a complex number
+ * Compute magnitude from an array of complex numbers
  *
- * Assumes that precision loss is acceptable, and
- * comparison and fabs() operations are overall cheaper to run
- *
- * @param real_value
- * @param img_value
- * @param scale_factor scale factor applied to the magnitude
- * @return magnitude
+ * @param complex_input_vector float input vector containing complex floats, real
+ * @param output_array real magnitude
+ * @param num_samples input and output array length is 2*num_samples and num_samples respectively
+ * @param scale_factor non-zero factor multiplied to each element of output array
  */
-float
-compute_magnitude_from_complex(
-    const float real_value,
-    const float img_value,
+void
+compute_magnitude_from_complex_arrays(
+    const float* complex_input_vector,
+    float* output_array,
+    const uint32_t num_samples,
     const float scale_factor);
 
 /**
