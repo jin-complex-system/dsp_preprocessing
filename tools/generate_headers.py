@@ -3,6 +3,9 @@ import sys
 import _library.parameters as parameters
 from _library.generate_headers_audio_dsp import GenerateAudioDSP
 
+BINARY_LOCATION = sys.argv[1]
+AUDIO_DSP_PYTHON_INTERFACE = sys.argv[2]
+
 
 class MyParameters(parameters.DefaultParameters):
     def __init__(self):
@@ -14,9 +17,6 @@ class MyParameters(parameters.DefaultParameters):
 
 
 def generate_headers_main():
-    BINARY_LOCATION = sys.argv[1]
-    AUDIO_DSP_PYTHON_INTERFACE = sys.argv[2]
-
     params = MyParameters()
 
     # Create necessary output directory
