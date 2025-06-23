@@ -13,14 +13,19 @@ print(LIBRARY_PATH)
 utils_lib = utils_c(library_path=LIBRARY_PATH)
 
 FLOAT_ERROR_NUM_PLACES = 4
+MAGNITUDE_ERROR_NUM_PLACES = 3
+
 MINIMUM_VALUE_FOR_LOG = -37.929779052734375
 MINIMUM_FLOAT_VALUE = 1.175494351e-38
 
-
 class Utils_PythonTestCase(unittest.TestCase):
     def test_compute_magnitude_from_complex_arrays(self):
-        values_list = [0.0, 1.0, -1.0, 2.0, -2.0, 4.0, 16.0, 0.2, -0.65, 99.0]
+        values_list = [
+            0.0, 2000.0, 0.001, 1.0, -1.0, 2.0, -2.0, 4.0, 16.0, 0.2, -0.65, 99.0,
+            200.0, 150.0, 3.1, -1e-5, 0.0001913713349495083, 5*1e-3]
+        assert (len(values_list) % 2 == 0 and len(values_list) >= 4)
 
+        # Iteratively compare through the entire values_list
         for real_value_iterator in range(0, len(values_list)):
             for img_value_iterator in range(real_value_iterator, len(values_list)):
                 real_value = float(values_list[real_value_iterator])
@@ -37,8 +42,27 @@ class Utils_PythonTestCase(unittest.TestCase):
                 self.assertAlmostEqual(
                     computed_results[0],
                     expected_value,
-                    places=FLOAT_ERROR_NUM_PLACES
+                    places=MAGNITUDE_ERROR_NUM_PLACES
                 )
+
+        # Compute through the entire values_list
+        computed_results = utils_lib.compute_magnitude_from_complex_arrays(
+            complex_array_float=values_list,
+            scale_factor_float=1.0)
+        self.assertEqual(
+            len(computed_results),
+            len(values_list) / 2)
+        for iterator in range(0, len(computed_results)):
+            real_value = float(values_list[iterator * 2 + 0])
+            img_value = float(values_list[iterator * 2 + 1])
+
+            expected_value = math.sqrt(real_value * real_value + img_value * img_value)
+
+            self.assertAlmostEqual(
+                computed_results[iterator],
+                expected_value,
+                places=MAGNITUDE_ERROR_NUM_PLACES
+            )
 
     def test_compute_log_and_decibels_from_complex(self):
         # Base case
