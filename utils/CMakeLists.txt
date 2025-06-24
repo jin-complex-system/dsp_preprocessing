@@ -46,7 +46,7 @@ add_executable(
         unit_test/test_insertion_sort.cpp
         unit_test/test_log_approximation.cpp
         unit_test/test_logarithms_from_complex.cpp
-        unit_test/test_magnitude_from_complex.cpp
+        unit_test/test_magnitude_and_power_from_complex.cpp
         unit_test/test_square_root_approximation.cpp
 
         unit_test/constants/FFT_audio/rfft_output.h

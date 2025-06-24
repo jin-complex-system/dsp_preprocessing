@@ -17,8 +17,7 @@ TEST_AUDIO_FILENAME = "test_audio.wav"
 TEST_AUDIO_FILEPATH = os.path.join("python_unit_test/constants/{}".format(TEST_AUDIO_FILENAME))
 TEST_MAIN_DIRECTORY = "_test_output"
 
-POWER_SPECTRUM_FLOAT_ERROR_DELTA = 50
-
+POWER_SPECTRUM_ABSOLUTE_ERROR_DELTA = 50
 
 class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
     def test_against_numpy_fft(self):
@@ -106,6 +105,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
             power_spectrum_librosa = np.abs(audio_stft) ** 2
 
             # Visually compare the results
+            # Convert to decibel to visually see the results
             assert (expected_spectrum.shape == power_spectrum.shape)
             assert (len(TEST_MAIN_DIRECTORY) > 0)
             test_output_directory = os.path.join(TEST_MAIN_DIRECTORY, "power_spectrum_numpy_fft")
@@ -113,7 +113,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
 
             plt.figure()
             librosa.display.specshow(
-                power_spectrum_librosa,
+                librosa.power_to_db(power_spectrum_librosa),
                 cmap="magma")
             plt.axis("off")
             plt.savefig(
@@ -124,7 +124,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
 
             plt.figure()
             librosa.display.specshow(
-                expected_spectrum,
+                librosa.power_to_db(expected_spectrum),
                 cmap="magma")
             plt.axis("off")
             plt.savefig(
@@ -135,7 +135,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
 
             plt.figure()
             librosa.display.specshow(
-                power_spectrum,
+                librosa.power_to_db(power_spectrum),
                 cmap="magma")
             plt.axis("off")
             plt.savefig(
@@ -156,18 +156,24 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                     librosa_result = power_spectrum_librosa[bin_iterator, frame_iterator]
                     computed_result = power_spectrum[bin_iterator, frame_iterator]
 
+                    relative_error_tolerance = (abs(librosa_result - computed_result) /
+                                                POWER_SPECTRUM_ABSOLUTE_ERROR_DELTA)
+                    if relative_error_tolerance > POWER_SPECTRUM_ABSOLUTE_ERROR_DELTA:
+                        error_delta = relative_error_tolerance
+                    else:
+                        error_delta = relative_error_tolerance
+
                     assert_fail_msg = "{} librosa {} vs computed {} at bin {}".format(
                         assert_fail_prefix_msg,
                         librosa_result,
                         computed_result,
                         bin_iterator
                     )
-
                     # TODO: Investigate why expected_result does not meet expectations
                     # self.assertAlmostEqual(
                     #     first=librosa_result,
                     #     second=computed_result,
-                    #     delta=POWER_SPECTRUM_FLOAT_ERROR_DELTA,
+                    #     delta=error_delta,
                     #     msg=assert_fail_msg,
                     # )
 

@@ -8,8 +8,11 @@ float
 square_root_approximation(
     const float target_value) {
     assert(target_value >= 0.0f);
-    if (target_value == 0.0f) {
-        return 0.0f;
+    if (
+        target_value == 0.0f ||
+        target_value == 1.0f ||
+        target_value == -1.0f) {
+        return target_value;
     }
 
 #ifdef __ARM_ARCH

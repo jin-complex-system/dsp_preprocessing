@@ -15,17 +15,27 @@ extern "C" {
 /**
  * Compute magnitude from an array of complex numbers
  *
- * @param complex_input_vector float input vector containing complex floats, real
+ * @param complex_input_vector float input vector containing complex floats
  * @param output_array real magnitude
  * @param num_samples input and output array length is 2*num_samples and num_samples respectively
- * @param scale_factor non-zero factor multiplied to each element of output array
  */
 void
 compute_magnitude_from_complex_arrays(
     const float* complex_input_vector,
     float* output_array,
-    const uint32_t num_samples,
-    const float scale_factor);
+    const uint32_t num_samples);
+
+/**
+ * Compute power (magnitude ^ 2) from an array of complex numbers
+ * @param complex_input_vector float input vector containing complex floats
+ * @param output_array real power
+ * @param num_samples input and output array length is 2*num_samples and num_samples respectively
+ */
+void
+compute_power_from_complex_arrays(
+    const float* complex_input_vector,
+    float* output_array,
+    const uint32_t num_samples);
 
 /**
  * Compute logarithmic from complex number

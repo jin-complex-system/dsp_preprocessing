@@ -77,22 +77,19 @@ _compute_log_from_complex(
 }
 
 /**
- * Compute magnitude from complex number while being hardware-agnostic
+ * Compute power from complex number while being hardware-agnostic
  *
  * Assumes that precision loss is acceptable, and
  * comparison and fabs() operations are overall cheaper to run
  * @param p_real_value pointer to the input value that is a real value
  * @param p_img_value pointer to the input value that is an imaginary value
- * @param scale_factor non-zero scale factor applied to every result
- * @return magnitude of complex number
+ * @return power of complex number
  */
-static
+static inline
 float
-_compute_magnitude_from_complex(
+_compute_power_from_complex(
     const float* p_real_value,
-    const float* p_img_value,
-    const float scale_factor) {
-    assert(scale_factor != 0.0f);
+    const float* p_img_value) {
     assert(p_real_value != NULL && p_img_value != NULL);
     assert(!isinf(*p_real_value) && !isnan(*p_real_value));
     assert(!isinf(*p_img_value) && !isnan(*p_img_value));
@@ -101,6 +98,38 @@ _compute_magnitude_from_complex(
     if (*p_real_value == 0.0f && *p_img_value == 0.0f) {
         return 0.0f;
     }
+    /// If one component is 0.0f and the other abs(1.0), is just return 1.0f
+    else if (
+        (*p_real_value == 0.0f && *p_img_value == 1.0f) ||
+        (*p_real_value == 0.0f && *p_img_value == -1.0f) ||
+        (*p_img_value == 0.0f && *p_real_value == 1.0f) ||
+        *p_img_value == 0.0f && *p_real_value == -1.0f) {
+        return 1.0f;
+    }
+
+    // Computationally expensive but necessary case
+    const float power =
+        *p_real_value * *p_real_value + *p_img_value * *p_img_value + MINIMUM_FLOAT_VALUE;
+    return power;
+}
+
+/**
+ * Compute magnitude from complex number while being hardware-agnostic
+ *
+ * Assumes that precision loss is acceptable, and
+ * comparison and fabs() operations are overall cheaper to run
+ * @param p_real_value pointer to the input value that is a real value
+ * @param p_img_value pointer to the input value that is an imaginary value
+ * @return magnitude of complex number
+ */
+static inline
+float
+_compute_magnitude_from_complex(
+    const float* p_real_value,
+    const float* p_img_value) {
+    assert(p_real_value != NULL && p_img_value != NULL);
+    assert(!isinf(*p_real_value) && !isnan(*p_real_value));
+    assert(!isinf(*p_img_value) && !isnan(*p_img_value));
 
     /// If either components are zero,
     /// just return the absolute value of the other
@@ -110,54 +139,67 @@ _compute_magnitude_from_complex(
     if (*p_img_value == 0.0f) {
         return fabsf(*p_real_value);
     }
-    if (*p_real_value == 0.0f) {
+    else if (*p_real_value == 0.0f) {
         return fabsf(*p_img_value);
     }
 
-    // Computationally expensive but necessary case
-    const float power = *p_real_value * *p_real_value + *p_img_value * *p_img_value + MINIMUM_FLOAT_VALUE;
-    return square_root_approximation(power) * scale_factor;
+    const float power =
+        _compute_power_from_complex(
+            p_real_value,
+            p_img_value);
+    return square_root_approximation(power);
+}
+
+void
+compute_power_from_complex_arrays(
+    const float* complex_input_vector,
+    float* output_array,
+    const uint32_t num_samples) {
+#ifdef __ARM_ARCH
+    arm_cmplx_mag_squared_f32(
+        complex_input_vector,
+        output_array,
+        num_samples);
+#else
+    for (uint32_t iterator = 0; iterator < num_samples; iterator++) {
+        const float* p_real_value = &complex_input_vector[iterator * 2 + 0];
+        const float* p_img_value = &complex_input_vector[iterator * 2 + 1];
+        assert(p_real_value != NULL);
+        assert(p_img_value != NULL);
+        assert(&output_array[iterator] != NULL);
+
+        output_array[iterator] = _compute_power_from_complex(
+            p_real_value,
+            p_img_value);
+    }
+#endif // __ARM_ARCH
 }
 
 void
 compute_magnitude_from_complex_arrays(
     const float* complex_input_vector,
     float* output_array,
-    const uint32_t num_samples,
-    const float scale_factor) {
+    const uint32_t num_samples) {
     /// Check parameters
     assert(complex_input_vector != NULL && output_array != NULL);
     assert(num_samples >= 1u);
-    assert(scale_factor != 0.0f);
 #ifdef __ARM_ARCH
     arm_cmplx_mag_f32(
         complex_input_vector,
         output_array,
         num_samples);
 
-    if (scale_factor != 1.0f) {
-        arm_matrix_instance_f32 my_pre_scaled_magnitude;
-        my_pre_scaled_magnitude.numRows = num_samples;
-        my_pre_scaled_magnitude.numCols = 1u;
-        my_pre_scaled_magnitude.pData = output_array;
-
-        arm_mat_scale_f32(
-            arm_matrix_instance_f32,
-            scale_factor,
-            output_array,
-        );
-    }
-
 #else
     for (uint32_t iterator = 0; iterator < num_samples; iterator++) {
         const float* p_real_value = &complex_input_vector[iterator * 2 + 0];
         const float* p_img_value = &complex_input_vector[iterator * 2 + 1];
-
+        assert(p_real_value != NULL);
+        assert(p_img_value != NULL);
         assert(&output_array[iterator] != NULL);
+
         output_array[iterator] = _compute_magnitude_from_complex(
             p_real_value,
-            p_img_value,
-            scale_factor);
+            p_img_value);
     }
 #endif // __ARM_ARCH
 }

@@ -101,12 +101,11 @@ compute_power_spectrum_audio_samples(
         fft_output,
         FFT_OUTPUT_LENGTH);
 
-    /// Compute magnitude
-    compute_magnitude_from_complex_arrays(
+    /// Compute power
+    compute_power_from_complex_arrays(
         fft_output,
         output_buffer,
-        RFFT_OUTPUT_LENGTH,
-        1.0f);
+        RFFT_OUTPUT_LENGTH);
 }
 
 void
