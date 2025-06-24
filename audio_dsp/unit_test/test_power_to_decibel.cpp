@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
-#include <mel_spectrogram.h>
+#include <power_to_decibel.h>
 #include <cmath>
 
 constexpr double
 FLOAT_ERROR_TOLERANCE = 1e-5;
 
-TEST(ConvertPowerToDecibel, BaseCase) {
+TEST(PowerToDecibel, ConvertPowerToDecibel) {
     constexpr float REFERENCE_FLOAT_ARRAY[] = {
         1.0f, 0.5f, 0.25f, 20.0f, 0.0001f, 0.0001913713349495083f};
 
@@ -65,7 +65,7 @@ TEST(ConvertPowerToDecibel, BaseCase) {
     }
 }
 
-TEST(ConvertPowerToDecibel, TopDecibel) {
+TEST(PowerToDecibel, ConvertPowerToDecibelTopDecibel) {
     constexpr float LARGE_FLOAT = 1e10f;
     const double EXPECTED_RESULT_WITHOUT_CLIPPING =
         10.0 * log10((double)(LARGE_FLOAT));

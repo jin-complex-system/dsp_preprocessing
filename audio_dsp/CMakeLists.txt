@@ -37,6 +37,7 @@ add_library(
         include/hann_window_compute.h
         include/mel_spectrogram.h
         include/power_spectrum.h
+        include/power_to_decibel.h
 
         # Source files
         src/audio_dsp_fft.c
@@ -70,7 +71,7 @@ add_executable(
         unit_test/test_mel_spectrogram.cpp
         unit_test/test_mel_precompute.cpp
         unit_test/test_power_spectrum.cpp
-        unit_test/test_convert_power_to_decibel.cpp
+        unit_test/test_power_to_decibel.cpp
 
         unit_test/constants/power_spectrum_unit_test/power_spectrum_unit_test.h
         unit_test/constants/power_spectrum_unit_test/sinewave_input.h
@@ -131,7 +132,7 @@ add_test(
 )
 
 add_test(
-        NAME AudioDSP_ConvertPowerToDecibel_PythonTestCase
-        COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_convert_power_to_decibel.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+        NAME AudioDSP_PowerToDecibel_PythonTestCase
+        COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_power_to_decibel.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )

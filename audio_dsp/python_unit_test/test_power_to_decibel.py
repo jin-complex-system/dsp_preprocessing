@@ -18,7 +18,7 @@ TEST_AUDIO_FILEPATH = os.path.join("python_unit_test/constants/{}".format(TEST_A
 TEST_MAIN_DIRECTORY = "_test_output"
 
 
-class AudioDSP_ConvertPowerToDecibel_PythonTestCase(unittest.TestCase):
+class AudioDSP_PowerToDecibel_PythonTestCase(unittest.TestCase):
     def test_convert_power_to_decibel(self):
         """
         Compare function to librosa.power_to_db()
