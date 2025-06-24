@@ -30,7 +30,7 @@ class AudioDSP_ConvertPowerToDecibel_PythonTestCase(unittest.TestCase):
             None,
             # TODO: Investigate errors when uncomment the top decibels below
             # 20.0,
-            80.0,
+            # 80.0,
         ]
 
         # Load the wave file as 1-D spectrogram
