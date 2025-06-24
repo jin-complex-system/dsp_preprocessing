@@ -2,7 +2,6 @@
 #include <assert.h>
 #include <math.h>
 #include <string.h>
-#include <log_approximation.h>
 #include <stddef.h>
 
 /**
@@ -335,44 +334,4 @@ compute_power_spectrum_into_mel_spectrogram(
         mel_centre_freq_prev_bin_buffer,
         mel_freq_weights_buffer
     );
-}
-
-void
-convert_power_to_decibel(
-    float* spectrogram_array,
-    const uint16_t spectrogram_array_length,
-    const float reference_power,
-    const float top_decibel
-) {
-    /// Check parameters
-    {
-        assert(spectrogram_array_length > 0);
-        assert(spectrogram_array != NULL);
-        assert(reference_power > 0.0f);
-        assert(top_decibel > 0.0f || top_decibel == -1.0f);
-    }
-
-    float
-    reference_log = 0.0f;
-
-    if (reference_power != 1.0f) {
-        reference_log = 10.0f * log10_approximation(reference_power);
-    }
-
-    for (uint16_t iterator = 0; iterator < spectrogram_array_length; iterator++) {
-        const float zero_spectrogram_log = 10.0f * log10_approximation(0.0f);
-        /// Handle negative and zero values
-        if (spectrogram_array[iterator] <= 0.0f) {
-            spectrogram_array[iterator] = zero_spectrogram_log - reference_log;
-        }
-        else {
-            spectrogram_array[iterator] =
-                10.0f * log10_approximation(spectrogram_array[iterator]) - reference_log;
-
-            /// Clip the top decibel
-            if (top_decibel != -1.0f && spectrogram_array[iterator] > top_decibel) {
-                spectrogram_array[iterator] = top_decibel;
-            }
-        }
-    }
 }

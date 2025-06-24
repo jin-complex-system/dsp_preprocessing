@@ -43,6 +43,7 @@ add_library(
         src/hann_window_compute.c
         src/mel_get_precomputed.c
         src/mel_spectrogram.c
+        src/power_to_decibel.c
         src/mel_utils.c
         src/power_spectrum.c
 )
