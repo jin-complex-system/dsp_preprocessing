@@ -3,6 +3,7 @@
 #include "square_root_approximation.h"
 #include <math.h>
 #include <assert.h>
+#include <stddef.h>
 
 const
 float
