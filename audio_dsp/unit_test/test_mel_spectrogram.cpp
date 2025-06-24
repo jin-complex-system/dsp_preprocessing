@@ -62,6 +62,7 @@ TEST(MelSpectrogram, PrecomputedMelSpectrogram) {
         constexpr uint16_t n_fft = PRECOMPUTED_POWER_SPECTRUM_N_FFT;
         constexpr uint16_t sample_rate = 22048u;
 
+        const float max_mel_value_precomputed =
         compute_power_spectrum_into_mel_spectrogram(
             current_power_spectrum,
             PRECOMPUTED_POWER_SPECTRUM_BINS,
@@ -69,8 +70,10 @@ TEST(MelSpectrogram, PrecomputedMelSpectrogram) {
             n_fft,
             sample_rate,
             MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH);
+
         constexpr uint16_t scratch_buffer_length = MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH * 4 + 2;
         float scratch_buffer[scratch_buffer_length];
+        const float max_mel_value_raw =
         compute_power_spectrum_into_mel_spectrogram_raw(
             current_power_spectrum,
             PRECOMPUTED_POWER_SPECTRUM_BINS,
@@ -81,7 +84,13 @@ TEST(MelSpectrogram, PrecomputedMelSpectrogram) {
             scratch_buffer,
             scratch_buffer_length);
 
+
+
         // TODO: Fix bug where last bin is different between precomputed and computed
+        // EXPECT_FLOAT_EQ(
+        //     max_mel_value_raw,
+        //     max_mel_value_precomputed
+        // );
         constexpr uint16_t N_MELS_WITHOUT_LAST_BIN = PRECOMPUTED_MEL_SPECTROGRAM_N_MELS - 1;
         for (uint32_t mel_bin_iterator = 0; mel_bin_iterator < N_MELS_WITHOUT_LAST_BIN; mel_bin_iterator++) {
             // TODO: Update expected constant

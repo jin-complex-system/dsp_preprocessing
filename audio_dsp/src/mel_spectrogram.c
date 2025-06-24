@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <math.h>
 #include <string.h>
+#include <log_approximation.h>
 #include <stddef.h>
 
 /**
@@ -133,8 +134,20 @@ compute_mel_spectrogram_bins(
     }
 }
 
+/**
+ * Compute power spectrum per frame into mel spectrogram per frame
+ * @param power_spectrum_buffer
+ * @param power_spectrum_buffer_length 
+ * @param mel_spectrogram_buffer 
+ * @param n_mels 
+ * @param mel_centre_freq_float_buffer 
+ * @param mel_centre_freq_next_bin_buffer 
+ * @param mel_centre_freq_prev_bin_buffer 
+ * @param mel_freq_weights_buffer 
+ * @return highest value of mel spectrogram
+ */
 static
-void
+float
 _compute_power_spectrum_into_mel_spectrogram(
     const float* power_spectrum_buffer,
     const uint16_t power_spectrum_buffer_length,
@@ -156,10 +169,11 @@ _compute_power_spectrum_into_mel_spectrogram(
         assert(mel_freq_weights_buffer != NULL);
     }
 
+    float max_value_of_mel_spectrogram = -255.0f;
+
     /// Clear the output buffer
     memset(mel_spectrogram_buffer, 0, sizeof(float) * n_mels);
     for (uint32_t current_bin_index = 0; current_bin_index < n_mels; current_bin_index++) {
-
         /// Retrieve pre-computed values
         const float* prev_centre_filterbank = &mel_centre_freq_float_buffer[current_bin_index + 0];
         const float* current_centre_filterbank = &mel_centre_freq_float_buffer[current_bin_index + 1];
@@ -205,11 +219,18 @@ _compute_power_spectrum_into_mel_spectrogram(
         }
 
         mel_spectrogram_value = mel_spectrogram_value * *weight;
+
+        if (max_value_of_mel_spectrogram < mel_spectrogram_value) {
+            max_value_of_mel_spectrogram = mel_spectrogram_value;
+        }
+
         mel_spectrogram_buffer[current_bin_index] = mel_spectrogram_value;
     }
+
+    return max_value_of_mel_spectrogram;
 }
 
-void
+float
 compute_power_spectrum_into_mel_spectrogram_raw(
     const float* power_spectrum_buffer,
     const uint16_t power_spectrum_buffer_length,
@@ -253,7 +274,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
         mel_freq_weights_buffer
     );
 
-    _compute_power_spectrum_into_mel_spectrogram(
+    return _compute_power_spectrum_into_mel_spectrogram(
         power_spectrum_buffer,
         power_spectrum_buffer_length,
         mel_spectrogram_buffer,
@@ -265,7 +286,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
     );
 }
 
-void
+float
 compute_power_spectrum_into_mel_spectrogram(
     const float* power_spectrum_buffer,
 	const uint16_t power_spectrum_buffer_length,
@@ -304,7 +325,7 @@ compute_power_spectrum_into_mel_spectrogram(
     assert(mel_centre_freq_prev_bin_buffer != NULL);
     assert(mel_freq_weights_buffer != NULL);
 
-    _compute_power_spectrum_into_mel_spectrogram(
+    return _compute_power_spectrum_into_mel_spectrogram(
         power_spectrum_buffer,
         power_spectrum_buffer_length,
         mel_spectrogram_buffer,
@@ -314,4 +335,44 @@ compute_power_spectrum_into_mel_spectrogram(
         mel_centre_freq_prev_bin_buffer,
         mel_freq_weights_buffer
     );
+}
+
+void
+convert_power_to_decibel(
+    float* spectrogram_array,
+    const uint16_t spectrogram_array_length,
+    const float reference_power,
+    const float top_decibel
+) {
+    /// Check parameters
+    {
+        assert(spectrogram_array_length > 0);
+        assert(spectrogram_array != NULL);
+        assert(reference_power > 0.0f);
+        assert(top_decibel > 0.0f || top_decibel == -1.0f);
+    }
+
+    float
+    reference_log = 0.0f;
+
+    if (reference_power != 1.0f) {
+        reference_log = 10.0f * log10_approximation(reference_power);
+    }
+
+    for (uint16_t iterator = 0; iterator < spectrogram_array_length; iterator++) {
+        const float zero_spectrogram_log = 10.0f * log10_approximation(0.0f);
+        /// Handle negative and zero values
+        if (spectrogram_array[iterator] <= 0.0f) {
+            spectrogram_array[iterator] = zero_spectrogram_log - reference_log;
+        }
+        else {
+            spectrogram_array[iterator] =
+                10.0f * log10_approximation(spectrogram_array[iterator]) - reference_log;
+
+            /// Clip the top decibel
+            if (top_decibel != -1.0f && spectrogram_array[iterator] > top_decibel) {
+                spectrogram_array[iterator] = top_decibel;
+            }
+        }
+    }
 }

@@ -77,6 +77,7 @@ def compute_and_plot_audio_dsp_c(
         n_fft,
         hop_length,
         n_mel,
+        top_decibel,
         use_precompute,
 ):
     """
@@ -89,6 +90,7 @@ def compute_and_plot_audio_dsp_c(
     :param n_fft:
     :param hop_length:
     :param n_mel: number of mel bins in a mel spectrogram
+    :param top_decibel: top decibel to clip
     :param use_precompute: use precomputed values if available
     :return:
     """
@@ -96,6 +98,9 @@ def compute_and_plot_audio_dsp_c(
     import importlib.util
     import math
     import numpy as np
+
+    # Check parameters
+    assert (isinstance(top_decibel, float))
 
     # Import audio_dsp_c module, based on python interface file location
     audio_dsp_spec = importlib.util.spec_from_file_location(
@@ -145,11 +150,12 @@ def compute_and_plot_audio_dsp_c(
     # We manually compute each frame because in C
     # we may take advantage of reusing buffers
     mel_spectrogram = np.zeros(shape=(n_mel, num_frames), dtype=np.float32)
+    reference_float = -127.0
     mel_spectrogram_start_time = time.time()
     for frame_iterator in range(0, num_frames):
 
         if use_precompute:
-            mel_spectrogram[:, frame_iterator] = (
+            mel_spectrogram[:, frame_iterator], max_mel = (
                 audio_dsp_c_lib.compute_power_spectrum_into_mel_spectrogram(
                     power_spectrum_array=power_spectrum[:, frame_iterator],
                     n_mel_uint16=n_mel,
@@ -157,13 +163,25 @@ def compute_and_plot_audio_dsp_c(
                     sample_rate_uint16=sample_rate,
                 ))
         else:
-            mel_spectrogram[:, frame_iterator] = (
+            mel_spectrogram[:, frame_iterator], max_mel = (
                 audio_dsp_c_lib.compute_power_spectrum_into_mel_spectrogram_raw(
                     power_spectrum_array=power_spectrum[:, frame_iterator],
                     n_mel_uint16=n_mel,
                     n_fft_uint16=n_fft,
                     sample_rate_uint16=sample_rate,
                 ))
+
+        if max_mel > reference_float:
+            reference_float = max_mel
+
+    mel_spectrogram = np.reshape(mel_spectrogram, shape=-1)
+    mel_spectrogram_decibels = audio_dsp_c_lib.convert_power_to_decibel(
+        spectrogram_array_float32=mel_spectrogram,
+        spectrogram_array_length_uint16=len(mel_spectrogram),
+        reference_power_float32=reference_float,
+        top_decibel_float32=top_decibel,
+    )
+
     mel_spectrogram_end_time = time.time()
     mel_spectrogram_total_time = mel_spectrogram_end_time - mel_spectrogram_start_time
 
@@ -174,9 +192,10 @@ def compute_and_plot_audio_dsp_c(
         postfix_str = "audio_dsp_c_no_precompute"
         indicator_str = "No Precompute"
 
+    mel_spectrogram_decibels = np.reshape(mel_spectrogram_decibels, shape=(n_mel, num_frames))
     save_plots(
         power_spectrum=power_spectrum,
-        mel_spectrogram=mel_spectrogram,
+        mel_spectrogram=mel_spectrogram_decibels,
         sample_rate=sample_rate,
         hop_length=hop_length,
         n_fft=n_fft,
@@ -191,6 +210,15 @@ def compute_and_plot_audio_dsp_c(
         mel_spectrogram_total_time,
     ))
 
+    max_value = np.max(mel_spectrogram_decibels)
+    min_value = np.min(mel_spectrogram_decibels)
+    median_value = np.median(mel_spectrogram_decibels)
+    mean_value = np.mean(mel_spectrogram_decibels)
+    std_value = np.std(mel_spectrogram_decibels)
+
+    print("Statistics for ({}) - max: {}, min: {}, median: {}, mean: {}, std: {}".format(
+        indicator_str, max_value, min_value, median_value, mean_value, std_value
+    ))
 
 def _main():
     # Load libraries
@@ -221,6 +249,7 @@ def _main():
     n_mel = 64
     hop_length = int(n_fft / 4)
     scaling_factor_int16 = float(1.0 / np.iinfo(samples.dtype).max)
+    top_decibel = 80.0
 
     print("sample_rate - {}, number of samples - {}, n_fft - {}, hop_length - {}, n_mel - {}, ".format(
         sample_rate,
@@ -240,6 +269,7 @@ def _main():
         n_fft=n_fft,
         hop_length=hop_length,
         n_mel=n_mel,
+        top_decibel=top_decibel,
         use_precompute=True,
     )
     compute_and_plot_audio_dsp_c(
@@ -251,6 +281,7 @@ def _main():
         n_fft=n_fft,
         hop_length=hop_length,
         n_mel=n_mel,
+        top_decibel=top_decibel,
         use_precompute=False,
     )
 
@@ -266,9 +297,7 @@ def _main():
         center=False,
         # dtype=np.float32, # Gives a warning about casting complex values to real
     )
-    power_spectrum_librosa = librosa.power_to_db(
-        S=np.abs(stft_librosa) ** 2,
-    )
+    power_spectrum_librosa = np.abs(stft_librosa) ** 2
     power_spectrum_librosa_end_time = time.time()
     power_spectrum_librosa_total_time = power_spectrum_librosa_end_time - power_spectrum_librosa_start_time
 
@@ -277,6 +306,12 @@ def _main():
         S=power_spectrum_librosa,
         n_mels=n_mel,
         dtype=np.float32,
+    )
+    mel_spectrogram_librosa = librosa.power_to_db(
+        S=mel_spectrogram_librosa,
+        ref=np.max,
+        amin=1e-30,
+        top_db=top_decibel,
     )
     mel_spectrogram_librosa_end_time = time.time()
     mel_spectrogram_librosa_total_time = mel_spectrogram_librosa_end_time - mel_spectrogram_librosa_start_time
@@ -297,6 +332,15 @@ def _main():
     print("Librosa - power spectrum: {}, mel spectrogram: {}".format(
         power_spectrum_librosa_total_time,
         mel_spectrogram_librosa_total_time,
+    ))
+
+    max_value = np.max(mel_spectrogram_librosa)
+    min_value = np.min(mel_spectrogram_librosa)
+    median_value = np.median(mel_spectrogram_librosa)
+    mean_value = np.mean(mel_spectrogram_librosa)
+    std_value = np.std(mel_spectrogram_librosa)
+    print("Statistics for librosa - max: {}, min: {}, median: {}, mean: {}, std: {}".format(
+        max_value, min_value, median_value, mean_value, std_value
     ))
 
 

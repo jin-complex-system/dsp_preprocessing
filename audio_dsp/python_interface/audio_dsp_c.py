@@ -324,8 +324,8 @@ class audio_dsp_c:
         # Prepare buffers
         mel_centre_freq_float_buffer = np.zeros(shape=mel_centre_freq_float_buffer_length, dtype=np.float32)
         assert (
-            len(mel_centre_freq_float_buffer) == mel_centre_freq_float_buffer_length and
-            mel_centre_freq_float_buffer.shape[0] == mel_centre_freq_float_buffer_length)
+                len(mel_centre_freq_float_buffer) == mel_centre_freq_float_buffer_length and
+                mel_centre_freq_float_buffer.shape[0] == mel_centre_freq_float_buffer_length)
         mel_centre_freq_next_bin_buffer = np.zeros(shape=mel_centre_freq_next_bin_buffer_length, dtype=np.uint16)
         assert (
                 len(mel_centre_freq_next_bin_buffer) == mel_centre_freq_next_bin_buffer_length and
@@ -384,7 +384,7 @@ class audio_dsp_c:
         :param n_mel_uint16: number of mel bins in uint16_t
         :param n_fft_uint16: number of FFT bins in uint16_t; must be power of 2
         :param sample_rate_uint16: sample rate of the audio frequency
-        :return: mel_spectrogram
+        :return: mel_spectrogram, max_mel_value
         """
         # Check parameters
         assert (self.libaudiodsp is not None)
@@ -420,7 +420,7 @@ class audio_dsp_c:
                 scratch_buffer.shape[0] == scratch_buffer_length)
 
         # Set the return types and argument types
-        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram_raw.restype = None
+        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram_raw.restype = ctypes.c_float
         self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram_raw.argtypes = [
             np.ctypeslib.ndpointer(
                 shape=input_buffer_length, dtype=np.float32, ndim=1),
@@ -436,7 +436,7 @@ class audio_dsp_c:
         ]
 
         # Run function
-        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram_raw(
+        max_mel_value = self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram_raw(
             input_buffer,
             ctypes.c_uint16(input_buffer_length),
             ctypes.c_uint16(n_fft_uint16),
@@ -447,7 +447,9 @@ class audio_dsp_c:
             ctypes.c_uint16(scratch_buffer_length),
         )
 
-        return output_buffer
+        return (
+            output_buffer,
+            float(max_mel_value))
 
     def compute_power_spectrum_into_mel_spectrogram(
             self,
@@ -461,7 +463,7 @@ class audio_dsp_c:
         :param n_mel_uint16:
         :param n_fft_uint16:
         :param sample_rate_uint16:
-        :return: mel_spectrogram
+        :return: mel_spectrogram, max_mel_value
         """
         # Check parameters
         assert (self.libaudiodsp is not None)
@@ -490,7 +492,7 @@ class audio_dsp_c:
                 output_buffer.shape[0] == output_buffer_length)
 
         # Set the return types and argument types
-        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram.restype = None
+        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram.restype = ctypes.c_float
         self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram.argtypes = [
             np.ctypeslib.ndpointer(
                 shape=input_buffer_length, dtype=np.float32, ndim=1),
@@ -503,7 +505,7 @@ class audio_dsp_c:
         ]
 
         # Run function
-        self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram(
+        max_mel_value = self.libaudiodsp.compute_power_spectrum_into_mel_spectrogram(
             input_buffer,
             ctypes.c_uint16(input_buffer_length),
             output_buffer,
@@ -512,4 +514,70 @@ class audio_dsp_c:
             ctypes.c_uint16(n_mel_uint16),
         )
 
-        return output_buffer
+        return (
+            output_buffer,
+            float(max_mel_value))
+
+    def convert_power_to_decibel(
+            self,
+            spectrogram_array_float32,
+            spectrogram_array_length_uint16,
+            reference_power_float32,
+            top_decibel_float32=None):
+        """
+        Compute in-place spectrogram to decibel units. Handles negative values
+
+        Formula is roughly spectrogram_array[] = 10 * log10(spectrogram_array[]) - 10 * log10(reference_power)
+
+        :param spectrogram_array_float32:
+        :param spectrogram_array_length_uint16:
+        :param reference_power_float32: non-zero, positive value that is defined as 0 dB
+        :param top_decibel_float32: if non-zero and positive, clip values to top_decibel.
+        :return: decibels-scaled spectrogram np array
+        """
+        # Check parameters
+        assert (self.libaudiodsp is not None)
+        assert (isinstance(spectrogram_array_length_uint16, int))
+        assert (
+                spectrogram_array_length_uint16 <= len(spectrogram_array_float32) == spectrogram_array_float32.shape[0])
+        assert (spectrogram_array_float32.dtype == np.float32)
+        assert (
+                (isinstance(top_decibel_float32, float) and (top_decibel_float32 == -1.0 or top_decibel_float32 > 0.0))
+                or top_decibel_float32 is None  # Matches parity with librosa.power_to_db()
+        )
+
+        # Set constants
+        buffer_length = int(spectrogram_array_length_uint16)
+        reference_power = float(reference_power_float32)
+
+        top_decibel = np.float32(-1.0)
+        if top_decibel_float32 is not None:
+            top_decibel = np.float32(top_decibel_float32)
+        assert (top_decibel.dtype == np.float32)
+
+        # Make a deep copy to prepare buffer
+        buffer = np.copy(a=spectrogram_array_float32, order='C')
+        assert (
+                buffer.dtype == spectrogram_array_float32.dtype and
+                len(buffer) == buffer_length and
+                buffer.shape[0] == buffer_length)
+
+        # Set the return types and argument types
+        self.libaudiodsp.convert_power_to_decibel.restype = None
+        self.libaudiodsp.convert_power_to_decibel.argtypes = [
+            np.ctypeslib.ndpointer(
+                shape=buffer_length, dtype=np.float32, ndim=1),
+            ctypes.c_uint16,
+            ctypes.c_float,
+            ctypes.c_float,
+        ]
+
+        # Run function
+        self.libaudiodsp.convert_power_to_decibel(
+            buffer,
+            ctypes.c_uint16(buffer_length),
+            ctypes.c_float(reference_power),
+            ctypes.c_float(top_decibel),
+        )
+
+        return buffer

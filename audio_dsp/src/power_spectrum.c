@@ -43,7 +43,7 @@ deinit_power_spectrum(void) {
     n_fft_set = 0;
 }
 
-bool
+void
 compute_power_spectrum_audio_samples(
     const audio_data_type* input_samples_array,
     const uint32_t input_samples_array_length,
@@ -51,7 +51,6 @@ compute_power_spectrum_audio_samples(
     const uint32_t output_buffer_length,
     float* scratch_buffer,
     const uint32_t scratch_buffer_length,
-    const float power_threshold,
     const float* window_function,
     const uint32_t window_function_length) {
     /// Compute constants
@@ -102,27 +101,12 @@ compute_power_spectrum_audio_samples(
         fft_output,
         FFT_OUTPUT_LENGTH);
 
-    bool
-	power_threshold_reached = false;
-
-    /// Get decibels from real FFT (discard second half of fft output)
-    for (uint32_t fft_iterator = 0; fft_iterator < RFFT_OUTPUT_LENGTH; fft_iterator++) {
-        assert(
-            &fft_output[fft_iterator] != NULL &&
-            &output_buffer[fft_iterator] != NULL);
-
-        output_buffer[fft_iterator] = compute_decibels_from_complex(
-			fft_output[fft_iterator * 2 + 0],
-			fft_output[fft_iterator * 2 + 1],
-            POWER_SPECTRUM_LOG_SCALE_FACTOR);
-        if (
-            !power_threshold_reached &&
-            output_buffer[fft_iterator] >= power_threshold) {
-            power_threshold_reached = true;
-        }
-    }
-
-    return power_threshold_reached;
+    /// Compute magnitude
+    compute_magnitude_from_complex_arrays(
+        fft_output,
+        output_buffer,
+        RFFT_OUTPUT_LENGTH,
+        1.0f);
 }
 
 void
@@ -149,7 +133,6 @@ compute_power_spectrum_audio_samples_direct(
         output_buffer_length,
         NULL,
         0,
-        0.0f,
         window_function,
         window_function_length
     );

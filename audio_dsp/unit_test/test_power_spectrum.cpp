@@ -44,7 +44,6 @@ TEST(PowerSpectrum, NormaliseIntegerToFloat) {
 }
 
 // TODO: Update precomputed constants
-/*
 TEST(PowerSpectrum, SinewaveNoScratchBuffer) {
     /// Check parameters
     {
@@ -61,29 +60,26 @@ TEST(PowerSpectrum, SinewaveNoScratchBuffer) {
 
         float output_buffer[OUTPUT_BUFFER_LENGTH];
 
-        const bool
-        power_threshold_met = compute_power_spectrum_audio_samples(
+        compute_power_spectrum_audio_samples(
             SINEWAVE_INPUT_BUFFER,
             SINEWAVE_INPUT_BUFFER_LENGTH,
             output_buffer,
             OUTPUT_BUFFER_LENGTH,
             nullptr,
             0,
-            0.0f,
             HANN_WINDOW_SCALE_1024_BUFFER,
             HANN_WINDOW_SCALE_1024_BUFFER_LENGTH);
-        EXPECT_TRUE(power_threshold_met);
 
         for (uint32_t power_spectrum_iterator = 0; power_spectrum_iterator < POWER_SPECTRUM_UNIT_TEST_BUFFER_LENGTH; power_spectrum_iterator++) {
-            EXPECT_NEAR(
-                POWER_SPECTRUM_UNIT_TEST_BUFFER[power_spectrum_iterator],
-                output_buffer[power_spectrum_iterator],
-                POWER_SPECTRUM_FLOAT_ERROR_TOLERANCE);
-
-            EXPECT_NEAR(
-                SINEWAVE_RFFT_DECIBEL_MAGNITUDE_BUFFER[power_spectrum_iterator],
-                output_buffer[power_spectrum_iterator],
-                POWER_SPECTRUM_FLOAT_ERROR_TOLERANCE);
+            // EXPECT_NEAR(
+            //     POWER_SPECTRUM_UNIT_TEST_BUFFER[power_spectrum_iterator],
+            //     output_buffer[power_spectrum_iterator],
+            //     POWER_SPECTRUM_FLOAT_ERROR_TOLERANCE);
+            //
+            // EXPECT_NEAR(
+            //     SINEWAVE_RFFT_DECIBEL_MAGNITUDE_BUFFER[power_spectrum_iterator],
+            //     output_buffer[power_spectrum_iterator],
+            //     POWER_SPECTRUM_FLOAT_ERROR_TOLERANCE);
         }
 
         deinit_power_spectrum();
@@ -102,18 +98,20 @@ TEST(PowerSpectrum, SinewaveNoScratchBuffer) {
             HANN_WINDOW_SCALE_1024_BUFFER_LENGTH);
 
         for (uint32_t power_spectrum_iterator = 0; power_spectrum_iterator < POWER_SPECTRUM_UNIT_TEST_BUFFER_LENGTH; power_spectrum_iterator++) {
-            EXPECT_NEAR(
-                POWER_SPECTRUM_UNIT_TEST_BUFFER[power_spectrum_iterator],
-                output_buffer[power_spectrum_iterator],
-                POWER_SPECTRUM_FLOAT_ERROR_TOLERANCE);
-            EXPECT_NEAR(
-                SINEWAVE_RFFT_DECIBEL_MAGNITUDE_BUFFER[power_spectrum_iterator],
-                output_buffer[power_spectrum_iterator],
-                POWER_SPECTRUM_FLOAT_ERROR_TOLERANCE);
+            // EXPECT_NEAR(
+            //     POWER_SPECTRUM_UNIT_TEST_BUFFER[power_spectrum_iterator],
+            //     output_buffer[power_spectrum_iterator],
+            //     POWER_SPECTRUM_FLOAT_ERROR_TOLERANCE);
+            // EXPECT_NEAR(
+            //     SINEWAVE_RFFT_DECIBEL_MAGNITUDE_BUFFER[power_spectrum_iterator],
+            //     output_buffer[power_spectrum_iterator],
+            //     POWER_SPECTRUM_FLOAT_ERROR_TOLERANCE);
         }
     }
 }
 
+// TODO: Update precomputed constants
+/*
 TEST(PowerSpectrum, SinewaveWithScratchBuffer) {
     /// Check parameters
     {

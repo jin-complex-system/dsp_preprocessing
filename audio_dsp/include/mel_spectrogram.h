@@ -118,8 +118,9 @@ compute_mel_spectrogram_bins(
  * @param n_mel must be power_spectrum_buffer_length or less
  * @param scratch_buffer store the computed values
  * @param scratch_buffer_length length of at least n_mels * 4 - 2)
+ * @return max value of mel spectrogram
  */
-void
+float
 compute_power_spectrum_into_mel_spectrogram_raw(
 	const float* power_spectrum_buffer,
 	const uint16_t power_spectrum_buffer_length,
@@ -140,8 +141,9 @@ compute_power_spectrum_into_mel_spectrogram_raw(
  * @param n_fft
  * @param sample_rate
  * @param n_mel must be power_spectrum_buffer_length or less
+ * @return max value of mel spectrogram
  */
-void
+float
 compute_power_spectrum_into_mel_spectrogram(
     const float* power_spectrum_buffer,
 	const uint16_t power_spectrum_buffer_length,
@@ -149,6 +151,24 @@ compute_power_spectrum_into_mel_spectrogram(
 	const uint16_t n_fft,
 	const uint16_t sample_rate,
 	const uint16_t n_mel);
+
+/**
+ * Compute in-place spectrogram to decibel units. Handles negative values
+ *
+ * Formula is roughly spectrogram_array[] = 10 * log10(spectrogram_array[]) - 10 * log10(reference_power)
+ *
+ * @param spectrogram_array
+ * @param spectrogram_array_length
+ * @param reference_power non-zero, positive value that is defined as 0 dB
+ * @param top_decibel if non-zero and positive, clip values to top_decibel
+ */
+void
+convert_power_to_decibel(
+	float* spectrogram_array,
+	const uint16_t spectrogram_array_length,
+	const float reference_power,
+	const float top_decibel
+);
 
 /* Provide C++ Compatibility */
 #ifdef __cplusplus

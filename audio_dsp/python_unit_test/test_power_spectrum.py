@@ -74,9 +74,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                 rfft_result = np.fft.rfft(
                     a=sample_frame_through_hann_window,
                     n=n_fft)
-                expected_result = librosa.power_to_db(
-                    S=np.abs(rfft_result) ** 2,
-                )
+                expected_result = np.abs(rfft_result) ** 2
 
                 assert (len(rfft_result) == NUM_FREQUENCY_BINS)
                 assert (len(expected_result) == NUM_FREQUENCY_BINS)
@@ -105,10 +103,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                 win_length=n_fft,
                 center=False,
             )
-
-            power_spectrum_librosa = librosa.power_to_db(
-                S=np.abs(audio_stft) ** 2,
-            )
+            power_spectrum_librosa = np.abs(audio_stft) ** 2
 
             # Visually compare the results
             assert (expected_spectrum.shape == power_spectrum.shape)
@@ -161,7 +156,7 @@ class AudioDSP_PowerSpectrum_PythonTestCase(unittest.TestCase):
                     librosa_result = power_spectrum_librosa[bin_iterator, frame_iterator]
                     computed_result = power_spectrum[bin_iterator, frame_iterator]
 
-                    assert_fail_msg = "{} librosa{} vs computed {} at bin {}".format(
+                    assert_fail_msg = "{} librosa {} vs computed {} at bin {}".format(
                         assert_fail_prefix_msg,
                         librosa_result,
                         computed_result,
