@@ -118,13 +118,13 @@ add_test(
 )
 
 add_test(
-        NAME AudioDSP_AudioDSP_MelCompute_PythonTest
+        NAME AudioDSP_MelCompute_PythonTest
         COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_mel_compute.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 add_test(
-        NAME AudioDSP_AudioDSP_MelSpectrogram_PythonTest
+        NAME AudioDSP_MelSpectrogram_PythonTest
         COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_mel_spectrogram.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
