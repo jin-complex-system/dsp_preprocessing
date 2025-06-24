@@ -13,12 +13,12 @@ MINIMUM_LOG2_VALUE = -126.0f;
 inline
 float
 log10_approximation(const float target_value) {
-    assert(target_value >= 0.0f);
     assert(!isinf(target_value) && !isnan(target_value));
 
-    if (target_value == 0.0f) {
+    if (target_value <= 0.0f) {
         return MINIMUM_LOG10_VALUE;
     }
+    assert(target_value >= 0.0f);
 
     // TODO: Investigate faster way to perform log10
     // For now, just use math library
@@ -28,12 +28,12 @@ log10_approximation(const float target_value) {
 inline
 float
 log2_approximation(const float target_value) {
-    assert(target_value >= 0.0f);
     assert(!isinf(target_value) && !isnan(target_value));
 
-    if (target_value == 0.0f) {
+    if (target_value <= 0.0f) {
         return MINIMUM_LOG2_VALUE;
     }
+    assert(target_value >= 0.0f);
 
     // TODO: Investigate faster way to perform log2
     // For now, just use math library

@@ -8,7 +8,7 @@ extern "C" {
 
 /**
  * Performs log10 approximation
- * @param target_value Positive floats. If 0.0f, returns -37.929779052734375f immediately
+ * @param target_value Positive floats. If 0.0f or less, returns -37.929779052734375f immediately
  * @return
  */
 float
@@ -17,7 +17,7 @@ log10_approximation(
 
 /**
  * Performs log2 approximation
- * @param target_value Positive floats. If 0.0f, returns -126.0f immediately
+ * @param target_value Positive floats. If 0.0f or less, returns -126.0f immediately
  * @return
  */
 float
