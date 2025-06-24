@@ -1,5 +1,6 @@
 #include "mel_spectrogram.h"
 #include <assert.h>
+#include <math.h>
 #include <log_approximation.h>
 #include <stddef.h>
 
@@ -19,6 +20,9 @@ convert_power_to_decibel(
         assert(spectrogram_array != NULL);
         assert(reference_power > 0.0f);
         assert(top_decibel > 0.0f || top_decibel == -1.0f);
+
+        assert(!isnan(reference_power) && !isinf(reference_power));
+        assert(!isnan(top_decibel) && !isinf(top_decibel));
     }
 
     /// Compute constants
@@ -30,6 +34,8 @@ convert_power_to_decibel(
 
     /// Iterate through the entire spectrogram
     for (uint16_t iterator = 0; iterator < spectrogram_array_length; iterator++) {
+        assert(!isnan(spectrogram_array[iterator]) && !isinf(spectrogram_array[iterator]));
+
         /// Handle negative and zero values
         if (spectrogram_array[iterator] <= 0.0f) {
             spectrogram_array[iterator] = zero_log - reference_log;
@@ -62,6 +68,9 @@ convert_power_to_decibel_and_scale(
         assert(spectrogram_array != NULL);
         assert(reference_power > 0.0f);
         assert(top_decibel > min_decibel);
+
+        assert(!isnan(reference_power) && !isinf(reference_power));
+        assert(!isnan(top_decibel) && !isinf(top_decibel));
     }
 
     /// Compute constants
@@ -77,6 +86,8 @@ convert_power_to_decibel_and_scale(
 
     /// Iterate through the entire spectrogram
     for (uint16_t iterator = 0; iterator < spectrogram_array_length; iterator++) {
+        assert(!isnan(spectrogram_array[iterator]) && !isinf(spectrogram_array[iterator]));
+
         /// Handle negative and zero values
         if (spectrogram_array[iterator] <= 0.0f) {
             spectrogram_array[iterator] = zero_decibel_scaled;

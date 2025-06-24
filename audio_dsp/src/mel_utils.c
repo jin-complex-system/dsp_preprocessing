@@ -13,6 +13,7 @@ convert_frequency_to_mel_htk(
     const float frequency) {
     /// Check parameters
     assert(frequency >= 0.0f);
+    assert(!isinf(frequency) && !isnan(frequency));
 
     /// Original formula is 2595 * log(1 + frequency / 700)
     /// Optimised to 2595 * log10(frequency + 700) - freq_to_mel_constant, where
@@ -30,6 +31,7 @@ convert_frequency_to_mel_slaney(
     const float frequency) {
     /// Check parameters
     assert(frequency >= 0.0f);
+    assert(!isinf(frequency) && !isnan(frequency));
 
     /// Linear - Original formula is 3 * frequency / 200 or frequency * 0.015
     if (frequency < MINIMUM_FREQUENCY_SLANEY) {
@@ -56,6 +58,7 @@ convert_mel_to_frequency_htk(
     const float mel) {
     /// Check parameters
     assert(mel >= 0.0f);
+    assert(!isinf(mel) && !isnan(mel));
 
     // TODO: Optimise the following
     return (float)700.0 * (pow(10.0, (double)mel / 2595.0) - 1.0);
@@ -66,6 +69,7 @@ convert_mel_to_frequency_slaney(
     const float mel) {
     /// Check parameters
     assert(mel >= 0.0f);
+    assert(!isinf(mel) && !isnan(mel));
 
     /// Linear
     /// Original formula is 200 * mel / 3
