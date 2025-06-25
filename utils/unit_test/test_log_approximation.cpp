@@ -6,7 +6,10 @@
 #include <cstring>
 
 static constexpr double
-LOG2_FLOAT_ERROR_TOLERANCE = 1e-29;
+LOG2_SMALL_VALUES_FLOAT_ERROR_TOLERANCE = 1e-29;
+
+static constexpr double
+LOG2_LARGE_VALUES_FLOAT_ERROR_TOLERANCE = 1.4408202702043127e-06;
 
 static constexpr double
 LOG10_FLOAT_ERROR_TOLERANCE = 4.1 * 1e-7;
@@ -47,7 +50,7 @@ TEST(LogApproximation, SingleBase) {
             EXPECT_NEAR(
                 log2_approximation(MINIMUM_FLOAT_VALUE),
                 log2((double)MINIMUM_FLOAT_VALUE),
-                LOG2_FLOAT_ERROR_TOLERANCE);
+                LOG2_SMALL_VALUES_FLOAT_ERROR_TOLERANCE);
             EXPECT_NEAR(
                 log10_approximation(MINIMUM_FLOAT_VALUE),
                 log10((double)MINIMUM_FLOAT_VALUE),
@@ -56,6 +59,25 @@ TEST(LogApproximation, SingleBase) {
                 loge_approximation(MINIMUM_FLOAT_VALUE),
                 log((double)MINIMUM_FLOAT_VALUE),
                 LOGE_FLOAT_ERROR_TOLERANCE);
+        }
+
+        /// Very large values
+        {
+            constexpr float LARGE_FLOAT = 1e20f;
+
+            EXPECT_NEAR(
+                log2_approximation(LARGE_FLOAT),
+                log2((double)LARGE_FLOAT),
+                LOG2_LARGE_VALUES_FLOAT_ERROR_TOLERANCE);
+            EXPECT_NEAR(
+                log10_approximation(LARGE_FLOAT),
+                log10((double)LARGE_FLOAT),
+                LOG10_FLOAT_ERROR_TOLERANCE);
+            EXPECT_NEAR(
+                loge_approximation(LARGE_FLOAT),
+                log((double)LARGE_FLOAT),
+                LOGE_FLOAT_ERROR_TOLERANCE);
+
         }
     }
 }
