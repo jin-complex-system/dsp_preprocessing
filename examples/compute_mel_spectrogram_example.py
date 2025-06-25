@@ -249,12 +249,12 @@ def _main():
     assert (samples.dtype == np.int16)
 
     # Parameters are powers of 2 to take advantage of hardware
-    n_fft = 1024
+    n_fft = 2048
     n_mel = 64
     hop_length = int(n_fft / 4)
     scaling_factor_int16 = float(1.0 / np.iinfo(samples.dtype).max)
     top_decibel = 80.0
-    max_frequency = 8000
+    max_frequency = int(sample_rate / 2)
 
     print("sample_rate - {}, number of samples - {}, n_fft - {}, hop_length - {}, n_mel - {}, fmax = {}".format(
         sample_rate,

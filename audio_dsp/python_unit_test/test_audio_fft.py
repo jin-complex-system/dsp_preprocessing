@@ -15,7 +15,7 @@ audio_dsp_c_lib = audio_dsp_c(library_path=LIBRARY_PATH)
 FFT_FLOAT64_ERROR_DELTA = 1e-4
 FFT_FLOAT32_ERROR_DELTA = FFT_FLOAT64_ERROR_DELTA
 
-n_ffts = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048]
+n_ffts = [2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096]
 
 
 class AudioDSP_FFT_PythonTestCase(unittest.TestCase):
