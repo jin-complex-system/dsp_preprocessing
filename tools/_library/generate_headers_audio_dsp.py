@@ -39,19 +39,22 @@ class GenerateAudioDSP:
 
             for sample_rate in params.sample_rates:
                 for n_mel in params.n_mels:
-                    self._generate_audio_dsp_mel_constants(
-                        n_mel=n_mel,
-                        n_fft=n_fft,
-                        sample_rate=sample_rate,
-                        output_directory=params.output_directory,
-                    )
+                    for max_frequency in params.max_frequencies:
+                        self._generate_audio_dsp_mel_constants(
+                            n_mel=n_mel,
+                            n_fft=n_fft,
+                            sample_rate=sample_rate,
+                            max_frequency=max_frequency,
+                            output_directory=params.output_directory,
+                        )
 
-                    mel_precompute_struct = eb.MelPrecomputeStructure()
-                    mel_precompute_struct.n_mel = n_mel
-                    mel_precompute_struct.n_fft = n_fft
-                    mel_precompute_struct.sample_rate = sample_rate
+                        mel_precompute_struct = eb.MelPrecomputeStructure()
+                        mel_precompute_struct.n_mel = n_mel
+                        mel_precompute_struct.n_fft = n_fft
+                        mel_precompute_struct.sample_rate = sample_rate
+                        mel_precompute_struct.max_frequency = max_frequency
 
-                    mel_precompute_dict["data_structures"].append(mel_precompute_struct)
+                        mel_precompute_dict["data_structures"].append(mel_precompute_struct)
 
         # Export .c file
         eb.export_mel_precompute_c_file(
@@ -64,6 +67,7 @@ class GenerateAudioDSP:
             n_mel,
             n_fft,
             sample_rate,
+            max_frequency,
             output_directory
     ):
         """
@@ -72,6 +76,7 @@ class GenerateAudioDSP:
         :param n_mel:
         :param n_fft:
         :param sample_rate:
+        :param max_frequency:
         :param output_directory:
 
         :return:
@@ -93,6 +98,7 @@ class GenerateAudioDSP:
             n_mel_uint16=n_mel,
             n_fft_uint16=n_fft,
             sample_rate_uint16=sample_rate,
+            max_frequency_uint16=max_frequency,
         )
         assert (len(mel_centre_float) == n_mel + 1)
         assert (len(mel_centre_next) == n_mel - 1)
@@ -100,7 +106,8 @@ class GenerateAudioDSP:
         assert (len(mel_weights) == n_mel - 1)
 
         # Export centre float
-        mel_centre_prefix = "mel_centre_frequencies_float_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
+        mel_centre_prefix = "mel_centre_frequencies_float_mel_{}_fft_{}_sr_{}_fmax_{}".format(
+            n_mel, n_fft, sample_rate, max_frequency)
         mel_constants_cog_dict["file_prefix"] = mel_centre_prefix
         mel_constants_cog_dict["data_array"] = mel_centre_float
         mel_constants_cog_dict["comment_strings"] = ""
@@ -115,7 +122,8 @@ class GenerateAudioDSP:
         )
 
         # Export centre next
-        mel_next_bin_prefix = "mel_centre_frequencies_next_bin_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
+        mel_next_bin_prefix = "mel_centre_frequencies_next_bin_mel_{}_fft_{}_sr_{}_fmax_{}".format(
+            n_mel, n_fft, sample_rate, max_frequency)
         mel_constants_cog_dict["file_prefix"] = mel_next_bin_prefix
         mel_constants_cog_dict["data_array"] = mel_centre_next
         mel_constants_cog_dict["comment_strings"] = ""
@@ -130,7 +138,8 @@ class GenerateAudioDSP:
         )
 
         # Export centre prev
-        mel_prev_bin_prefix = "mel_centre_frequencies_prev_bin_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
+        mel_prev_bin_prefix = "mel_centre_frequencies_prev_bin_mel_{}_fft_{}_sr_{}_fmax_{}".format(
+            n_mel, n_fft, sample_rate, max_frequency)
         mel_constants_cog_dict["file_prefix"] = mel_prev_bin_prefix
         mel_constants_cog_dict["data_array"] = mel_centre_prev
         mel_constants_cog_dict["comment_strings"] = ""
@@ -145,7 +154,8 @@ class GenerateAudioDSP:
         )
 
         # Export weights
-        mel_weights_prefix = "mel_frequency_weights_mel_{}_fft_{}_sr_{}".format(n_mel, n_fft, sample_rate)
+        mel_weights_prefix = "mel_frequency_weights_mel_{}_fft_{}_sr_{}_fmax_{}".format(
+            n_mel, n_fft, sample_rate, max_frequency)
         mel_constants_cog_dict["file_prefix"] = mel_weights_prefix
         mel_constants_cog_dict["data_array"] = mel_weights
         mel_constants_cog_dict["comment_strings"] = ""

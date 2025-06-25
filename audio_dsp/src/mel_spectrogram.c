@@ -64,6 +64,7 @@ compute_mel_spectrogram_bins(
     const uint16_t n_mels,
     const uint16_t n_fft,
     const uint16_t sample_rate,
+    const uint16_t max_frequency,
     float* mel_centre_freq_float_buffer,
     uint16_t* mel_centre_freq_next_bin_buffer,
     uint16_t* mel_centre_freq_prev_bin_buffer,
@@ -71,22 +72,27 @@ compute_mel_spectrogram_bins(
     /// Check parameters
     assert(n_mels > 1);
     assert(n_fft % 2 == 0 && n_fft > 1);
-    assert(sample_rate > 0.0);
+    assert(sample_rate > 0u);
+    assert(max_frequency <= sample_rate / 2 || max_frequency == 0u);
     assert(mel_centre_freq_float_buffer != NULL);
     assert(mel_centre_freq_next_bin_buffer != NULL);
     assert(mel_centre_freq_prev_bin_buffer != NULL);
     assert(mel_freq_weights_buffer != NULL);
 
+    float fmax = max_frequency;
+    if (max_frequency == 0u) {
+        fmax = sample_rate / 2;
+    }
+
     /// Compute constants
     const float min_frequency = 0.0;
-    const float max_frequency = sample_rate / 2;
     const float min_mel = convert_frequency_to_mel_slaney(min_frequency);
-    const float max_mel = convert_frequency_to_mel_slaney(max_frequency);
+    const float max_mel = convert_frequency_to_mel_slaney(fmax);
     const uint16_t num_filterbanks = get_mel_centre_freq_float_buffer_length(n_mels);
     const uint16_t num_next_prev_bins = get_mel_centre_next_prev_bin_buffer_length(n_mels);
     const uint16_t num_weights = get_mel_freq_weights_buffer_length(n_mels);
     const float mel_step = (max_mel - min_mel) / num_filterbanks;
-    const float freq_step = (float)(n_fft + 1) / (float)sample_rate;
+    const float freq_step = (float)(n_fft + 1) / (float)(sample_rate);
 
     /// Get the mel-centred frequecies from mel-spaced frequencies
     for (uint16_t mel_iterator = 0; mel_iterator < (num_filterbanks - 1); mel_iterator++) {
@@ -100,7 +106,8 @@ compute_mel_spectrogram_bins(
         mel_centre_freq_float_buffer[mel_iterator] = frequency_bin;
     }
     assert(&mel_centre_freq_float_buffer[num_filterbanks - 1] != NULL);
-    mel_centre_freq_float_buffer[num_filterbanks - 1] = max_frequency * freq_step;
+    assert(fmax > 0.0f && freq_step > 0.0f);
+    mel_centre_freq_float_buffer[num_filterbanks - 1] = fmax * freq_step;
 
     /// Get next and prev bin elements
     for (uint16_t bin_iterator = 0; bin_iterator < num_next_prev_bins; bin_iterator++) {
@@ -113,7 +120,6 @@ compute_mel_spectrogram_bins(
         assert(&mel_centre_freq_float_buffer[next_bin_iterator] != NULL);
         const uint16_t next_index = (uint16_t)ceil(mel_centre_freq_float_buffer[next_bin_iterator]);
         assert(next_index > prev_index);
-
         assert(&mel_centre_freq_prev_bin_buffer[bin_iterator] != NULL);
         mel_centre_freq_prev_bin_buffer[bin_iterator] = prev_index;
 
@@ -210,14 +216,24 @@ _compute_power_spectrum_into_mel_spectrogram(
                 continue;
             }
             assert(weighted_power != 0.0f);
-            assert(
-                !isinf(weighted_power) &&
-                !isinf(weighted_power));
+            assert(!isnan(weighted_power) && !isinf(weighted_power));
+
+            /// If power spectrum is infinite and NaN, just skip
+            if (
+                isnan(power_spectrum_buffer[iterator_freq_bin]) ||
+                isinf(power_spectrum_buffer[iterator_freq_bin])) {
+                continue;
+            }
+            assert(!isnan(power_spectrum_buffer[iterator_freq_bin]) && !isinf(power_spectrum_buffer[iterator_freq_bin]));
 
             mel_spectrogram_value += power_spectrum_buffer[iterator_freq_bin] * weighted_power;
         }
+        assert(!isnan(*weight) && !isinf(*weight));
 
-        mel_spectrogram_value = mel_spectrogram_value * *weight;
+        /// Improve precision for this step
+        double temp_mel_spectrogram_value = (double)mel_spectrogram_value * (double)*weight;
+        mel_spectrogram_value = (float)temp_mel_spectrogram_value;
+        assert(!isnan(mel_spectrogram_value) && !isinf(mel_spectrogram_value));
 
         if (max_value_of_mel_spectrogram < mel_spectrogram_value) {
             max_value_of_mel_spectrogram = mel_spectrogram_value;
@@ -225,6 +241,8 @@ _compute_power_spectrum_into_mel_spectrogram(
 
         mel_spectrogram_buffer[current_bin_index] = mel_spectrogram_value;
     }
+
+    assert(!isnan(max_value_of_mel_spectrogram) &&!isinf(max_value_of_mel_spectrogram));
 
     return max_value_of_mel_spectrogram;
 }
@@ -235,6 +253,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
     const uint16_t power_spectrum_buffer_length,
     const uint16_t n_fft,
     const uint16_t sample_rate,
+    const uint16_t max_frequency,
     float* mel_spectrogram_buffer,
     const uint16_t n_mel,
     float* scratch_buffer,
@@ -246,6 +265,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
         assert(n_mel > 0 && power_spectrum_buffer_length > 0);
         assert(n_fft > 0 && n_fft % 2 == 0);
         assert(sample_rate > 0);
+        assert(max_frequency <= sample_rate / 2 || max_frequency == 0u);
         assert(power_spectrum_buffer_length >= n_mel);
         assert(power_spectrum_buffer != NULL);
         assert(mel_spectrogram_buffer != NULL);
@@ -267,6 +287,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
         n_mel,
         n_fft,
         sample_rate,
+        max_frequency,
         mel_centre_freq_float_buffer,
         mel_centre_freq_next_bin_buffer,
         mel_centre_freq_prev_bin_buffer,
@@ -292,12 +313,14 @@ compute_power_spectrum_into_mel_spectrogram(
     float* mel_spectrogram_buffer,
     const uint16_t n_fft,
     const uint16_t sample_rate,
+    const uint16_t max_frequency,
 	const uint16_t n_mel) {
 	/// Check parameters
 	{
 	    assert(n_mel > 0 && power_spectrum_buffer_length > 0);
 	    assert(n_fft > 0 && n_fft % 2 == 0);
 	    assert(sample_rate > 0);
+	    assert(max_frequency <= sample_rate / 2 || max_frequency == 0u);
 		assert(power_spectrum_buffer_length >= n_mel);
 	    assert(power_spectrum_buffer != NULL);
 	    assert(mel_spectrogram_buffer != NULL);
@@ -313,6 +336,7 @@ compute_power_spectrum_into_mel_spectrogram(
             n_mel,
             n_fft,
             sample_rate,
+            max_frequency,
             &mel_centre_freq_float_buffer,
             &mel_centre_freq_next_bin_buffer,
             &mel_centre_freq_prev_bin_buffer,

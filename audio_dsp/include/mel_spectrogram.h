@@ -62,7 +62,8 @@ convert_mel_to_frequency_slaney(
  * For a given parameters, get the precomputed values if available
  * @param n_mel
  * @param n_fft
- * @param sample_rate
+ * @param sample_rate sample rate of the audio signal
+ * @param max_frequency the range of mel bins up to sample_rate / 2; if set to 0, use sample_rate / 2
  * @param mel_centre_freq_float_buffer
  * @param mel_centre_freq_next_bin_buffer
  * @param mel_centre_freq_prev_bin_buffer
@@ -75,6 +76,7 @@ get_mel_spectrogram_precomputed_values(
 	const uint16_t n_mel,
 	const uint16_t n_fft,
 	const uint16_t sample_rate,
+	const uint16_t max_frequency,
 	const float** mel_centre_freq_float_buffer,
 	const uint16_t** mel_centre_freq_next_bin_buffer,
 	const uint16_t** mel_centre_freq_prev_bin_buffer,
@@ -90,7 +92,8 @@ get_mel_spectrogram_precomputed_values(
  *
  * @param n_mel
  * @param n_fft number of FFT bins; must be power of 2
- * @param sample_rate the range of mel spectrogram up to sample_rate / 2
+ * @param sample_rate sample rate of the audio signal
+ * @param max_frequency the range of mel bins up to sample_rate / 2; if set to 0, use sample_rate / 2
  * @param mel_centre_freq_float_buffer
  * @param mel_centre_freq_next_bin_buffer
  * @param mel_centre_freq_prev_bin_buffer
@@ -101,6 +104,7 @@ compute_mel_spectrogram_bins(
 	const uint16_t n_mel,
 	const uint16_t n_fft,
 	const uint16_t sample_rate,
+	const uint16_t max_frequency,
 	float* mel_centre_freq_float_buffer,
 	uint16_t* mel_centre_freq_next_bin_buffer,
 	uint16_t* mel_centre_freq_prev_bin_buffer,
@@ -113,7 +117,8 @@ compute_mel_spectrogram_bins(
  * @param power_spectrum_buffer
  * @param power_spectrum_buffer_length
  * @param n_fft
- * @param sample_rate
+ * @param sample_rate sample rate of the audio signal
+ * @param max_frequency the range of mel bins up to sample_rate / 2; if set to 0, use sample_rate / 2
  * @param mel_spectrogram_buffer
  * @param n_mel must be power_spectrum_buffer_length or less
  * @param scratch_buffer store the computed values
@@ -126,6 +131,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
 	const uint16_t power_spectrum_buffer_length,
 	const uint16_t n_fft,
 	const uint16_t sample_rate,
+	const uint16_t max_frequency,
 	float* mel_spectrogram_buffer,
 	const uint16_t n_mel,
 	float* scratch_buffer,
@@ -139,7 +145,8 @@ compute_power_spectrum_into_mel_spectrogram_raw(
  * @param power_spectrum_buffer_length
  * @param mel_spectrogram_buffer
  * @param n_fft
- * @param sample_rate
+ * @param sample_rate sample rate of the audio signal
+ * @param max_frequency the range of mel bins up to sample_rate / 2; if set to 0, use sample_rate / 2
  * @param n_mel must be power_spectrum_buffer_length or less
  * @return max value of mel spectrogram
  */
@@ -150,6 +157,7 @@ compute_power_spectrum_into_mel_spectrogram(
     float* mel_spectrogram_buffer,
 	const uint16_t n_fft,
 	const uint16_t sample_rate,
+	const uint16_t max_frequency,
 	const uint16_t n_mel);
 
 /* Provide C++ Compatibility */

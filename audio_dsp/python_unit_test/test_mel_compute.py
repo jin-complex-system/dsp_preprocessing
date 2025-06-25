@@ -72,20 +72,22 @@ class AudioDSP_MelCompute_PythonTestCase(unittest.TestCase):
 
     def test_compute_mel_spectrogram_bins(self):
         n_ffts = [1024]
-        sample_rates = [22048]
-        n_mels = [32]
+        sample_rates = [22048, 44100]
+        max_frequencies = [0, 8000]
+        n_mels = [32, 64]
 
         for n_fft in n_ffts:
             for sample_rate in sample_rates:
                 for n_mel in n_mels:
-
-                    # Compute spectrogram constants
-                    m_float, m_prev, m_next, m_weights = audio_dsp_c_lib.compute_mel_spectrogram_bins(
-                        n_mel_uint16=n_mel,
-                        n_fft_uint16=n_fft,
-                        sample_rate_uint16=sample_rate,
-                    )
-                     # TODO: Compare to librosa
+                    for max_frequency in max_frequencies:
+                        # Compute spectrogram constants
+                        m_float, m_prev, m_next, m_weights = audio_dsp_c_lib.compute_mel_spectrogram_bins(
+                            n_mel_uint16=n_mel,
+                            n_fft_uint16=n_fft,
+                            sample_rate_uint16=sample_rate,
+                            max_frequency_uint16=max_frequency,
+                        )
+                         # TODO: Compare to librosa
 
 
 if __name__ == '__main__':

@@ -296,12 +296,14 @@ class audio_dsp_c:
             self,
             n_mel_uint16,
             n_fft_uint16,
-            sample_rate_uint16):
+            sample_rate_uint16,
+            max_frequency_uint16):
         """
         Compute the mel spectrogram bins
         :param n_mel_uint16: number of mel bins in uint16_t
         :param n_fft_uint16: number of FFT bins in uint16_t; must be power of 2
-        :param sample_rate_uint16: sample rate of the audio frequency
+        :param sample_rate_uint16: sample rate of the audio signal
+        :param max_frequency_uint16: the range of mel bins up to sample_rate_uint16 / 2; if set to 0, use sample_rate_uint16 / 2
 
         :return:
         mel_centre_freq_float_buffer - for the current index the actual centre of bin as a float
@@ -311,9 +313,11 @@ class audio_dsp_c:
         """
         # Check parameters
         assert (self.libaudiodsp is not None)
-        assert (n_mel_uint16 > 0 and isinstance(n_mel_uint16, int))
-        assert (n_fft_uint16 % 2 == 0 and n_fft_uint16 > 1 and isinstance(n_fft_uint16, int))
-        assert (sample_rate_uint16 > 0 and isinstance(sample_rate_uint16, int))
+        assert (isinstance(n_mel_uint16, int) and n_mel_uint16 > 0)
+        assert (isinstance(n_fft_uint16, int) and n_fft_uint16 % 2 == 0 and n_fft_uint16 > 1)
+        assert (isinstance(sample_rate_uint16, int) and sample_rate_uint16 > 0)
+        assert (isinstance(max_frequency_uint16, int) and
+                (max_frequency_uint16 == 0 or max_frequency_uint16 <= sample_rate_uint16 / 2))
 
         # Prepare constants
         mel_centre_freq_float_buffer_length = n_mel_uint16 + 1
@@ -345,6 +349,7 @@ class audio_dsp_c:
             ctypes.c_uint16,
             ctypes.c_uint16,
             ctypes.c_uint16,
+            ctypes.c_uint16,
             np.ctypeslib.ndpointer(
                 shape=mel_centre_freq_float_buffer_length, dtype=np.float32, ndim=1),
             np.ctypeslib.ndpointer(
@@ -360,6 +365,7 @@ class audio_dsp_c:
             ctypes.c_uint16(n_mel_uint16),
             ctypes.c_uint16(n_fft_uint16),
             ctypes.c_uint16(sample_rate_uint16),
+            ctypes.c_uint16(max_frequency_uint16),
             mel_centre_freq_float_buffer,
             mel_centre_freq_next_bin_buffer,
             mel_centre_freq_prev_bin_buffer,
@@ -377,13 +383,15 @@ class audio_dsp_c:
             power_spectrum_array,
             n_mel_uint16,
             n_fft_uint16,
-            sample_rate_uint16):
+            sample_rate_uint16,
+            max_frequency_uint16):
         """
         Compute power spectrum into mel spectrogram; do not use precomputed values
         :param power_spectrum_array: power spectrum computed with compute_power_spectrum()
         :param n_mel_uint16: number of mel bins in uint16_t
         :param n_fft_uint16: number of FFT bins in uint16_t; must be power of 2
-        :param sample_rate_uint16: sample rate of the audio frequency
+        :param sample_rate_uint16: sample rate of the audio signal
+        :param max_frequency_uint16: the range of mel bins up to sample_rate_uint16 / 2; if set to 0, use samp
         :return: mel_spectrogram, max_mel_value
         """
         # Check parameters
@@ -391,9 +399,11 @@ class audio_dsp_c:
         assert (
                 n_mel_uint16 <= len(power_spectrum_array) == power_spectrum_array.shape[0])
         assert (power_spectrum_array.dtype == np.float32)
-        assert (isinstance(n_mel_uint16, int))
-        assert (isinstance(n_fft_uint16, int))
-        assert (isinstance(sample_rate_uint16, int))
+        assert (isinstance(n_mel_uint16, int) and n_mel_uint16 > 0)
+        assert (isinstance(n_fft_uint16, int) and n_fft_uint16 > 0)
+        assert (isinstance(sample_rate_uint16, int) and sample_rate_uint16 > 0)
+        assert (isinstance(max_frequency_uint16, int) and
+                (max_frequency_uint16 == 0 or max_frequency_uint16 <= sample_rate_uint16 / 2))
 
         # Set constants
         input_buffer_length = len(power_spectrum_array)
@@ -427,6 +437,7 @@ class audio_dsp_c:
             ctypes.c_uint16,
             ctypes.c_uint16,
             ctypes.c_uint16,
+            ctypes.c_uint16,
             np.ctypeslib.ndpointer(
                 shape=output_buffer_length, dtype=np.float32, ndim=1),
             ctypes.c_uint16,
@@ -441,6 +452,7 @@ class audio_dsp_c:
             ctypes.c_uint16(input_buffer_length),
             ctypes.c_uint16(n_fft_uint16),
             ctypes.c_uint16(sample_rate_uint16),
+            ctypes.c_uint16(max_frequency_uint16),
             output_buffer,
             ctypes.c_uint16(output_buffer_length),
             scratch_buffer,
@@ -456,13 +468,15 @@ class audio_dsp_c:
             power_spectrum_array,
             n_mel_uint16,
             n_fft_uint16,
-            sample_rate_uint16):
+            sample_rate_uint16,
+            max_frequency_uint16):
         """
         Compute power spectrum into mel spectrogram with precomputed values (if available)
         :param power_spectrum_array: power spectrum computed with compute_power_spectrum()
         :param n_mel_uint16:
         :param n_fft_uint16:
-        :param sample_rate_uint16:
+        :param sample_rate_uint16: sample rate of the audio signal
+        :param max_frequency_uint16: the range of mel bins up to sample_rate_uint16 / 2; if set to 0, use samp
         :return: mel_spectrogram, max_mel_value
         """
         # Check parameters
@@ -470,9 +484,10 @@ class audio_dsp_c:
         assert (
                 n_mel_uint16 <= len(power_spectrum_array) == power_spectrum_array.shape[0])
         assert (power_spectrum_array.dtype == np.float32)
-        assert (isinstance(n_mel_uint16, int))
-        assert (isinstance(n_fft_uint16, int))
-        assert (isinstance(sample_rate_uint16, int))
+        assert (isinstance(n_mel_uint16, int) and n_mel_uint16 > 0)
+        assert (isinstance(n_fft_uint16, int) and n_fft_uint16 > 0)
+        assert (isinstance(max_frequency_uint16, int) and
+                (max_frequency_uint16 == 0 or max_frequency_uint16 <= sample_rate_uint16 / 2))
 
         # Set constants
         input_buffer_length = len(power_spectrum_array)
@@ -502,6 +517,7 @@ class audio_dsp_c:
             ctypes.c_uint16,
             ctypes.c_uint16,
             ctypes.c_uint16,
+            ctypes.c_uint16,
         ]
 
         # Run function
@@ -511,6 +527,7 @@ class audio_dsp_c:
             output_buffer,
             ctypes.c_uint16(n_fft_uint16),
             ctypes.c_uint16(sample_rate_uint16),
+            ctypes.c_uint16(max_frequency_uint16),
             ctypes.c_uint16(n_mel_uint16),
         )
 

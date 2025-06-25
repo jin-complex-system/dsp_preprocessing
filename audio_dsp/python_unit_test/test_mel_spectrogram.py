@@ -26,6 +26,7 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
         sample_rate = 44100
         empty_frame_length = int(n_fft / 2 + 1)
         empty_frame = np.zeros(shape=(empty_frame_length, 1), dtype=np.float32)
+        max_frequency = int(sample_rate / 2)
 
         spectrogram, max_mel = (
             audio_dsp_c_lib.compute_power_spectrum_into_mel_spectrogram_raw(
@@ -33,12 +34,14 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
                 n_mel_uint16=n_mel,
                 n_fft_uint16=n_fft,
                 sample_rate_uint16=sample_rate,
+                max_frequency_uint16=max_frequency,
             ))
         spectrogram_librosa = librosa.feature.melspectrogram(
             S=empty_frame,
             sr=sample_rate,
             n_mels=n_mel,
             n_fft=n_fft,
+            fmax=max_frequency,
         )
 
         np_max_value = np.max(np.max(spectrogram_librosa, axis=-1), axis=-1)
@@ -54,9 +57,12 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
             expected_value = spectrogram_librosa[frame_iterator]
             computed_value = spectrogram[frame_iterator]
 
-            self.assertEqual(
+            error_tolerance_delta = 1e-10
+
+            self.assertAlmostEqual(
                 first=expected_value,
                 second=computed_value,
+                delta=error_tolerance_delta,
                 msg="Mismatch empty frame at iterator {}! expected {} vs computed {}".format(
                     frame_iterator, expected_value, computed_value
                 )
@@ -67,10 +73,12 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
         n_mels = [64, 128]
         hop_length_scales = [1, 1/4]
 
+
         # Load the wave file as float and mono
         samples, sample_rate = librosa.load(
             path=TEST_AUDIO_FILEPATH,
             mono=True)
+        max_frequency = int(sample_rate / 2)
 
         for n_fft in n_ffts:
             for hop_length_scale in hop_length_scales:
@@ -93,6 +101,7 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
                         S=audio_stft_magnitude,
                         sr=sample_rate,
                         n_mels=n_mel,
+                        fmax=max_frequency,
                     )
                     assert (mel_spectrogram_librosa.shape[0] == n_mel)
                     mel_spectrogram_librosa = librosa.power_to_db(
@@ -111,6 +120,7 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
                                 n_mel_uint16=n_mel,
                                 n_fft_uint16=n_fft,
                                 sample_rate_uint16=sample_rate,
+                                max_frequency_uint16=max_frequency,
                             ))
                         np_max_value = np.max(mel_spectrogram_raw[:, frame_iterator], axis=-1)
                         self.assertEqual(

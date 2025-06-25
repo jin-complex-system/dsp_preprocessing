@@ -19,6 +19,7 @@ class MelPrecomputeStructure:
     n_fft = 0
     n_mel = 0
     sample_rate = 0
+    max_frequency = 0
 
 
 def get_empty_mel_precompute_cog_dict():

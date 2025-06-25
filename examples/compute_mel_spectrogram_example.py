@@ -77,6 +77,7 @@ def compute_and_plot_audio_dsp_c(
         n_fft,
         hop_length,
         n_mel,
+        max_frequency,
         top_decibel,
         use_precompute,
 ):
@@ -90,6 +91,7 @@ def compute_and_plot_audio_dsp_c(
     :param n_fft:
     :param hop_length:
     :param n_mel: number of mel bins in a mel spectrogram
+    :param max_frequency: max frequency of mel spectrogram; usually represented as sample_rate / 2
     :param top_decibel: top decibel to clip
     :param use_precompute: use precomputed values if available
     :return:
@@ -161,6 +163,7 @@ def compute_and_plot_audio_dsp_c(
                     n_mel_uint16=n_mel,
                     n_fft_uint16=n_fft,
                     sample_rate_uint16=sample_rate,
+                    max_frequency_uint16=max_frequency,
                 ))
         else:
             mel_spectrogram[:, frame_iterator], max_mel = (
@@ -169,6 +172,7 @@ def compute_and_plot_audio_dsp_c(
                     n_mel_uint16=n_mel,
                     n_fft_uint16=n_fft,
                     sample_rate_uint16=sample_rate,
+                    max_frequency_uint16=max_frequency,
                 ))
 
         if max_mel > reference_float:
@@ -204,7 +208,7 @@ def compute_and_plot_audio_dsp_c(
             "examples", "_output", postfix_str),
         postfix_str=postfix_str,
     )
-    print("Audio DSP ({}) - power spectrum: {}, mel spectrogram: {}".format(
+    print("Audio DSP ({}) - power spectrum: {} s, mel spectrogram: {} s".format(
         indicator_str,
         power_spectrum_total_time,
         mel_spectrogram_total_time,
@@ -216,7 +220,7 @@ def compute_and_plot_audio_dsp_c(
     mean_value = np.mean(mel_spectrogram_decibels)
     std_value = np.std(mel_spectrogram_decibels)
 
-    print("Statistics for ({}) - max: {}, min: {}, median: {}, mean: {}, std: {}".format(
+    print("Statistics for ({}) - max: {}, min: {}, median: {}, mean: {}, std: {}\r\n".format(
         indicator_str, max_value, min_value, median_value, mean_value, std_value
     ))
 
@@ -250,13 +254,15 @@ def _main():
     hop_length = int(n_fft / 4)
     scaling_factor_int16 = float(1.0 / np.iinfo(samples.dtype).max)
     top_decibel = 80.0
+    max_frequency = 8000
 
-    print("sample_rate - {}, number of samples - {}, n_fft - {}, hop_length - {}, n_mel - {}, ".format(
+    print("sample_rate - {}, number of samples - {}, n_fft - {}, hop_length - {}, n_mel - {}, fmax = {}".format(
         sample_rate,
         len(samples),
         n_fft,
         hop_length,
         n_mel,
+        max_frequency,
     ))
 
     # Using audio_dsp's python interface (precompute and no precompute)
@@ -269,6 +275,7 @@ def _main():
         n_fft=n_fft,
         hop_length=hop_length,
         n_mel=n_mel,
+        max_frequency=max_frequency,
         top_decibel=top_decibel,
         use_precompute=True,
     )
@@ -281,6 +288,7 @@ def _main():
         n_fft=n_fft,
         hop_length=hop_length,
         n_mel=n_mel,
+        max_frequency=max_frequency,
         top_decibel=top_decibel,
         use_precompute=False,
     )
@@ -306,6 +314,7 @@ def _main():
         S=power_spectrum_librosa,
         n_mels=n_mel,
         dtype=np.float32,
+        fmax=max_frequency,
     )
     mel_spectrogram_librosa = librosa.power_to_db(
         S=mel_spectrogram_librosa,
@@ -329,7 +338,7 @@ def _main():
         postfix_str="librosa",
     )
 
-    print("Librosa - power spectrum: {}, mel spectrogram: {}".format(
+    print("Librosa - power spectrum: {} s, mel spectrogram: {} s".format(
         power_spectrum_librosa_total_time,
         mel_spectrogram_librosa_total_time,
     ))
@@ -339,10 +348,11 @@ def _main():
     median_value = np.median(mel_spectrogram_librosa)
     mean_value = np.mean(mel_spectrogram_librosa)
     std_value = np.std(mel_spectrogram_librosa)
-    print("Statistics for librosa - max: {}, min: {}, median: {}, mean: {}, std: {}".format(
+    print("Statistics for librosa - max: {}, min: {}, median: {}, mean: {}, std: {}\r\n".format(
         max_value, min_value, median_value, mean_value, std_value
     ))
 
 
 if __name__ == '__main__':
     _main()
+    print("Done")

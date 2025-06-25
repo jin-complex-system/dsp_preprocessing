@@ -61,6 +61,7 @@ TEST(MelSpectrogram, PrecomputedMelSpectrogram) {
 
         constexpr uint16_t n_fft = PRECOMPUTED_POWER_SPECTRUM_N_FFT;
         constexpr uint16_t sample_rate = 22048u;
+        constexpr uint16_t max_frequency = sample_rate / 2u;
 
         const float max_mel_value_precomputed =
         compute_power_spectrum_into_mel_spectrogram(
@@ -69,6 +70,7 @@ TEST(MelSpectrogram, PrecomputedMelSpectrogram) {
             precomputed_mel_spectrogram_buffer,
             n_fft,
             sample_rate,
+            max_frequency,
             MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH);
 
         constexpr uint16_t scratch_buffer_length = MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH * 4 + 2;
@@ -79,6 +81,7 @@ TEST(MelSpectrogram, PrecomputedMelSpectrogram) {
             PRECOMPUTED_POWER_SPECTRUM_BINS,
             n_fft,
             sample_rate,
+            max_frequency,
             forced_computed_mel_spectrogram_buffer,
             MEL_SPECTROGRAM_UNIT_TEST_BUFFER_LENGTH,
             scratch_buffer,
