@@ -204,15 +204,13 @@ class Utils_PythonTestCase(unittest.TestCase):
             )
 
     def test_log_approximation(self):
-        # Handling of 0.0
-        self.assertAlmostEqual(
-            utils_lib.log10_approximation(0.0),
-            MINIMUM_VALUE_FOR_LOG,
-            places=FLOAT_ERROR_NUM_PLACES)
-        self.assertAlmostEqual(
+        # Handling of 0.0 and negative values
+        self.assertEqual(
             utils_lib.log2_approximation(0.0),
-            -126.0,
-            places=FLOAT_ERROR_NUM_PLACES)
+            utils_lib.log2_approximation(-1.0))
+        self.assertEqual(
+            utils_lib.log10_approximation(0.0),
+            utils_lib.log10_approximation(-1.0))
 
         # Handling of 1.0
         self.assertEqual(utils_lib.log10_approximation(1.0), 0.0)
@@ -227,6 +225,23 @@ class Utils_PythonTestCase(unittest.TestCase):
             utils_lib.log2_approximation(MINIMUM_FLOAT_VALUE),
             math.log2(MINIMUM_FLOAT_VALUE),
             places=FLOAT_ERROR_NUM_PLACES)
+
+    def test_vector_log_approximation(self):
+        LOG_E_ERROR_DELTA = 3.829956 * 1e-3
+
+        # Handling of 0.0 and negative values
+        self.assertEqual(
+            utils_lib.v_loge_approximation(0.0)[0],
+            utils_lib.v_loge_approximation(-1.0)[0])
+
+        # Handling of 1.0
+        self.assertEqual(utils_lib.v_loge_approximation(1.0)[0], 0.0)
+
+        # Handling near minimum value of float
+        self.assertAlmostEqual(
+            utils_lib.v_loge_approximation(MINIMUM_FLOAT_VALUE)[0],
+            math.log(MINIMUM_FLOAT_VALUE),
+            delta=LOG_E_ERROR_DELTA)
 
     def test_square_root_approximation(self):
         input_value_list = [

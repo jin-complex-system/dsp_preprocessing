@@ -244,13 +244,64 @@ class utils_c:
         # Check parameters
         assert (self.libutils is not None)
 
-        # Get the return types and argument types
+        # Set the return types and argument types
         self.libutils.log2_approximation.restype = ctypes.c_float
         self.libutils.log2_approximation.argtypes = [ctypes.c_float]
 
         return self.libutils.log2_approximation(
             ctypes.c_float(target_value_float),
         )
+
+    def v_loge_approximation(
+            self,
+            target_float):
+        """
+        Performs vector log e approximation. Tries to use vector mathematics if supported
+
+        :param target_float: either float or array of floats
+        :return np.array of log e values:
+        """
+        # Check parameters
+        assert (self.libutils is not None)
+        assert ((isinstance(target_float, (float, np.float32)) or (
+                isinstance(target_float, (list, np.ndarray)) and
+                len(target_float) > 0 and isinstance(target_float[0], (float, np.float32)))))
+
+        # Prepare buffer
+        if isinstance(target_float, (float, np.float32)):
+            loge_buffer = np.ndarray(
+                shape=1,
+                dtype=np.float32,
+            )
+            loge_buffer[0] = target_float
+        elif isinstance(target_float, (list, np.ndarray)):
+            loge_buffer = np.reshape(
+                a=target_float,
+                shape=-1,
+                copy=True,
+                order='C',
+            )
+        else:  # Unsupported type
+            loge_buffer = None
+        assert (loge_buffer is not None and len(loge_buffer.shape) == 1)
+        loge_buffer = loge_buffer[:,]
+
+        # Get the return types and argument types
+        self.libutils.v_loge_approximation.restype = None
+        self.libutils.v_loge_approximation.argtypes = [
+            np.ctypeslib.ndpointer(dtype=np.float32, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.float32, ndim=1, flags='C_CONTIGUOUS'),
+            ctypes.c_uint32,
+        ]
+
+        # Run function
+        self.libutils.v_loge_approximation(
+            loge_buffer,
+            loge_buffer,
+            ctypes.c_uint32(len(loge_buffer))
+        )
+
+        return loge_buffer
 
     def square_root_approximation(
             self,

@@ -2,40 +2,90 @@
 #include <math.h>
 #include <assert.h>
 
-const
-float
-MINIMUM_LOG10_VALUE = -37.929779052734375f;
-
-const
-float
-MINIMUM_LOG2_VALUE = -126.0f;
-
 inline
 float
 log10_approximation(const float target_value) {
     assert(!isinf(target_value) && !isnan(target_value));
 
-    if (target_value <= 0.0f) {
-        return MINIMUM_LOG10_VALUE;
+    if (target_value <= get_log_approximation_minimum_supported_value()) {
+        return get_log10_approximation_minimum_value();
     }
-    assert(target_value >= 0.0f);
+    else {
+        assert(target_value > get_log_approximation_minimum_supported_value());
 
-    // TODO: Investigate faster way to perform log10
-    // For now, just use math library
-    return log10f(target_value);
+        // TODO: Investigate faster way to perform log10
+        // For now, just use math library
+        return log10f(target_value);
+    }
 }
 
 inline
 float
 log2_approximation(const float target_value) {
     assert(!isinf(target_value) && !isnan(target_value));
-
-    if (target_value <= 0.0f) {
-        return MINIMUM_LOG2_VALUE;
+    if (target_value <= get_log_approximation_minimum_supported_value()) {
+        return get_log2_approximation_minimum_value();
     }
-    assert(target_value >= 0.0f);
+    else {
+        assert(target_value > get_log_approximation_minimum_supported_value());
 
-    // TODO: Investigate faster way to perform log2
-    // For now, just use math library
-    return log2f(target_value);
+        // TODO: Investigate faster way to perform log2
+        // For now, just use math library
+        return log2f(target_value);
+
+    }
+}
+
+inline
+float
+loge_approximation(const float target_value) {
+    assert(!isinf(target_value) && !isnan(target_value));
+    if (target_value <= get_log_approximation_minimum_supported_value()) {
+        return get_loge_approximation_minimum_value();
+    }
+    else {
+        assert(target_value > get_log_approximation_minimum_supported_value());
+
+        // TODO: Investigate faster way to perform log
+        // For now, just use math library
+        return logf(target_value);
+    }
+}
+
+#ifdef __ARM_ARCH
+inline
+#endif // __ARM_ARCH
+void
+v_loge_approximation(
+    const float* pSource,
+    float* pDestination,
+    const uint32_t numElements) {
+    /// Check parameters
+    {
+        assert(pSource != NULL);
+        assert(pDestination != NULL);
+        assert(numElements > 0);
+    }
+
+#ifdef __ARM_ARCH
+    // TODO: Figure out edge cases of <= 0.0f, and NaN/Inf values
+    // arm_clip_f32(
+    //     pSource,
+    //     pDestination,
+    //     MINIMUM_FLOAT_VALUE,
+    //     3.4028235 × 1e38,
+    //     numElements,
+    // );
+    arm_vlog_f32(
+        pDestination,
+        pDestination,
+        numElements
+    );
+#else
+    for (uint32_t iterator = 0; iterator < numElements; iterator++) {
+        assert(&pSource[iterator] != NULL);
+        assert(&pDestination[iterator] != NULL);
+        pDestination[iterator] = loge_approximation(pSource[iterator]);
+    }
+#endif // __ARM_ARCH
 }
