@@ -52,3 +52,7 @@ make -j16
 
 # Known issues
 1. Precomputed mel spectrogram's last bin differs to raw computation; just discard the last bin
+
+# TODO
+- Write unit tests to check DSP-accelerated algorithms
+- Check that padding in buffers for vectorised buffers is sufficient (might need to add 3 words)
