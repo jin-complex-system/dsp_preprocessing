@@ -4,9 +4,7 @@ import time
 
 
 def save_plots(
-        power_spectrum,
         mel_spectrogram,
-        sample_rate,
         hop_length,
         n_fft,
         win_length,
@@ -15,9 +13,7 @@ def save_plots(
 ):
     """
     Save plots of power spectrum and mel spectrogram
-    :param power_spectrum:
     :param mel_spectrogram:
-    :param sample_rate:
     :param hop_length:
     :param n_fft:
     :param win_length:
@@ -25,30 +21,13 @@ def save_plots(
     :param postfix_str: Identifier to distinguish figures
     :return:
     """
-
+    # Import necessary libraries
     import matplotlib.pyplot as plt
     import librosa
     import os
 
+    # Create directory if it does not exist before
     os.makedirs(target_directory, exist_ok=True)
-
-    # Save power spectrum
-    plt.figure()
-    librosa.display.specshow(
-        power_spectrum,
-        sr=sample_rate,
-        hop_length=hop_length,
-        win_length=win_length,
-        n_fft=n_fft,
-        cmap="magma")
-    plt.axis("off")
-    plt.savefig(
-        os.path.join(
-            target_directory,
-            "power_spectrum_{}.png".format(postfix_str)),
-        bbox_inches='tight',
-        pad_inches=0)
-    plt.close()
 
     # Save mel spectrogram
     plt.figure()
@@ -68,6 +47,209 @@ def save_plots(
     plt.close()
 
 
+def compute_and_plot(
+        library_binary_location,
+        audio_dsp_python_interface_filepath,
+        audio_filepath,
+        audio_type,
+        scaling_factor,
+        n_fft,
+        hop_length,
+        n_mel,
+        max_frequencies,
+        top_decibel,
+        output_directory
+):
+    """ Run different examples of approaches to process audio
+
+    :param library_binary_location:
+    :param audio_dsp_python_interface_filepath:
+    :param audio_filepath:
+    :param audio_type:
+    :param scaling_factor: scaling factor; usually the range of the audio representation
+    :param n_fft:
+    :param hop_length:
+    :param n_mel: number of mel bins in a mel spectrogram
+    :param max_frequencies: list of max frequencies
+    :param top_decibel: top decibel to clip
+    :param output_directory:
+    :return:
+    """
+    # Import necessary libraries
+    import numpy as np
+    from scipy.io import wavfile
+
+    # Load the wave file as integer
+    sample_rate, samples = wavfile.read(
+        filename=audio_filepath)
+
+    # Only use one channel (i.e mono)
+    if len(samples.shape) > 1:
+        samples = samples[:, 0]
+
+    # Load as int16 to mimic straight from the audio microphone
+    if samples.dtype == np.int32 or samples.dtype == np.int64:
+        samples = samples.astype(np.int16)
+    assert (samples.dtype == audio_type)
+
+    # Create the output directory for the current audio file
+    audio_filename_with_ext = os.path.basename(audio_filepath)
+    audio_filename = audio_filename_with_ext.split('.')[0]
+
+    for max_frequency in max_frequencies:
+        if max_frequency is None or max_frequency == 0:
+            max_frequency = int(sample_rate / 2)
+            max_frequency_directory = "fmax_default"
+        else:
+            max_frequency_directory = "fmax_{}".format(max_frequency)
+
+        target_directory = os.path.join(
+            output_directory,
+            max_frequency_directory,
+            audio_filename
+        )
+        os.makedirs(target_directory, exist_ok=True)
+
+        print("\r\n")
+        print("Processing {} into {}, sample_rate - {}, fmax - {}".format(
+            audio_filepath,
+            target_directory,
+            sample_rate,
+            max_frequency,
+        ))
+
+        # Using audio_dsp's python interface (precompute and no precompute)
+        # compute_and_plot_audio_dsp_c(
+        #     library_binary_location=library_binary_location,
+        #     audio_dsp_python_interface_filepath=audio_dsp_python_interface_filepath,
+        #     samples=samples,
+        #     sample_rate=sample_rate,
+        #     scaling_factor=scaling_factor,
+        #     n_fft=n_fft,
+        #     hop_length=hop_length,
+        #     n_mel=n_mel,
+        #     max_frequency=max_frequency,
+        #     top_decibel=top_decibel,
+        #     use_precompute=True,
+        #     target_directory=target_directory,
+        # )
+        compute_and_plot_audio_dsp_c(
+            library_binary_location=library_binary_location,
+            audio_dsp_python_interface_filepath=audio_dsp_python_interface_filepath,
+            samples=samples,
+            sample_rate=sample_rate,
+            scaling_factor=scaling_factor,
+            n_fft=n_fft,
+            hop_length=hop_length,
+            n_mel=n_mel,
+            max_frequency=max_frequency,
+            top_decibel=top_decibel,
+            use_precompute=False,
+            target_directory=target_directory,
+        )
+        compute_and_plot_librosa(
+            samples=samples,
+            sample_rate=sample_rate,
+            scaling_factor=scaling_factor,
+            n_fft=n_fft,
+            hop_length=hop_length,
+            n_mel=n_mel,
+            max_frequency=max_frequency,
+            top_decibel=top_decibel,
+            target_directory=target_directory,
+        )
+
+
+def compute_and_plot_librosa(
+        samples,
+        sample_rate,
+        scaling_factor,
+        n_fft,
+        hop_length,
+        n_mel,
+        max_frequency,
+        top_decibel,
+        target_directory,
+):
+    """ Compute mel spectrogram using librosa library and plot the figures
+
+    :param samples:
+    :param sample_rate: frequency of audio file
+    :param scaling_factor: scaling factor; usually the range of the audio representation
+    :param n_fft:
+    :param hop_length:
+    :param n_mel: number of mel bins in a mel spectrogram
+    :param max_frequency: max frequency of mel spectrogram; usually represented as sample_rate / 2
+    :param top_decibel: top decibel to clip
+    :param target_directory:
+    :return:
+    """
+
+    # Necessary libraries
+    import librosa
+    import numpy as np
+
+    # Check parameters
+    assert (isinstance(top_decibel, float))
+
+    # Librosa version
+    power_spectrum_librosa_start_time = time.time()
+    samples_float = samples.astype(np.float32) / scaling_factor
+    assert (samples_float.dtype == np.float32)
+    stft_librosa = librosa.stft(
+        y=samples_float,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        win_length=n_fft,
+        center=False,
+        # dtype=np.float32, # Gives a warning about casting complex values to real
+    )
+    power_spectrum_librosa = np.abs(stft_librosa) ** 2
+    power_spectrum_librosa_end_time = time.time()
+    power_spectrum_librosa_total_time = power_spectrum_librosa_end_time - power_spectrum_librosa_start_time
+
+    mel_spectrogram_librosa_start_time = time.time()
+    mel_spectrogram_librosa = librosa.feature.melspectrogram(
+        S=power_spectrum_librosa,
+        n_mels=n_mel,
+        dtype=np.float32,
+        fmax=max_frequency,
+    )
+    mel_spectrogram_librosa = librosa.power_to_db(
+        S=mel_spectrogram_librosa,
+        ref=np.max,
+        amin=1e-30,
+        top_db=top_decibel,
+    )
+    mel_spectrogram_librosa_end_time = time.time()
+    mel_spectrogram_librosa_total_time = mel_spectrogram_librosa_end_time - mel_spectrogram_librosa_start_time
+
+    # Save plots from librosa
+    save_plots(
+        mel_spectrogram=mel_spectrogram_librosa,
+        hop_length=hop_length,
+        n_fft=n_fft,
+        win_length=n_fft,
+        target_directory=os.path.join(
+            target_directory, "librosa"),
+        postfix_str="librosa",
+    )
+
+    print("Librosa - power spectrum: {} s, mel spectrogram: {} s".format(
+        power_spectrum_librosa_total_time,
+        mel_spectrogram_librosa_total_time,
+    ))
+
+    max_value = np.max(mel_spectrogram_librosa)
+    min_value = np.min(mel_spectrogram_librosa)
+    median_value = np.median(mel_spectrogram_librosa)
+    mean_value = np.mean(mel_spectrogram_librosa)
+    std_value = np.std(mel_spectrogram_librosa)
+    print("Statistics for librosa - max: {}, min: {}, median: {}, mean: {}, std: {}".format(
+        max_value, min_value, median_value, mean_value, std_value
+    ))
+
+
 def compute_and_plot_audio_dsp_c(
         library_binary_location,
         audio_dsp_python_interface_filepath,
@@ -80,9 +262,11 @@ def compute_and_plot_audio_dsp_c(
         max_frequency,
         top_decibel,
         use_precompute,
+        target_directory,
 ):
     """
-    Compute mel spectrogram and plot the figures; do not precompute
+    Compute mel spectrogram using audio_dsp library and plot the figures
+
     :param library_binary_location: location of C library
     :param audio_dsp_python_interface_filepath:
     :param samples:
@@ -94,6 +278,7 @@ def compute_and_plot_audio_dsp_c(
     :param max_frequency: max frequency of mel spectrogram; usually represented as sample_rate / 2
     :param top_decibel: top decibel to clip
     :param use_precompute: use precomputed values if available
+    :param target_directory:
     :return:
     """
     # Necessary libraries
@@ -103,6 +288,7 @@ def compute_and_plot_audio_dsp_c(
 
     # Check parameters
     assert (isinstance(top_decibel, float))
+    assert (use_precompute is False)  # TODO: At the moment, precomputed values is buggy
 
     # Import audio_dsp_c module, based on python interface file location
     audio_dsp_spec = importlib.util.spec_from_file_location(
@@ -198,14 +384,12 @@ def compute_and_plot_audio_dsp_c(
 
     mel_spectrogram_decibels = np.reshape(mel_spectrogram_decibels, shape=(n_mel, num_frames))
     save_plots(
-        power_spectrum=power_spectrum,
         mel_spectrogram=mel_spectrogram_decibels,
-        sample_rate=sample_rate,
         hop_length=hop_length,
         n_fft=n_fft,
         win_length=n_fft,
         target_directory=os.path.join(
-            "examples", "_output", postfix_str),
+            target_directory, postfix_str),
         postfix_str=postfix_str,
     )
     print("Audio DSP ({}) - power spectrum: {} s, mel spectrogram: {} s".format(
@@ -220,139 +404,64 @@ def compute_and_plot_audio_dsp_c(
     mean_value = np.mean(mel_spectrogram_decibels)
     std_value = np.std(mel_spectrogram_decibels)
 
-    print("Statistics for ({}) - max: {}, min: {}, median: {}, mean: {}, std: {}\r\n".format(
+    print("Statistics for ({}) - max: {}, min: {}, median: {}, mean: {}, std: {}".format(
         indicator_str, max_value, min_value, median_value, mean_value, std_value
     ))
 
-def _main():
-    # Load libraries
-    import numpy as np
-    from scipy.io import wavfile
-    import librosa
 
-    example_audio_filepath = "examples/example_audio.wav"
+def _main():
+    # Import libraries
+    import numpy as np
+
+    audio_filepaths = [
+        os.path.join("examples", "siren.wav"),
+        os.path.join("examples", "street_traffic.wav"),
+        os.path.join("examples", "human_voice.wav"),
+    ]
+    output_directory = os.path.join(
+        "examples",
+        "_output")
 
     # Gather system arguments
     library_binary_location = sys.argv[1]
-    audio_python_interface_filepath = sys.argv[2]
+    audio_dsp_python_interface_filepath = sys.argv[2]
 
-    # Load the wave file as integer
-    sample_rate, samples = wavfile.read(
-        filename=example_audio_filepath)
-
-    # Only use one channel (i.e mono)
-    samples = samples[:, 0]
-
-    # Load as int16 to mimic straight from the audio microphone
-    if samples.dtype == np.int32 or samples.dtype == np.int64:
-        samples = samples.astype(np.int16)
-    assert (samples.dtype == np.int16)
-
-    # Parameters are powers of 2 to take advantage of hardware
+    # Some parameters are powers of 2 to take advantage of hardware
+    audio_type = np.int16
     n_fft = 2048
     n_mel = 64
     hop_length = int(n_fft / 4)
-    scaling_factor_int16 = float(1.0 / np.iinfo(samples.dtype).max)
+    scaling_factor = float(1.0 / np.iinfo(audio_type).max)
     top_decibel = 80.0
-    max_frequency = int(sample_rate / 2)
+    max_frequencies = [
+        0,  # Use sample_rate / 2
+        8000
+    ]
 
-    print("sample_rate - {}, number of samples - {}, n_fft - {}, hop_length - {}, n_mel - {}, fmax = {}".format(
-        sample_rate,
-        len(samples),
+    print("audio_type - {}, n_fft - {}, hop_length - {}, n_mel - {}".format(
+        audio_type,
         n_fft,
         hop_length,
         n_mel,
-        max_frequency,
     ))
 
-    # Using audio_dsp's python interface (precompute and no precompute)
-    compute_and_plot_audio_dsp_c(
-        library_binary_location=library_binary_location,
-        audio_dsp_python_interface_filepath=audio_python_interface_filepath,
-        samples=samples,
-        sample_rate=sample_rate,
-        scaling_factor=scaling_factor_int16,
-        n_fft=n_fft,
-        hop_length=hop_length,
-        n_mel=n_mel,
-        max_frequency=max_frequency,
-        top_decibel=top_decibel,
-        use_precompute=True,
-    )
-    compute_and_plot_audio_dsp_c(
-        library_binary_location=library_binary_location,
-        audio_dsp_python_interface_filepath=audio_python_interface_filepath,
-        samples=samples,
-        sample_rate=sample_rate,
-        scaling_factor=scaling_factor_int16,
-        n_fft=n_fft,
-        hop_length=hop_length,
-        n_mel=n_mel,
-        max_frequency=max_frequency,
-        top_decibel=top_decibel,
-        use_precompute=False,
-    )
-
-    # Librosa version
-    power_spectrum_librosa_start_time = time.time()
-    samples_float = samples.astype(np.float32) / scaling_factor_int16
-    assert (samples_float.dtype == np.float32)
-    stft_librosa = librosa.stft(
-        y=samples_float,
-        n_fft=n_fft,
-        hop_length=hop_length,
-        win_length=n_fft,
-        center=False,
-        # dtype=np.float32, # Gives a warning about casting complex values to real
-    )
-    power_spectrum_librosa = np.abs(stft_librosa) ** 2
-    power_spectrum_librosa_end_time = time.time()
-    power_spectrum_librosa_total_time = power_spectrum_librosa_end_time - power_spectrum_librosa_start_time
-
-    mel_spectrogram_librosa_start_time = time.time()
-    mel_spectrogram_librosa = librosa.feature.melspectrogram(
-        S=power_spectrum_librosa,
-        n_mels=n_mel,
-        dtype=np.float32,
-        fmax=max_frequency,
-    )
-    mel_spectrogram_librosa = librosa.power_to_db(
-        S=mel_spectrogram_librosa,
-        ref=np.max,
-        amin=1e-30,
-        top_db=top_decibel,
-    )
-    mel_spectrogram_librosa_end_time = time.time()
-    mel_spectrogram_librosa_total_time = mel_spectrogram_librosa_end_time - mel_spectrogram_librosa_start_time
-
-    # Save plots from librosa
-    save_plots(
-        power_spectrum=power_spectrum_librosa,
-        mel_spectrogram=mel_spectrogram_librosa,
-        sample_rate=sample_rate,
-        hop_length=hop_length,
-        n_fft=n_fft,
-        win_length=n_fft,
-        target_directory=os.path.join(
-            "examples", "_output", "librosa"),
-        postfix_str="librosa",
-    )
-
-    print("Librosa - power spectrum: {} s, mel spectrogram: {} s".format(
-        power_spectrum_librosa_total_time,
-        mel_spectrogram_librosa_total_time,
-    ))
-
-    max_value = np.max(mel_spectrogram_librosa)
-    min_value = np.min(mel_spectrogram_librosa)
-    median_value = np.median(mel_spectrogram_librosa)
-    mean_value = np.mean(mel_spectrogram_librosa)
-    std_value = np.std(mel_spectrogram_librosa)
-    print("Statistics for librosa - max: {}, min: {}, median: {}, mean: {}, std: {}\r\n".format(
-        max_value, min_value, median_value, mean_value, std_value
-    ))
+    for audio_filepath in audio_filepaths:
+        compute_and_plot(
+            library_binary_location=library_binary_location,
+            audio_dsp_python_interface_filepath=audio_dsp_python_interface_filepath,
+            audio_filepath=audio_filepath,
+            audio_type=audio_type,
+            scaling_factor=scaling_factor,
+            n_fft=n_fft,
+            hop_length=hop_length,
+            n_mel=n_mel,
+            max_frequencies=max_frequencies,
+            top_decibel=top_decibel,
+            output_directory=output_directory,
+        )
+    print("Done")
 
 
 if __name__ == '__main__':
     _main()
-    print("Done")
+
