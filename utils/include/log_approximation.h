@@ -17,14 +17,14 @@ extern "C" {
  * @return
  */
 static inline
-float
+const float
 get_log_approximation_minimum_supported_value(void) {
     return 1.175494351e-38f;
 }
 
 /**
  * Performs log10 approximation
- * @param target_value Positive floats. If 0.0f or less, see get_log10_approximation_minimum_value()
+ * @param target_value Positive floats. If 0.0f or less, see _get_log10_approximation_minimum_value()
  * @return
  */
 float
@@ -36,14 +36,14 @@ log10_approximation(
  * @return log10_approximation()'s minimum value
  */
 static inline
-float
-get_log10_approximation_minimum_value(void) {
+const float
+_get_log10_approximation_minimum_value(void) {
     return -37.929779052734375f;
 }
 
 /**
  * Performs log2 approximation
- * @param target_value Positive floats. If 0.0f or less, see get_log2_approximation_minimum_value()
+ * @param target_value Positive floats. If 0.0f or less, see _get_log2_approximation_minimum_value()
  * @return
  */
 float
@@ -55,14 +55,14 @@ log2_approximation(
  * @return log2_approximation()'s minimum value
  */
 static inline
-float
-get_log2_approximation_minimum_value(void) {
+const float
+_get_log2_approximation_minimum_value(void) {
     return -126.0f;
 }
 
 /**
  * Performs log e approximation
- * @param target_value Positive floats. If 0.0f or less, see get_loge_approximation_minimum_value()
+ * @param target_value Positive floats. If 0.0f or less, see _get_loge_approximation_minimum_value()
  * @return
  */
 float
@@ -77,8 +77,8 @@ loge_approximation(
  * @return loge_approximation()'s minimum value
  */
 static inline
-float
-get_loge_approximation_minimum_value(void) {
+const float
+_get_loge_approximation_minimum_value(void) {
     return -87.3327190953f;
 }
 

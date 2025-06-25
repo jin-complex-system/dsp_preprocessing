@@ -8,7 +8,7 @@ log10_approximation(const float target_value) {
     assert(!isinf(target_value) && !isnan(target_value));
 
     if (target_value <= get_log_approximation_minimum_supported_value()) {
-        return get_log10_approximation_minimum_value();
+        return _get_log10_approximation_minimum_value();
     }
     else {
         assert(target_value > get_log_approximation_minimum_supported_value());
@@ -24,7 +24,7 @@ float
 log2_approximation(const float target_value) {
     assert(!isinf(target_value) && !isnan(target_value));
     if (target_value <= get_log_approximation_minimum_supported_value()) {
-        return get_log2_approximation_minimum_value();
+        return _get_log2_approximation_minimum_value();
     }
     else {
         assert(target_value > get_log_approximation_minimum_supported_value());
@@ -41,7 +41,7 @@ float
 loge_approximation(const float target_value) {
     assert(!isinf(target_value) && !isnan(target_value));
     if (target_value <= get_log_approximation_minimum_supported_value()) {
-        return get_loge_approximation_minimum_value();
+        return _get_loge_approximation_minimum_value();
     }
     else {
         assert(target_value > get_log_approximation_minimum_supported_value());

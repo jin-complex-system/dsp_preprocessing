@@ -26,13 +26,13 @@ TEST(LogApproximation, SingleBase) {
 
         /// Check value of 0.0f and negative values
         {
-            EXPECT_FLOAT_EQ(log10_approximation(zero_float), get_log10_approximation_minimum_value());
-            EXPECT_FLOAT_EQ(log2_approximation(zero_float), get_log2_approximation_minimum_value());
-            EXPECT_FLOAT_EQ(loge_approximation(zero_float), get_loge_approximation_minimum_value());
+            EXPECT_FLOAT_EQ(log10_approximation(zero_float), _get_log10_approximation_minimum_value());
+            EXPECT_FLOAT_EQ(log2_approximation(zero_float), _get_log2_approximation_minimum_value());
+            EXPECT_FLOAT_EQ(loge_approximation(zero_float), _get_loge_approximation_minimum_value());
 
-            EXPECT_FLOAT_EQ(log10_approximation(negative_float), get_log10_approximation_minimum_value());
-            EXPECT_FLOAT_EQ(log2_approximation(negative_float), get_log2_approximation_minimum_value());
-            EXPECT_FLOAT_EQ(loge_approximation(negative_float), get_loge_approximation_minimum_value());
+            EXPECT_FLOAT_EQ(log10_approximation(negative_float), _get_log10_approximation_minimum_value());
+            EXPECT_FLOAT_EQ(log2_approximation(negative_float), _get_log2_approximation_minimum_value());
+            EXPECT_FLOAT_EQ(loge_approximation(negative_float), _get_loge_approximation_minimum_value());
         }
 
         /// Check value of 1.0f
@@ -77,7 +77,7 @@ TEST(LogApproximation, VectorBase) {
                         &output_float,
                         1);
                 EXPECT_NE(output_float, negative_float);
-                EXPECT_FLOAT_EQ(output_float, get_loge_approximation_minimum_value());
+                EXPECT_FLOAT_EQ(output_float, _get_loge_approximation_minimum_value());
             }
         }
 
@@ -105,7 +105,7 @@ TEST(LogApproximation, VectorBase) {
                         &output_float,
                         1);
                 EXPECT_NE(output_float, negative_float);
-                EXPECT_FLOAT_EQ(output_float, get_loge_approximation_minimum_value());
+                EXPECT_FLOAT_EQ(output_float, _get_loge_approximation_minimum_value());
             }
         }
 
@@ -142,7 +142,7 @@ TEST(LogApproximation, LogE)
     /// Compute results for values above 0.0f
     /// v_loge_approximation() may handle values <= 0.0f differently than loge_approximation()
     for (uint32_t num_element = 1; num_element < NUM_ELEMENTS; num_element++) {
-        assert(INPUT_FLOAT_ARRAY[num_element - 1] > 0.0f);
+        assert(INPUT_FLOAT_ARRAY[num_element - 1] > _get_loge_approximation_minimum_value());
 
         /// Prepare buffers
         {
