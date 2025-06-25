@@ -52,7 +52,6 @@ def compute_and_plot(
         audio_dsp_python_interface_filepath,
         audio_filepath,
         audio_type,
-        scaling_factor,
         n_fft,
         hop_length,
         n_mel,
@@ -66,7 +65,6 @@ def compute_and_plot(
     :param audio_dsp_python_interface_filepath:
     :param audio_filepath:
     :param audio_type:
-    :param scaling_factor: scaling factor; usually the range of the audio representation
     :param n_fft:
     :param hop_length:
     :param n_mel: number of mel bins in a mel spectrogram
@@ -77,20 +75,24 @@ def compute_and_plot(
     """
     # Import necessary libraries
     import numpy as np
-    from scipy.io import wavfile
+    import librosa
 
-    # Load the wave file as integer
-    sample_rate, samples = wavfile.read(
-        filename=audio_filepath)
+    # Load the wave file as float
+    # Note that we are re-sampling to 44.1 kHz and forcing used of mono
+    samples_float, sample_rate = librosa.load(
+        audio_filepath,
+        sr=44100,
+        mono=True,
+        dtype=np.float32,
+    )
 
-    # Only use one channel (i.e mono)
-    if len(samples.shape) > 1:
-        samples = samples[:, 0]
-
-    # Load as int16 to mimic straight from the audio microphone
-    if samples.dtype == np.int32 or samples.dtype == np.int64:
-        samples = samples.astype(np.int16)
-    assert (samples.dtype == audio_type)
+    # Forcefully load samples back as audio_type
+    scaling_factor_float_to_audio_type = np.iinfo(audio_type).max
+    scaling_factor = float(1.0 / scaling_factor_float_to_audio_type)
+    samples = np.array(
+        [int(s * scaling_factor_float_to_audio_type) for s in samples_float],
+        dtype=audio_type,
+    )
 
     # Create the output directory for the current audio file
     audio_filename_with_ext = os.path.basename(audio_filepath)
@@ -99,9 +101,7 @@ def compute_and_plot(
     for max_frequency in max_frequencies:
         if max_frequency is None or max_frequency == 0:
             max_frequency = int(sample_rate / 2)
-            max_frequency_directory = "fmax_default"
-        else:
-            max_frequency_directory = "fmax_{}".format(max_frequency)
+        max_frequency_directory = "fmax_{}".format(max_frequency)
 
         target_directory = os.path.join(
             output_directory,
@@ -431,7 +431,6 @@ def _main():
     n_fft = 2048
     n_mel = 64
     hop_length = int(n_fft / 4)
-    scaling_factor = float(1.0 / np.iinfo(audio_type).max)
     top_decibel = 80.0
     max_frequencies = [
         0,  # Use sample_rate / 2
@@ -451,7 +450,6 @@ def _main():
             audio_dsp_python_interface_filepath=audio_dsp_python_interface_filepath,
             audio_filepath=audio_filepath,
             audio_type=audio_type,
-            scaling_factor=scaling_factor,
             n_fft=n_fft,
             hop_length=hop_length,
             n_mel=n_mel,
