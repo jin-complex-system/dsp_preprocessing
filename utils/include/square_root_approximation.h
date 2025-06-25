@@ -1,13 +1,17 @@
 #ifndef SQUARE_ROOT_APPROXIMATION_H
 #define SQUARE_ROOT_APPROXIMATION_H
 
+#ifdef __ARM_ARCH
+#include "arm_math.h"
+#endif //__ARM_ARCH
+
 /* Provide C++ Compatibility */
 #ifdef __cplusplus
 extern "C" {
 #endif //__cplusplus
 
 /**
- * Perform square root approximation
+ * Perform square root approximation. Uses vector mathematics if needed
  *
  * Precision loss is acceptable
  *
