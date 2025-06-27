@@ -3,6 +3,10 @@
 #include <math.h>
 #include <stddef.h>
 
+#ifdef __ARM_ARCH
+#include "arm_math.h"
+#endif //__ARM_ARCH
+
 #define MINIUMUM_SUPPORTED_POWER        _get_minimum_power()
 #define MINIMUM_SUPPORTED_DECIBEL       _get_minimum_decibel()
 
@@ -33,6 +37,14 @@ v_power_to_decibel_conversion(
         pDestination,
         numElements);
 
+#ifdef __ARM_ARCH
+    arm_scale_f32(
+        pDestination,
+        pDestination,
+        _get_power_to_decibel_constant(),
+        numElements
+    );
+#else
     for (uint32_t iterator = 0; iterator < numElements; iterator++) {
         assert(&pDestination[iterator] != NULL);
         assert(!isnan(pDestination[iterator]) && !isinf(pDestination[iterator]));
@@ -40,6 +52,7 @@ v_power_to_decibel_conversion(
         pDestination[iterator] = pDestination[iterator] * _get_power_to_decibel_constant();
         assert(!isnan(pDestination[iterator]) && !isinf(pDestination[iterator]));
     }
+#endif //__ARM_ARCH
 }
 
 void

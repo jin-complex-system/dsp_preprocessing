@@ -69,18 +69,25 @@ v_loge_approximation(
     }
 
 #ifdef __ARM_ARCH
-    // TODO: Figure out edge cases of <= 0.0f, and NaN/Inf values
-    // arm_clip_f32(
-    //     pSource,
-    //     pDestination,
-    //     MINIMUM_FLOAT_VALUE,
-    //     3.4028235 × 1e38,
-    //     numElements,
-    // );
+    arm_clip_f32(
+        pSource,
+        pDestination,
+        MINIMUM_FLOAT_VALUE,
+        3.4028235 × 1e38,
+        numElements,
+    );
     arm_vlog_f32(
         pDestination,
         pDestination,
         numElements
+    );
+    // TODO: Check if we need to sanitise the output
+    arm_clip_f32(
+        pSource,
+        pDestination,
+        MINIMUM_FLOAT_VALUE,
+        3.4028235 × 1e38,
+        numElements,
     );
 #else
     for (uint32_t iterator = 0; iterator < numElements; iterator++) {
