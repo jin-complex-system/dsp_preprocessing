@@ -28,18 +28,16 @@ v_power_to_decibel_conversion(
         assert(numElements > 0);
     }
 
+    v_loge_approximation(
+        pSource,
+        pDestination,
+        numElements);
+
     for (uint32_t iterator = 0; iterator < numElements; iterator++) {
         assert(&pDestination[iterator] != NULL);
-        assert(&pSource[iterator] != NULL);
+        assert(!isnan(pDestination[iterator]) && !isinf(pDestination[iterator]));
 
-        // pDestination[iterator] = 10.0f * log10_approximation(pSource[iterator]);
-        v_loge_approximation(
-            &pSource[iterator],
-            &pDestination[iterator],
-            1
-        );
         pDestination[iterator] = pDestination[iterator] * _get_power_to_decibel_constant();
-
         assert(!isnan(pDestination[iterator]) && !isinf(pDestination[iterator]));
     }
 }
