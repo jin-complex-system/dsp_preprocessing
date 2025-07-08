@@ -1,0 +1,4 @@
+#ifndef SCALER_FLOAT_H
+#define SCALER_FLOAT_H
+
+#endif //SCALER_FLOAT_H
