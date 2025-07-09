@@ -5,7 +5,7 @@ import glob
 import os
 import numpy as np
 import librosa
-import matplotlib.pyplot as plt
+import time
 
 CURRENT_BINARY_LOCATION = sys.argv[2]
 LIBRARY_PATH = glob.glob(CURRENT_BINARY_LOCATION + "/*_shared.dll")[0]
@@ -47,20 +47,38 @@ class AudioDSP_PowerToDecibel_PythonTestCase(unittest.TestCase):
         reference_float = float(np.max(spectrogram))
 
         for top_decibel in top_decibels:
+            # Compute mel spectrogram using librosa
+            librosa_start_time = time.time()
             expected_mel_spectrogram = librosa.power_to_db(
                 S=spectrogram,
                 ref=reference_float,
                 amin=1e-50,
                 top_db=top_decibel,
             )
+            librosa_end_time = time.time()
+            assert (len(spectrogram) == len(expected_mel_spectrogram))
 
+            target_start_time = time.time()
             computed_mel_spectrogram = audio_dsp_c_lib.convert_power_to_decibel(
                 spectrogram_array_float32=spectrogram,
                 spectrogram_array_length_uint16=len(spectrogram),
                 reference_power_float32=reference_float,
                 top_decibel_float32=top_decibel,
             )
+            target_end_time = time.time()
+            self.assertEqual(len(computed_mel_spectrogram), len(spectrogram))
 
+            # Compare computation times
+            target_total_time = target_end_time - target_start_time
+            librosa_total_time = librosa_end_time - librosa_start_time
+            self.assertGreater(
+                a=target_total_time,
+                b=librosa_total_time)
+            print("Librosa time: {}, target time: {}".format(
+                librosa_total_time, target_total_time
+            ))
+
+            # Iterate and compare results
             for iterator in range(0, len(spectrogram)):
                 assert_fail_msg = (
                     "\r\nWith top decibel {} and reference float {}, Element {} of value {} mismatch\r\n ".format(
