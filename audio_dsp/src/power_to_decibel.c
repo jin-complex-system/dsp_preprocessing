@@ -40,8 +40,8 @@ v_power_to_decibel_conversion(
 #ifdef __ARM_ARCH
     arm_scale_f32(
         pDestination,
-        pDestination,
         _get_power_to_decibel_constant(),
+        pDestination,
         numElements
     );
 #else
