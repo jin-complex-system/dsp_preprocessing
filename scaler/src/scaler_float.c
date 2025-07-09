@@ -30,7 +30,7 @@ scale_float_buffer(
             output_buffer[iterator] = 0.0f;
         }
         else {
-            output_buffer[iterator] = (input_buffer[iterator] - top_value) * value_range_inverted;
+            output_buffer[iterator] = (input_buffer[iterator] - bottom_value) * value_range_inverted;
             assert(
                 !isinf(output_buffer[iterator]) &&
                 !isnan(output_buffer[iterator]));
@@ -64,7 +64,7 @@ scale_float_buffer_quantised(
             output_buffer[iterator] = 0u;
         }
         else {
-            output_buffer[iterator] = (uint8_t)((input_buffer[iterator] - top_value) * value_range_inverted);
+            output_buffer[iterator] = (uint8_t)((input_buffer[iterator] - bottom_value) * value_range_inverted);
         }
     }
 }

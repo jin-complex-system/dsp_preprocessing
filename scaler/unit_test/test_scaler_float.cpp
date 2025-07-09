@@ -46,7 +46,7 @@ TEST(ScalerFloat, Base) {
                 float_output = 0.0;
             }
             else {
-                float_output = (input - MAX_INPUT_ARRAY) / INPUT_ARRAY_RANGE;
+                float_output = (input - MIN_INPUT_ARRAY) / INPUT_ARRAY_RANGE;
             }
             const auto uint8_output = (uint8_t)(float_output * 255.0);
 

@@ -9,7 +9,7 @@ extern "C" {
 #endif //__cplusplus
 
 /**
- * Scale input_buffer to [0, 1]. Clips between top_value and bottom_value
+ * Scale input_buffer to [0.0, 1.0] as float. Clips between top_value and bottom_value
  * @param input_buffer
  * @param output_buffer 
  * @param num_elements 
@@ -25,7 +25,7 @@ scale_float_buffer(
     const float bottom_value);
 
 /**
- * Scale input_buffer to [0, 255]. Clips between top_value and bottom_value
+ * Scale input_buffer to [0, 255] as uint8. Clips between top_value and bottom_value
  * @param input_buffer 
  * @param output_buffer 
  * @param num_elements 
