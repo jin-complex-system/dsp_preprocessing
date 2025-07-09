@@ -14,7 +14,8 @@ FLOAT_LARGE_VALUES_ERROR_TOLERANCE = 1.5345825488566334e-05;
 
 TEST(PowerToDecibel, ConvertPowerToDecibel) {
     constexpr float REFERENCE_FLOAT_ARRAY[] = {
-        1.0f, 0.5f, 0.25f, 20.0f, 0.0001f, 0.0001913713349495083f};
+        1.0f, 0.5f, 0.25f, 20.0f, 0.0001f, 0.0001913713349495083f
+    };
 
     /// Base
     {
@@ -41,7 +42,6 @@ TEST(PowerToDecibel, ConvertPowerToDecibel) {
             );
         }
     }
-
 
     for (const auto &reference_float : REFERENCE_FLOAT_ARRAY) {
         /// Check reference_float

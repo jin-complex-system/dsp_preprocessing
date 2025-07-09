@@ -598,3 +598,66 @@ class audio_dsp_c:
         )
 
         return buffer
+
+    def convert_power_to_decibel_scale(
+            self,
+            spectrogram_array_float32,
+            spectrogram_array_length_uint16,
+            reference_power_float32):
+        """
+        Compute in-place spectrogram to decibel units and scale to [0, 255] as uint8_t. Handles negative values
+
+        Maximum decibel is defined as reference_power. Higher values will be clipped.
+        Minimum decibel is defined as _power_to_decibel_get_min_decibel().
+
+        Formula before scaling is roughly spectrogram_array[] = 10 * log10(spectrogram_array[]) - 10 * log10(reference_power)
+
+        :param spectrogram_array_float32:
+        :param spectrogram_array_length_uint16:
+        :param reference_power_float32: non-zero, positive float that is defined as max_decibel.
+        :return: decibels-scaled spectrogram np array of type np.uint8, with a range between [0, 255]
+        """
+
+        # Check parameters
+        assert (self.libaudiodsp is not None)
+        assert (isinstance(spectrogram_array_length_uint16, int))
+        assert (
+                spectrogram_array_length_uint16 <= len(spectrogram_array_float32) == spectrogram_array_float32.shape[0])
+        assert (spectrogram_array_float32.dtype == np.float32)
+
+        # Set constants
+        num_elements = int(spectrogram_array_length_uint16)
+        reference_power = float(reference_power_float32)
+
+        # Make a deep copy to prepare input buffer
+        input_buffer = np.copy(a=spectrogram_array_float32, order='C')
+        assert (
+                input_buffer.dtype == spectrogram_array_float32.dtype and
+                len(input_buffer) == num_elements and
+                input_buffer.shape[0] == num_elements)
+
+        # Prepare output buffer
+        output_buffer = np.zeros(shape=num_elements, dtype=np.uint8)
+
+        # Set the return types and argument types
+        self.libaudiodsp.convert_power_to_decibel_and_scale.restype = None
+        self.libaudiodsp.convert_power_to_decibel_and_scale.argtypes = [
+            np.ctypeslib.ndpointer(
+                shape=num_elements, dtype=np.float32, ndim=1),
+            np.ctypeslib.ndpointer(
+                shape=num_elements, dtype=np.uint8, ndim=1),
+            ctypes.c_uint16,
+            ctypes.c_float,
+        ]
+
+        # Run function
+        self.libaudiodsp.convert_power_to_decibel_and_scale(
+            input_buffer,
+            output_buffer,
+            ctypes.c_uint16(num_elements),
+            ctypes.c_float(reference_power),
+        )
+
+        assert (len(output_buffer) == num_elements)
+        return output_buffer
+

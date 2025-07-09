@@ -135,6 +135,7 @@ add_executable(
         unit_test/test_mel_precompute.cpp
         unit_test/test_power_spectrum.cpp
         unit_test/test_power_to_decibel.cpp
+        unit_test/test_power_to_decibel_scale.cpp
 
         unit_test/constants/power_spectrum_unit_test/power_spectrum_unit_test.h
         unit_test/constants/power_spectrum_unit_test/sinewave_input.h
@@ -153,9 +154,11 @@ target_include_directories(
 target_link_libraries(
         UnitTestDSP PUBLIC
 
+        # Use static version
         audio_dsp_shared
         statistics_static
         utils_static
+        scaler_static
         GTest::gtest_main
 )
 add_test(
@@ -197,5 +200,11 @@ add_test(
 add_test(
         NAME AudioDSP_PowerToDecibel_PythonTestCase
         COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_power_to_decibel.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+add_test(
+        NAME AudioDSP_PowerToDecibelScale_PythonTest
+        COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_power_to_decibel_scale.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )

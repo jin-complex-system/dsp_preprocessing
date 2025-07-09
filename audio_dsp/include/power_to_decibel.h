@@ -59,23 +59,48 @@ convert_power_to_decibel(
     const float top_decibel);
 
 /**
- * Compute in-place spectrogram to decibel units and scale to [0, 1]. Handles negative values
+ * Compute in-place spectrogram to decibel units and scale to [0, 255] as uint8_t. Handles negative values
+ *
+ * Maximum decibel is defined as reference_power. Higher values will be clipped.
+ * Minimum decibel is defined as _power_to_decibel_get_min_decibel().
+ *
+ * Clips values as needed.
  *
  * Formula before scaling is roughly spectrogram_array[] = 10 * log10(spectrogram_array[]) - 10 * log10(reference_power)
  *
  * @param spectrogram_array
- * @param spectrogram_array_length
- * @param reference_power non-zero, positive value that is defined as 0 dB
- * @param top_decibel defined as the maximum of the dynamic range; clips values if necessary
- * @param min_decibel defined as the minimum of the dynamic range
+ * @param output_buffer
+ * @param num_elements
+ * @param reference_power non-zero, positive value that is defined as max_decibel.
  */
 void
 convert_power_to_decibel_and_scale(
     float* spectrogram_array,
-    const uint16_t spectrogram_array_length,
-    const float reference_power,
-    const float top_decibel,
-    const float min_decibel);
+    uint8_t* output_buffer,
+    const uint16_t num_elements,
+    const float reference_power);
+
+/**
+* Get the definition of max decibel
+* @return
+*
+*/
+static inline
+const float
+_power_to_decibel_get_max_decibel() {
+    return 0.0f;
+}
+
+/**
+ * Get the min decibel of min decibel
+ * @return
+ *
+ */
+static inline
+const float
+_power_to_decibel_get_min_decibel() {
+    return -80.0f;
+}
 
 /* Provide C++ Compatibility */
 #ifdef __cplusplus
