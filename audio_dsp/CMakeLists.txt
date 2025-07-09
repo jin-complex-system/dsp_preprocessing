@@ -198,7 +198,7 @@ add_test(
 )
 
 add_test(
-        NAME AudioDSP_PowerToDecibel_PythonTestCase
+        NAME AudioDSP_PowerToDecibel_PythonTest
         COMMAND ${Python_EXECUTABLE} -m pytest ${CMAKE_CURRENT_SOURCE_DIR}/python_unit_test/test_power_to_decibel.py ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
