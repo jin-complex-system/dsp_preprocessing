@@ -100,7 +100,7 @@ TEST(PowerToDecibelScale, Array) {
 
     constexpr
     uint16_t
-    NUM_ELEMENTS = std::size(INPUT_FLOAT_ARRAY);
+    NUM_ELEMENTS = sizeof(INPUT_FLOAT_ARRAY)/sizeof(INPUT_FLOAT_ARRAY[0]);
 
     /// Iterate through INPUT_FLOAT_ARRAY
     for (const auto &reference_power : INPUT_FLOAT_ARRAY) {
