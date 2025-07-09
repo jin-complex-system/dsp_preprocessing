@@ -215,18 +215,23 @@ def compute_and_plot_librosa(
         dtype=np.float32,
         fmax=max_frequency,
     )
-    mel_spectrogram_librosa = librosa.power_to_db(
-        S=mel_spectrogram_librosa,
-        ref=np.max,
-        amin=1e-30,
-        top_db=top_decibel,
-    )
     mel_spectrogram_librosa_end_time = time.time()
     mel_spectrogram_librosa_total_time = mel_spectrogram_librosa_end_time - mel_spectrogram_librosa_start_time
 
+    log_mel_spectrogram_librosa_start_time = time.time()
+    log_mel_spec = librosa.power_to_db(
+        S=mel_spectrogram_librosa,
+        ref=np.max,
+        amin=1e-50,
+        top_db=None
+    )
+    log_mel_spectrogram_librosa_end_time = time.time()
+    log_mel_spectrogram_librosa_total_time = (
+            log_mel_spectrogram_librosa_end_time - log_mel_spectrogram_librosa_start_time)
+
     # Save plots from librosa
     save_plots(
-        mel_spectrogram=mel_spectrogram_librosa,
+        mel_spectrogram=log_mel_spec,
         hop_length=hop_length,
         n_fft=n_fft,
         win_length=n_fft,
@@ -235,16 +240,17 @@ def compute_and_plot_librosa(
         postfix_str="librosa",
     )
 
-    print("Librosa - power spectrum: {} s, mel spectrogram: {} s".format(
+    print("Librosa - power spectrum: {} s, mel spectrogram: {} s, power_to_db: {} s".format(
         power_spectrum_librosa_total_time,
         mel_spectrogram_librosa_total_time,
+        log_mel_spectrogram_librosa_total_time,
     ))
 
-    max_value = np.max(mel_spectrogram_librosa)
-    min_value = np.min(mel_spectrogram_librosa)
-    median_value = np.median(mel_spectrogram_librosa)
-    mean_value = np.mean(mel_spectrogram_librosa)
-    std_value = np.std(mel_spectrogram_librosa)
+    max_value = np.max(log_mel_spec)
+    min_value = np.min(log_mel_spec)
+    median_value = np.median(log_mel_spec)
+    mean_value = np.mean(log_mel_spec)
+    std_value = np.std(log_mel_spec)
     print("Statistics for librosa - max: {}, min: {}, median: {}, mean: {}, std: {}".format(
         max_value, min_value, median_value, mean_value, std_value
     ))
@@ -363,17 +369,22 @@ def compute_and_plot_audio_dsp_c(
 
         if max_mel > reference_float:
             reference_float = max_mel
+    mel_spectrogram_end_time = time.time()
+    mel_spectrogram_total_time = mel_spectrogram_end_time - mel_spectrogram_start_time
 
+    # Do not include reshaping as part of the time
     mel_spectrogram = np.reshape(mel_spectrogram, shape=-1)
+
+    log_mel_spectrogram_start_time = time.time()
     mel_spectrogram_decibels = audio_dsp_c_lib.convert_power_to_decibel(
         spectrogram_array_float32=mel_spectrogram,
         spectrogram_array_length_uint16=len(mel_spectrogram),
         reference_power_float32=reference_float,
         top_decibel_float32=top_decibel,
     )
-
-    mel_spectrogram_end_time = time.time()
-    mel_spectrogram_total_time = mel_spectrogram_end_time - mel_spectrogram_start_time
+    log_mel_spectrogram_end_time = time.time()
+    log_mel_spectrogram_total_time = (
+            log_mel_spectrogram_end_time - log_mel_spectrogram_start_time)
 
     if use_precompute:
         postfix_str = "audio_dsp_c_precompute"
@@ -392,10 +403,11 @@ def compute_and_plot_audio_dsp_c(
             target_directory, postfix_str),
         postfix_str=postfix_str,
     )
-    print("Audio DSP ({}) - power spectrum: {} s, mel spectrogram: {} s".format(
+    print("Audio DSP ({}) - power spectrum: {} s, mel spectrogram: {} s, power_to_db: {} s".format(
         indicator_str,
         power_spectrum_total_time,
         mel_spectrogram_total_time,
+        log_mel_spectrogram_total_time,
     ))
 
     max_value = np.max(mel_spectrogram_decibels)
