@@ -40,7 +40,8 @@ TEST(PowerToDecibelScale, SingleValues) {
             {
                 constexpr double input_power = MAX_VALUE_INPUT;
                 constexpr double decibel = log(input_power) * 10 / log(10);
-                const double scaled_decibel = decibel - log((double)reference_power);
+                const double reference_decibel = log((double)reference_power) * 10 / log(10);
+                const double scaled_decibel = decibel - reference_decibel;
                 const double bounded_decibel = (scaled_decibel - MIN_DECIBEL)/(MAX_DECIBEL - MIN_DECIBEL);
 
                 if (bounded_decibel >= 1.0)
@@ -58,7 +59,7 @@ TEST(PowerToDecibelScale, SingleValues) {
                     EXPECT_EQ(computed_result, expected_decibel_uint8);
                 }
                 else {
-                    const auto expected_decibel_uint8 = (uint8_t)(bounded_decibel);
+                    const auto expected_decibel_uint8 = (uint8_t)(bounded_decibel * UINT8_MAX);
 
                     EXPECT_EQ(computed_result, expected_decibel_uint8);
                 }
