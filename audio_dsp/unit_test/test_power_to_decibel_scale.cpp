@@ -36,6 +36,20 @@ TEST(PowerToDecibelScale, SingleValues) {
                 reference_power
             );
 
+            /// Test if we can use the same buffer
+            {
+                float reusable_buffer[] = {MAX_VALUE_INPUT};
+                auto output_buffer = (uint8_t*)(&reusable_buffer[0]);
+
+                convert_power_to_decibel_and_scale(
+                    reusable_buffer,
+                    output_buffer,
+                    1,
+                    reference_power
+                );
+                EXPECT_EQ(output_buffer[0], computed_result);
+            }
+
             /// Manually compute and compare
             {
                 constexpr double input_power = MAX_VALUE_INPUT;
@@ -115,12 +129,23 @@ TEST(PowerToDecibelScale, Array) {
         uint8_t scale_output[NUM_ELEMENTS] = {};
         float scale_input[NUM_ELEMENTS] = {};
         memcpy(scale_input, INPUT_FLOAT_ARRAY, sizeof(computed_input));
-        assert(0 == memcmp(computed_input, scale_input, NUM_ELEMENTS * sizeof(float)));
+        assert(0 == memcmp(scale_input, INPUT_FLOAT_ARRAY, NUM_ELEMENTS * sizeof(float)));
 
-        /// Compute results
+        float reusable_buffer[NUM_ELEMENTS];
+        memcpy(reusable_buffer, INPUT_FLOAT_ARRAY, sizeof(reusable_buffer));
+        assert(0 == memcmp(reusable_buffer, INPUT_FLOAT_ARRAY, NUM_ELEMENTS * sizeof(float)));
+
+        /// Compute results, with different input and output buffers
         convert_power_to_decibel_and_scale(
             computed_input,
             target_buffer,
+            NUM_ELEMENTS,
+            abs_reference_power);
+
+        /// Compute results using the same buffer
+        convert_power_to_decibel_and_scale(
+            reusable_buffer,
+            (uint8_t*)reusable_buffer,
             NUM_ELEMENTS,
             abs_reference_power);
 
@@ -143,6 +168,10 @@ TEST(PowerToDecibelScale, Array) {
         /// Compare results
         for (uint32_t iterator = 0; iterator < NUM_ELEMENTS; iterator++) {
             EXPECT_EQ(target_buffer[iterator], scale_output[iterator]);
+
+            uint8_t* p_reusable_buffer_as_uint8 = (uint8_t*)(reusable_buffer);
+            assert(p_reusable_buffer_as_uint8 != nullptr);
+            EXPECT_EQ(p_reusable_buffer_as_uint8[iterator], scale_output[iterator]);
         }
     }
 }
