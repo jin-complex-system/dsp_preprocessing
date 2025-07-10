@@ -15,6 +15,23 @@ MIN_DECIBEL = _power_to_decibel_get_min_decibel();
 constexpr float
 MAX_VALUE_INPUT = 9999.999f;
 
+TEST(PowerToDecibelScale, Base) {
+    /// Test handling of NaN
+    {
+        float DELIBERATE_NAN = NAN;
+        uint8_t output;
+
+        convert_power_to_decibel_and_scale(
+            &DELIBERATE_NAN,
+            &output,
+            1,
+            MAX_VALUE_INPUT
+        );
+
+        EXPECT_EQ(output, 0);
+    }
+}
+
 TEST(PowerToDecibelScale, SingleValues) {
     constexpr float REFERENCE_POWER_ARRAY[] = {
         MAX_VALUE_INPUT,

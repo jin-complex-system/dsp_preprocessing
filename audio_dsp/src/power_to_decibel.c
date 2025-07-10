@@ -165,6 +165,13 @@ convert_power_to_decibel_and_scale(
 
     /// Iterate through the entire spectrogram
     for (uint16_t iterator = 0; iterator < num_elements; iterator++) {
+        /// Handles NaN and Inf
+        /// Also cleans up spectrogram_array[]
+        if (isnan(spectrogram_array[iterator]) || isinf(spectrogram_array[iterator])) {
+            spectrogram_array[iterator] = MINIUMUM_SUPPORTED_POWER;
+            output_buffer[iterator] = 0;
+            continue;
+        }
         assert(!isnan(spectrogram_array[iterator]) && !isinf(spectrogram_array[iterator]));
 
         /// If power matches or is greater than reference_power, this is 0 dB by definition
