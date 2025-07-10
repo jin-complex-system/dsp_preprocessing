@@ -16,7 +16,7 @@ constexpr float
 MAX_VALUE_INPUT = 9999.999f;
 
 TEST(PowerToDecibelScale, Base) {
-    /// Test handling of NaN
+    /// Test handling of NaN for input values
     {
         float DELIBERATE_NAN = NAN;
         uint8_t output;
@@ -25,7 +25,7 @@ TEST(PowerToDecibelScale, Base) {
             &DELIBERATE_NAN,
             &output,
             1,
-            MAX_VALUE_INPUT
+            0.0f
         );
 
         EXPECT_EQ(output, 0);

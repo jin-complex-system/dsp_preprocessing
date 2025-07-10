@@ -42,7 +42,7 @@ _get_minimum_decibel(void) {
 }
 
 /**
- * Compute in-place spectrogram to decibel units. Handles negative values
+ * Compute in-place spectrogram to decibel units. Handles negative and NaN values
  *
  * Formula is roughly spectrogram_array[] = 10 * log10(spectrogram_array[]) - 10 * log10(reference_power)
  *
@@ -59,7 +59,7 @@ convert_power_to_decibel(
     const float top_decibel);
 
 /**
- * Compute in-place spectrogram to decibel units and scale to [0, 255] as uint8_t. Handles negative values
+ * Compute in-place spectrogram to decibel units and scale to [0, 255] as uint8_t. Handles negative and NaN values
  *
  * Maximum decibel is defined as reference_power. Higher values will be clipped.
  * Minimum decibel is defined as _power_to_decibel_get_min_decibel().

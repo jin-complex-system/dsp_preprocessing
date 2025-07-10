@@ -86,6 +86,12 @@ convert_power_to_decibel(
 
     /// Iterate through the entire spectrogram
     for (uint16_t iterator = 0; iterator < spectrogram_array_length; iterator++) {
+        /// Handles NaN and Inf
+        /// Also cleans up spectrogram_array[]
+        if (isnan(spectrogram_array[iterator]) || isinf(spectrogram_array[iterator])) {
+            spectrogram_array[iterator] = 0.0f;
+            continue;
+        }
         assert(!isnan(spectrogram_array[iterator]) && !isinf(spectrogram_array[iterator]));
 
         /// Handle negative and zero values

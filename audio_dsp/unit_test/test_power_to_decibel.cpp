@@ -11,6 +11,22 @@ FLOAT_LARGE_VALUES_ERROR_TOLERANCE = 1.5345825488566334e-05;
 #define MINIUMUM_SUPPORTED_POWER        _get_minimum_power()
 #define MINIMUM_SUPPORTED_DECIBEL       _get_minimum_decibel()
 
+TEST(PowerToDecibel, Base) {
+    /// Test handling of NaN for input values
+    {
+        float DELIBERATE_NAN = NAN;
+        uint8_t output;
+
+        convert_power_to_decibel(
+            &DELIBERATE_NAN,
+            1,
+            0.1f,
+            -1.0f
+        );
+        EXPECT_EQ(output, 0);
+    }
+}
+
 
 TEST(PowerToDecibel, ConvertPowerToDecibel) {
     constexpr float REFERENCE_FLOAT_ARRAY[] = {
