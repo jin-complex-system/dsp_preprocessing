@@ -109,7 +109,8 @@ class AudioDSP_MelCompute_PythonTestCase(unittest.TestCase):
                             first=len(m_weights),
                             second=len(librosa_weight),
                         )
-                        # for mel_iterator in range(3, n_mel):
+                        # TODO: Compare librosa version of calculating mel constants
+                        # for mel_iterator in range(45, n_mel):
                         #     assert_msg = "mel iterator {}".format(mel_iterator)
                         #
                         #     self.assertAlmostEqual(
