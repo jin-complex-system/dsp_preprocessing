@@ -85,7 +85,7 @@ for data_structure in data_structures:
     cog.outl("    assert_buffer(")
     cog.outl("        {},".format(mel_float_str))
     cog.outl("        {}_LENGTH,".format(mel_float_str))
-    cog.outl("        n_mel + 1);")
+    cog.outl("        n_mel + 2);")
 
     mel_pre_str = "MEL_CENTRE_FREQUENCIES_NEXT_BIN"
     mel_next_str = "{}_MEL_{}_FFT_{}_SR_{}_FMAX_{}_BUFFER".format(
@@ -93,7 +93,7 @@ for data_structure in data_structures:
     cog.outl("    assert_buffer(")
     cog.outl("        {},".format(mel_next_str))
     cog.outl("        {}_LENGTH,".format(mel_next_str))
-    cog.outl("        n_mel - 1);")
+    cog.outl("        n_mel + 0);")
 
     mel_pre_str = "MEL_CENTRE_FREQUENCIES_PREV_BIN"
     mel_prev_str = "{}_MEL_{}_FFT_{}_SR_{}_FMAX_{}_BUFFER".format(
@@ -101,7 +101,7 @@ for data_structure in data_structures:
     cog.outl("    assert_buffer(")
     cog.outl("        {},".format(mel_prev_str))
     cog.outl("        {}_LENGTH,".format(mel_prev_str))
-    cog.outl("        n_mel - 1);")
+    cog.outl("        n_mel + 0);")
 
     mel_pre_str = "MEL_FREQUENCY_WEIGHTS"
     mel_weights_str = "{}_MEL_{}_FFT_{}_SR_{}_FMAX_{}_BUFFER".format(
@@ -109,7 +109,7 @@ for data_structure in data_structures:
     cog.outl("    assert_buffer(")
     cog.outl("        {},".format(mel_weights_str))
     cog.outl("        {}_LENGTH,".format(mel_weights_str))
-    cog.outl("        n_mel - 1);")
+    cog.outl("        n_mel + 0);")
 
     # Actual assigning of weights
     cog.outl("    /// Assign values")

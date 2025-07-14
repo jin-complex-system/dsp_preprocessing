@@ -106,10 +106,10 @@ TEST(MelPrecomputed, ComputeMelBins) {
         for (const auto sample_rate : sample_rates) {
             for (const auto n_mel : n_mels) {
                 for (const auto max_frequency : max_frequencies) {
-                    float mel_centre_freq_float_buffer[n_mel + 1] = {};
-                    uint16_t mel_centre_freq_next_bin_buffer[n_mel - 1] = {};
-                    uint16_t mel_centre_freq_prev_bin_buffer[n_mel - 1] = {};
-                    float mel_freq_weights_buffer[n_mel - 1] = {};
+                    float mel_centre_freq_float_buffer[n_mel + 2] = {};
+                    uint16_t mel_centre_freq_next_bin_buffer[n_mel + 0] = {};
+                    uint16_t mel_centre_freq_prev_bin_buffer[n_mel + 0] = {};
+                    float mel_freq_weights_buffer[n_mel + 0] = {};
 
                     compute_mel_spectrogram_bins(
                         n_mel,

@@ -100,10 +100,10 @@ class GenerateAudioDSP:
             sample_rate_uint16=sample_rate,
             max_frequency_uint16=max_frequency,
         )
-        assert (len(mel_centre_float) == n_mel + 1)
-        assert (len(mel_centre_next) == n_mel - 1)
-        assert (len(mel_centre_prev) == n_mel - 1)
-        assert (len(mel_weights) == n_mel - 1)
+        assert (len(mel_centre_float) == n_mel + 2)
+        assert (len(mel_centre_next) == n_mel - 0)
+        assert (len(mel_centre_prev) == n_mel - 0)
+        assert (len(mel_weights) == n_mel - 0)
 
         # Export centre float
         mel_centre_prefix = "mel_centre_frequencies_float_mel_{}_fft_{}_sr_{}_fmax_{}".format(
