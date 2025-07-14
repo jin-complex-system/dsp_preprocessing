@@ -71,8 +71,7 @@ class AudioDSP_MelSpectrogram_PythonTestCase(unittest.TestCase):
     def test_mel_spectrogram_with_audio_file(self):
         n_ffts = [1024, 2048]
         n_mels = [64, 128]
-        hop_length_scales = [1, 1/4]
-
+        hop_length_scales = [1, 1 / 4]
 
         # Load the wave file as float and mono
         samples, sample_rate = librosa.load(
