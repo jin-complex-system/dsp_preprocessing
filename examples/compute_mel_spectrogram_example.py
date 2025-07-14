@@ -119,20 +119,20 @@ def compute_and_plot(
         ))
 
         # Using audio_dsp's python interface (precompute and no precompute)
-        # compute_and_plot_audio_dsp_c(
-        #     library_binary_location=library_binary_location,
-        #     audio_dsp_python_interface_filepath=audio_dsp_python_interface_filepath,
-        #     samples=samples,
-        #     sample_rate=sample_rate,
-        #     scaling_factor=scaling_factor,
-        #     n_fft=n_fft,
-        #     hop_length=hop_length,
-        #     n_mel=n_mel,
-        #     max_frequency=max_frequency,
-        #     top_decibel=top_decibel,
-        #     use_precompute=True,
-        #     target_directory=target_directory,
-        # )
+        compute_and_plot_audio_dsp_c(
+            library_binary_location=library_binary_location,
+            audio_dsp_python_interface_filepath=audio_dsp_python_interface_filepath,
+            samples=samples,
+            sample_rate=sample_rate,
+            scaling_factor=scaling_factor,
+            n_fft=n_fft,
+            hop_length=hop_length,
+            n_mel=n_mel,
+            max_frequency=max_frequency,
+            top_decibel=top_decibel,
+            use_precompute=True,
+            target_directory=target_directory,
+        )
         compute_and_plot_audio_dsp_c(
             library_binary_location=library_binary_location,
             audio_dsp_python_interface_filepath=audio_dsp_python_interface_filepath,
@@ -294,7 +294,6 @@ def compute_and_plot_audio_dsp_c(
 
     # Check parameters
     assert (isinstance(top_decibel, float))
-    assert (use_precompute is False)  # TODO: At the moment, precomputed values is buggy
 
     # Import audio_dsp_c module, based on python interface file location
     audio_dsp_spec = importlib.util.spec_from_file_location(
