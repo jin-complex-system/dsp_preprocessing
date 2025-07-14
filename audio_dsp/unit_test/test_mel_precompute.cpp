@@ -97,7 +97,7 @@ TEST(MelPrecomputed, ConversionSlaneyMelToFreq) {
 }
 
 TEST(MelPrecomputed, ComputeMelBins) {
-    constexpr uint16_t n_ffts[] = {1024u};
+    constexpr uint16_t n_ffts[] = {1024u, 2048u};
     constexpr uint16_t sample_rates[] = {22048u, 44100u};
     constexpr uint16_t max_frequencies[] = {0u, 8000u};
     constexpr uint16_t n_mels[] = {32u, 64u};
@@ -122,7 +122,6 @@ TEST(MelPrecomputed, ComputeMelBins) {
                         mel_freq_weights_buffer
                     );
 
-                    /*
                     /// Compare against precomputed values
                     {
                         const float* precomputed_mel_centre_freq_float_buffer = nullptr;
@@ -170,7 +169,6 @@ TEST(MelPrecomputed, ComputeMelBins) {
                             (n_mel - 1) * sizeof(float));
                         EXPECT_EQ(result, 0);
                     }
-                    */
                 }
             }
         }
