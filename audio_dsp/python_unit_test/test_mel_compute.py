@@ -71,7 +71,7 @@ class AudioDSP_MelCompute_PythonTestCase(unittest.TestCase):
                 )
 
     def test_compute_mel_spectrogram_bins(self):
-        n_ffts = [1024]
+        n_ffts = [1024, 2048]
         sample_rates = [22048, 44100]
         max_frequencies = [0, 8000]
         n_mels = [32, 64]
@@ -87,7 +87,36 @@ class AudioDSP_MelCompute_PythonTestCase(unittest.TestCase):
                             sample_rate_uint16=sample_rate,
                             max_frequency_uint16=max_frequency,
                         )
-                         # TODO: Compare to librosa
+
+                        librosa_weights = librosa.filters.mel(
+                            sr=sample_rate,
+                            n_fft=n_fft,
+                            n_mels=n_mel,
+                            fmin=0.0,
+                            fmax=max_frequency,
+                            htk=False,
+                            norm="slaney",
+                        )
+                        self.assertEqual(
+                            first=len(m_weights),
+                            second=len(librosa_weights),
+                        )
+                        print(librosa_weights.shape)
+                        librosa_weight = librosa_weights[:, 0]
+                        print(librosa_weight.shape)
+
+                        self.assertEqual(
+                            first=len(m_weights),
+                            second=len(librosa_weight),
+                        )
+                        # for mel_iterator in range(3, n_mel):
+                        #     assert_msg = "mel iterator {}".format(mel_iterator)
+                        #
+                        #     self.assertAlmostEqual(
+                        #         first=m_weights[mel_iterator],
+                        #         second=librosa_weight[mel_iterator],
+                        #         msg=assert_msg,
+                        #     )
 
 
 if __name__ == '__main__':
