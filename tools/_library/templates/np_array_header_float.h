@@ -36,7 +36,7 @@ cog.outl("#define {}_BUFFER_LENGTH {}".format(
 const float
 /*[[[cog
 
-cog.outl("{}_BUFFER[{}_BUFFER_LENGTH] = {}".format(
+cog.outl("{}_BUFFER[{}_BUFFER_LENGTH] __attribute__((aligned(32))) = {}".format(
     uppercase_file_prefix,
     uppercase_file_prefix,
     "{"))
