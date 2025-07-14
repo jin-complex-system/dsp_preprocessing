@@ -132,6 +132,8 @@ add_executable(
         unit_test/test_audio_dsp_fft.cpp
         unit_test/test_hann_window.cpp
         unit_test/test_mel_spectrogram.cpp
+        unit_test/test_mel_computation_one_buffer.cpp
+        unit_test/test_mel_computation_separate_buffer.cpp
         unit_test/test_mel_precompute.cpp
         unit_test/test_power_spectrum.cpp
         unit_test/test_power_to_decibel.cpp

@@ -268,8 +268,8 @@ compute_power_spectrum_into_mel_spectrogram_raw(
     const uint16_t mel_weights_start_iter = get_mel_centre_next_prev_bin_buffer_length(n_mel) + mel_prev_start_iter;
 
     float* mel_centre_freq_float_buffer = &scratch_buffer[mel_centre_start_iter];
-    uint16_t* mel_centre_freq_next_bin_buffer = (uint16_t*)&scratch_buffer[mel_next_start_iter];
-    uint16_t* mel_centre_freq_prev_bin_buffer = (uint16_t*)&scratch_buffer[mel_prev_start_iter];
+    uint16_t* mel_centre_freq_next_bin_buffer = (uint16_t*)(&scratch_buffer[mel_next_start_iter]);
+    uint16_t* mel_centre_freq_prev_bin_buffer = (uint16_t*)(&scratch_buffer[mel_prev_start_iter]);
     float* mel_freq_weights_buffer = &scratch_buffer[mel_weights_start_iter];
 
     compute_mel_spectrogram_bins(
