@@ -139,33 +139,21 @@ compute_mel_spectrogram_bins(
     }
 }
 
-/**
- * Compute power spectrum per frame into mel spectrogram per frame
- * @param power_spectrum_buffer
- * @param power_spectrum_buffer_length 
- * @param mel_spectrogram_buffer 
- * @param n_mels 
- * @param mel_centre_freq_float_buffer 
- * @param mel_centre_freq_next_bin_buffer 
- * @param mel_centre_freq_prev_bin_buffer 
- * @param mel_freq_weights_buffer 
- * @return highest value of mel spectrogram
- */
-static
 float
-_compute_power_spectrum_into_mel_spectrogram(
+compute_power_spectrum_into_mel_spectrogram_provided_mel_constants(
     const float* power_spectrum_buffer,
     const uint16_t power_spectrum_buffer_length,
     float* mel_spectrogram_buffer,
-    const uint16_t n_mels,
+    const uint16_t n_mel,
     const float* mel_centre_freq_float_buffer,
     const uint16_t* mel_centre_freq_next_bin_buffer,
     const uint16_t* mel_centre_freq_prev_bin_buffer,
     const float* mel_freq_weights_buffer) {
+
     /// Check parameters
     {
-        assert(n_mels > 0 && power_spectrum_buffer_length > 0);
-        assert(power_spectrum_buffer_length >= n_mels);
+        assert(n_mel > 0 && power_spectrum_buffer_length > 0);
+        assert(power_spectrum_buffer_length >= n_mel);
         assert(power_spectrum_buffer != NULL);
         assert(mel_spectrogram_buffer != NULL);
         assert(mel_centre_freq_float_buffer != NULL);
@@ -177,8 +165,8 @@ _compute_power_spectrum_into_mel_spectrogram(
     float max_value_of_mel_spectrogram = -255.0f;
 
     /// Clear the output buffer
-    memset(mel_spectrogram_buffer, 0, sizeof(float) * n_mels);
-    for (uint32_t current_bin_index = 0; current_bin_index < n_mels; current_bin_index++) {
+    memset(mel_spectrogram_buffer, 0, sizeof(float) * n_mel);
+    for (uint32_t current_bin_index = 0; current_bin_index < n_mel; current_bin_index++) {
         /// Retrieve pre-computed values
         const float* prev_centre_filterbank = &mel_centre_freq_float_buffer[current_bin_index + 0];
         const float* current_centre_filterbank = &mel_centre_freq_float_buffer[current_bin_index + 1];
@@ -247,6 +235,7 @@ _compute_power_spectrum_into_mel_spectrogram(
     return max_value_of_mel_spectrogram;
 }
 
+
 float
 compute_power_spectrum_into_mel_spectrogram_raw(
     const float* power_spectrum_buffer,
@@ -294,7 +283,7 @@ compute_power_spectrum_into_mel_spectrogram_raw(
         mel_freq_weights_buffer
     );
 
-    return _compute_power_spectrum_into_mel_spectrogram(
+    return compute_power_spectrum_into_mel_spectrogram_provided_mel_constants(
         power_spectrum_buffer,
         power_spectrum_buffer_length,
         mel_spectrogram_buffer,
@@ -348,7 +337,7 @@ compute_power_spectrum_into_mel_spectrogram(
     assert(mel_centre_freq_prev_bin_buffer != NULL);
     assert(mel_freq_weights_buffer != NULL);
 
-    return _compute_power_spectrum_into_mel_spectrogram(
+    return compute_power_spectrum_into_mel_spectrogram_provided_mel_constants(
         power_spectrum_buffer,
         power_spectrum_buffer_length,
         mel_spectrogram_buffer,

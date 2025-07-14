@@ -111,6 +111,32 @@ compute_mel_spectrogram_bins(
 	float* mel_freq_weights_buffer);
 
 /**
+ * Convert power spectrum into mel spectrogram, with provided parameters.
+ *
+ * Not recommended for applications; only used externally for debugging and internally to simplify computation.
+ *
+ * @param power_spectrum_buffer
+ * @param power_spectrum_buffer_length
+ * @param mel_spectrogram_buffer
+ * @param n_mel must be power_spectrum_buffer_length or less
+ * @param mel_centre_freq_float_buffer
+ * @param mel_centre_freq_next_bin_buffer
+ * @param mel_centre_freq_prev_bin_buffer
+ * @param mel_freq_weights_buffer
+ * @return max value of mel spectrogram
+ */
+float
+compute_power_spectrum_into_mel_spectrogram_provided_mel_constants(
+	const float* power_spectrum_buffer,
+	const uint16_t power_spectrum_buffer_length,
+	float* mel_spectrogram_buffer,
+	const uint16_t n_mel,
+	const float* mel_centre_freq_float_buffer,
+	const uint16_t* mel_centre_freq_next_bin_buffer,
+	const uint16_t* mel_centre_freq_prev_bin_buffer,
+	const float* mel_freq_weights_buffer);
+
+/**
  * Convert power spectrum into mel spectrogram. Compute necessary parameters
  *
  * Will compute the necessary mel freq if needed
