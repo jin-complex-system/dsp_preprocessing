@@ -1,5 +1,12 @@
 # dsp_preprocessing
-DSP algorithms for preprocessing
+DSP algorithms for preprocessing. Mainly designed for audio.
+
+# Main Modules
+
+- [audio_dsp](audio_dsp): Audio DSP algorithms
+- [scaler](scaler): Scaling helper function
+- [utils](utils): Utility helper functions
+- [statistics](statistics): Statistics helper functions (Not completed)
 
 # Requirements
 
@@ -33,6 +40,7 @@ cmake -B build -S .
 cd build
 make -j16
 ```
+3. If necessary, [precompile headers](#run-tools-to-precompile-headers) and repeat the above steps 
 
 # Python Scripts
 
@@ -49,7 +57,14 @@ make -j16
 ```bash
 <python_venv_interpreter> tools\generate_headers.py <path_to_library> audio_dsp\python_interface\audio_dsp_c.py
 ```
+3. Move the precomputed files to the source code and add to the project:
+- Delete and copy over new header files:
+    - [precomputed_mel](audio_dsp/include/precomputed_mel)
+    - [precomputed_window](audio_dsp/include/precomputed_window)
+- Replace [`mel_get_precomputed.c`](audio_dsp/src/mel_get_precomputed.c)
+- Modify [CMakeLists.txt](CMakeLists.txt) and add the new header files to the project
 
 # TODO
 - Write unit tests to check DSP-accelerated algorithms
 - Check that padding in buffers for vectorised buffers is sufficient (might need to add 3 words)
+- Revise statistics module
