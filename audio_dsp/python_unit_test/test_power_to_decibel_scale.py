@@ -67,7 +67,7 @@ class AudioDSP_PowerToDecibelScale_PythonTestCase(unittest.TestCase):
         target_start_time = time.time()
         target_result = audio_dsp_c_lib.convert_power_to_decibel_scale(
             spectrogram_array_float32=spectrogram,
-            spectrogram_array_length_uint16=len(spectrogram),
+            spectrogram_array_length_uint32=len(spectrogram),
             reference_power_float32=reference_float,
         )
         target_end_time = time.time()

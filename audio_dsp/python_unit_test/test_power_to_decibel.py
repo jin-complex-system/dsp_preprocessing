@@ -61,7 +61,7 @@ class AudioDSP_PowerToDecibel_PythonTestCase(unittest.TestCase):
             target_start_time = time.time()
             computed_mel_spectrogram = audio_dsp_c_lib.convert_power_to_decibel(
                 spectrogram_array_float32=spectrogram,
-                spectrogram_array_length_uint16=len(spectrogram),
+                spectrogram_array_length_uint32=len(spectrogram),
                 reference_power_float32=reference_float,
                 top_decibel_float32=top_decibel,
             )

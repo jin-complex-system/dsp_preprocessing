@@ -54,7 +54,7 @@ _get_minimum_decibel(void) {
 void
 convert_power_to_decibel(
     float* spectrogram_array,
-    const uint16_t spectrogram_array_length,
+    const uint32_t spectrogram_array_length,
     const float reference_power,
     const float top_decibel);
 
@@ -77,7 +77,7 @@ void
 convert_power_to_decibel_and_scale(
     float* spectrogram_array,
     uint8_t* output_buffer,
-    const uint16_t num_elements,
+    const uint32_t num_elements,
     const float reference_power);
 
 /**

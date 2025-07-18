@@ -10,7 +10,7 @@
  * @return
  */
 static inline
-uint16_t
+uint32_t
 get_mel_centre_freq_float_buffer_length(
     const uint16_t n_mels) {
     return n_mels + 2;
@@ -22,7 +22,7 @@ get_mel_centre_freq_float_buffer_length(
  * @return
  */
 static inline
-uint16_t
+uint32_t
 get_mel_centre_next_prev_bin_buffer_length(
     const uint16_t n_mels) {
     return n_mels - 0;
@@ -34,7 +34,7 @@ get_mel_centre_next_prev_bin_buffer_length(
  * @return
  */
 static inline
-uint16_t
+uint32_t
 get_mel_freq_weights_buffer_length(
     const uint16_t n_mels) {
     return n_mels - 0;
@@ -48,7 +48,7 @@ get_mel_freq_weights_buffer_length(
  * @return
  */
 static inline
-uint16_t
+uint32_t
 get_minimum_scratch_buffer_length(
     const uint16_t n_mels) {
     return

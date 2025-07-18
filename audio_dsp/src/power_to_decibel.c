@@ -58,7 +58,7 @@ v_power_to_decibel_conversion(
 void
 convert_power_to_decibel(
     float* spectrogram_array,
-    const uint16_t spectrogram_array_length,
+    const uint32_t spectrogram_array_length,
     const float reference_power,
     const float top_decibel) {
     /// Check parameters
@@ -85,7 +85,7 @@ convert_power_to_decibel(
     }
 
     /// Iterate through the entire spectrogram
-    for (uint16_t iterator = 0; iterator < spectrogram_array_length; iterator++) {
+    for (uint32_t iterator = 0; iterator < spectrogram_array_length; iterator++) {
         /// Handles NaN and Inf
         /// Also cleans up spectrogram_array[]
         if (isnan(spectrogram_array[iterator]) || isinf(spectrogram_array[iterator])) {
@@ -123,7 +123,7 @@ void
 convert_power_to_decibel_and_scale(
     float* spectrogram_array,
     uint8_t* output_buffer,
-    const uint16_t num_elements,
+    const uint32_t num_elements,
     const float reference_power) {
     const float MAX_DECIBEL = _power_to_decibel_get_max_decibel();
     const float MIN_DECIBEL = _power_to_decibel_get_min_decibel();
@@ -170,7 +170,7 @@ convert_power_to_decibel_and_scale(
     }
 
     /// Iterate through the entire spectrogram
-    for (uint16_t iterator = 0; iterator < num_elements; iterator++) {
+    for (uint32_t iterator = 0; iterator < num_elements; iterator++) {
         /// Handles NaN and Inf
         /// Also cleans up spectrogram_array[]
         if (isnan(spectrogram_array[iterator]) || isinf(spectrogram_array[iterator])) {

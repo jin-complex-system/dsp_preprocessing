@@ -377,7 +377,7 @@ def compute_and_plot_audio_dsp_c(
     log_mel_spectrogram_start_time = time.time()
     mel_spectrogram_decibels = audio_dsp_c_lib.convert_power_to_decibel(
         spectrogram_array_float32=mel_spectrogram,
-        spectrogram_array_length_uint16=len(mel_spectrogram),
+        spectrogram_array_length_uint32=len(mel_spectrogram),
         reference_power_float32=reference_float,
         top_decibel_float32=top_decibel,
     )
