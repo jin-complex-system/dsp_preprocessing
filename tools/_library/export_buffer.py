@@ -50,7 +50,10 @@ def export_ndarray(
 
     # Check parameters
     assert (len(target_filepath) > 0)
-    assert (ndarray_type == "float" or ndarray_type == "uint16")
+    assert (
+            ndarray_type == "float" or
+            ndarray_type == "uint16" or
+            ndarray_type == "int16")
 
     # Create target directory, if it does not exist
     os.makedirs(name=os.path.dirname(target_filepath), exist_ok=True)

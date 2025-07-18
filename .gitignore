@@ -1,5 +1,6 @@
-# Generated headers
+# Generated headers and audio
 _output_processed/*
+_audio_headers/*
 
 # Test output files
 *_test_output*

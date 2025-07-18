@@ -64,6 +64,14 @@ make -j16
 - Replace [`mel_get_precomputed.c`](audio_dsp/src/mel_get_precomputed.c)
 - Modify [CMakeLists.txt](CMakeLists.txt) and add the new header files to the project
 
+## Run tools to turn audio files into C headers
+1. Inside [tools/generate_audio_file_as_header.py](tools/generate_audio_file_as_header.py), change the constants inside `def generate_audio_file_as_header_main()` as needed
+2. Run the following:
+```bash
+<python_venv_interpreter> tools/generate_audio_file_as_header.py
+ls <_audio_headers>
+```
+
 # TODO
 - Write unit tests to check DSP-accelerated algorithms
 - Check that padding in buffers for vectorised buffers is sufficient (might need to add 3 words)
