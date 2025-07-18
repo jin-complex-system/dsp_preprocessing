@@ -190,5 +190,7 @@ TEST(PowerToDecibelScale, Array) {
             assert(p_reusable_buffer_as_uint8 != nullptr);
             EXPECT_EQ(p_reusable_buffer_as_uint8[iterator], scale_output[iterator]);
         }
+        const int memcmp_result = memcmp(target_buffer, scale_output, NUM_ELEMENTS);
+        EXPECT_EQ(memcmp_result, 0);
     }
 }

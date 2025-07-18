@@ -138,6 +138,9 @@ add_executable(
         unit_test/test_power_spectrum.cpp
         unit_test/test_power_to_decibel.cpp
         unit_test/test_power_to_decibel_scale.cpp
+        unit_test/test_example_human_voice.cpp
+
+        unit_test/constants/audio/human_voice.h
 
         unit_test/constants/power_spectrum_unit_test/power_spectrum_unit_test.h
         unit_test/constants/power_spectrum_unit_test/sinewave_input.h
