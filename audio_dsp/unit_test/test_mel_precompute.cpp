@@ -98,7 +98,7 @@ TEST(MelPrecomputed, ConversionSlaneyMelToFreq) {
 
 TEST(MelPrecomputed, ComputeMelBins) {
     constexpr uint16_t n_ffts[] = {1024u, 2048u};
-    constexpr uint16_t sample_rates[] = {22048u, 44100u};
+    constexpr uint16_t sample_rates[] = {22048u, 30000u, 44100u};
     constexpr uint16_t max_frequencies[] = {0u, 8000u};
     constexpr uint16_t n_mels[] = {32u, 64u};
 

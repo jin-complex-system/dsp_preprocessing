@@ -72,7 +72,7 @@ class AudioDSP_MelCompute_PythonTestCase(unittest.TestCase):
 
     def test_compute_mel_spectrogram_bins(self):
         n_ffts = [1024, 2048]
-        sample_rates = [22048, 44100]
+        sample_rates = [22048, 30000, 44100]
         max_frequencies = [0, 8000]
         n_mels = [32, 64]
 

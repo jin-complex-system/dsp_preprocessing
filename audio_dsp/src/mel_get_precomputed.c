@@ -23,6 +23,26 @@
 #include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_22048_fmax_8000.h>
 #include <precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_22048_fmax_8000.h>
  
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_30000_fmax_0.h>
+ 
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_30000_fmax_8000.h>
+ 
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_30000_fmax_0.h>
+ 
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_30000_fmax_8000.h>
+ 
 #include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_44100_fmax_0.h>
 #include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_44100_fmax_0.h>
 #include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_44100_fmax_0.h>
@@ -62,6 +82,26 @@
 #include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_22048_fmax_8000.h>
 #include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_22048_fmax_8000.h>
 #include <precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_22048_fmax_8000.h>
+ 
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_2048_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_2048_sr_30000_fmax_0.h>
+ 
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_2048_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_2048_sr_30000_fmax_8000.h>
+ 
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_2048_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_30000_fmax_0.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_30000_fmax_0.h>
+ 
+#include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_2048_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_30000_fmax_8000.h>
+#include <precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_30000_fmax_8000.h>
  
 #include <precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_44100_fmax_0.h>
 #include <precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_44100_fmax_0.h>
@@ -251,6 +291,154 @@ get_mel_precomputed_values_mel_64_nfft_1024_sr_22048_fmax_8000(
     *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_22048_FMAX_8000_BUFFER;
     *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_22048_FMAX_8000_BUFFER;
     *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_22048_FMAX_8000_BUFFER;
+}
+
+static inline
+void
+get_mel_precomputed_values_mel_32_nfft_1024_sr_30000_fmax_0(
+    const uint16_t n_mel,
+    const float** mel_centre_freq_float_buffer,
+    const uint16_t** mel_centre_freq_next_bin_buffer,
+    const uint16_t** mel_centre_freq_prev_bin_buffer,
+    const float** mel_freq_weights_buffer) {
+    /// Check parameters
+    assert(*mel_centre_freq_float_buffer == NULL);
+    assert(*mel_centre_freq_next_bin_buffer == NULL);
+    assert(*mel_centre_freq_prev_bin_buffer == NULL);
+    assert(*mel_freq_weights_buffer == NULL);
+
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 2);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    /// Assign values
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_1024_SR_30000_FMAX_0_BUFFER;
+}
+
+static inline
+void
+get_mel_precomputed_values_mel_32_nfft_1024_sr_30000_fmax_8000(
+    const uint16_t n_mel,
+    const float** mel_centre_freq_float_buffer,
+    const uint16_t** mel_centre_freq_next_bin_buffer,
+    const uint16_t** mel_centre_freq_prev_bin_buffer,
+    const float** mel_freq_weights_buffer) {
+    /// Check parameters
+    assert(*mel_centre_freq_float_buffer == NULL);
+    assert(*mel_centre_freq_next_bin_buffer == NULL);
+    assert(*mel_centre_freq_prev_bin_buffer == NULL);
+    assert(*mel_freq_weights_buffer == NULL);
+
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 2);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    /// Assign values
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_1024_SR_30000_FMAX_8000_BUFFER;
+}
+
+static inline
+void
+get_mel_precomputed_values_mel_64_nfft_1024_sr_30000_fmax_0(
+    const uint16_t n_mel,
+    const float** mel_centre_freq_float_buffer,
+    const uint16_t** mel_centre_freq_next_bin_buffer,
+    const uint16_t** mel_centre_freq_prev_bin_buffer,
+    const float** mel_freq_weights_buffer) {
+    /// Check parameters
+    assert(*mel_centre_freq_float_buffer == NULL);
+    assert(*mel_centre_freq_next_bin_buffer == NULL);
+    assert(*mel_centre_freq_prev_bin_buffer == NULL);
+    assert(*mel_freq_weights_buffer == NULL);
+
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 2);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    /// Assign values
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_30000_FMAX_0_BUFFER;
+}
+
+static inline
+void
+get_mel_precomputed_values_mel_64_nfft_1024_sr_30000_fmax_8000(
+    const uint16_t n_mel,
+    const float** mel_centre_freq_float_buffer,
+    const uint16_t** mel_centre_freq_next_bin_buffer,
+    const uint16_t** mel_centre_freq_prev_bin_buffer,
+    const float** mel_freq_weights_buffer) {
+    /// Check parameters
+    assert(*mel_centre_freq_float_buffer == NULL);
+    assert(*mel_centre_freq_next_bin_buffer == NULL);
+    assert(*mel_centre_freq_prev_bin_buffer == NULL);
+    assert(*mel_freq_weights_buffer == NULL);
+
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 2);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    /// Assign values
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_1024_SR_30000_FMAX_8000_BUFFER;
 }
 
 static inline
@@ -551,6 +739,154 @@ get_mel_precomputed_values_mel_64_nfft_2048_sr_22048_fmax_8000(
 
 static inline
 void
+get_mel_precomputed_values_mel_32_nfft_2048_sr_30000_fmax_0(
+    const uint16_t n_mel,
+    const float** mel_centre_freq_float_buffer,
+    const uint16_t** mel_centre_freq_next_bin_buffer,
+    const uint16_t** mel_centre_freq_prev_bin_buffer,
+    const float** mel_freq_weights_buffer) {
+    /// Check parameters
+    assert(*mel_centre_freq_float_buffer == NULL);
+    assert(*mel_centre_freq_next_bin_buffer == NULL);
+    assert(*mel_centre_freq_prev_bin_buffer == NULL);
+    assert(*mel_freq_weights_buffer == NULL);
+
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 2);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    /// Assign values
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_2048_SR_30000_FMAX_0_BUFFER;
+}
+
+static inline
+void
+get_mel_precomputed_values_mel_32_nfft_2048_sr_30000_fmax_8000(
+    const uint16_t n_mel,
+    const float** mel_centre_freq_float_buffer,
+    const uint16_t** mel_centre_freq_next_bin_buffer,
+    const uint16_t** mel_centre_freq_prev_bin_buffer,
+    const float** mel_freq_weights_buffer) {
+    /// Check parameters
+    assert(*mel_centre_freq_float_buffer == NULL);
+    assert(*mel_centre_freq_next_bin_buffer == NULL);
+    assert(*mel_centre_freq_prev_bin_buffer == NULL);
+    assert(*mel_freq_weights_buffer == NULL);
+
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 2);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    /// Assign values
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_32_FFT_2048_SR_30000_FMAX_8000_BUFFER;
+}
+
+static inline
+void
+get_mel_precomputed_values_mel_64_nfft_2048_sr_30000_fmax_0(
+    const uint16_t n_mel,
+    const float** mel_centre_freq_float_buffer,
+    const uint16_t** mel_centre_freq_next_bin_buffer,
+    const uint16_t** mel_centre_freq_prev_bin_buffer,
+    const float** mel_freq_weights_buffer) {
+    /// Check parameters
+    assert(*mel_centre_freq_float_buffer == NULL);
+    assert(*mel_centre_freq_next_bin_buffer == NULL);
+    assert(*mel_centre_freq_prev_bin_buffer == NULL);
+    assert(*mel_freq_weights_buffer == NULL);
+
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 2);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER_LENGTH,
+        n_mel + 0);
+    /// Assign values
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_2048_SR_30000_FMAX_0_BUFFER;
+}
+
+static inline
+void
+get_mel_precomputed_values_mel_64_nfft_2048_sr_30000_fmax_8000(
+    const uint16_t n_mel,
+    const float** mel_centre_freq_float_buffer,
+    const uint16_t** mel_centre_freq_next_bin_buffer,
+    const uint16_t** mel_centre_freq_prev_bin_buffer,
+    const float** mel_freq_weights_buffer) {
+    /// Check parameters
+    assert(*mel_centre_freq_float_buffer == NULL);
+    assert(*mel_centre_freq_next_bin_buffer == NULL);
+    assert(*mel_centre_freq_prev_bin_buffer == NULL);
+    assert(*mel_freq_weights_buffer == NULL);
+
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 2);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER,
+        MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    assert_buffer(
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER,
+        MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER_LENGTH,
+        n_mel + 0);
+    /// Assign values
+    *mel_centre_freq_float_buffer = MEL_CENTRE_FREQUENCIES_FLOAT_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER;
+    *mel_centre_freq_next_bin_buffer = MEL_CENTRE_FREQUENCIES_NEXT_BIN_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER;
+    *mel_centre_freq_prev_bin_buffer = MEL_CENTRE_FREQUENCIES_PREV_BIN_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER;
+    *mel_freq_weights_buffer = MEL_FREQUENCY_WEIGHTS_MEL_64_FFT_2048_SR_30000_FMAX_8000_BUFFER;
+}
+
+static inline
+void
 get_mel_precomputed_values_mel_32_nfft_2048_sr_44100_fmax_0(
     const uint16_t n_mel,
     const float** mel_centre_freq_float_buffer,
@@ -794,6 +1130,74 @@ if (
 if (
     n_mel == 32u &&
     n_fft == 1024u &&
+    sample_rate == 30000u && 
+    (max_frequency == 0u || max_frequency == sample_rate / 2)) {
+
+    assert(!found_precomputed_value);
+
+    get_mel_precomputed_values_mel_32_nfft_1024_sr_30000_fmax_0(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
+if (
+    n_mel == 32u &&
+    n_fft == 1024u &&
+    sample_rate == 30000u && 
+    max_frequency == 8000u) {
+
+    assert(!found_precomputed_value);
+
+    get_mel_precomputed_values_mel_32_nfft_1024_sr_30000_fmax_8000(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
+if (
+    n_mel == 64u &&
+    n_fft == 1024u &&
+    sample_rate == 30000u && 
+    (max_frequency == 0u || max_frequency == sample_rate / 2)) {
+
+    assert(!found_precomputed_value);
+
+    get_mel_precomputed_values_mel_64_nfft_1024_sr_30000_fmax_0(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
+if (
+    n_mel == 64u &&
+    n_fft == 1024u &&
+    sample_rate == 30000u && 
+    max_frequency == 8000u) {
+
+    assert(!found_precomputed_value);
+
+    get_mel_precomputed_values_mel_64_nfft_1024_sr_30000_fmax_8000(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
+if (
+    n_mel == 32u &&
+    n_fft == 1024u &&
     sample_rate == 44100u && 
     (max_frequency == 0u || max_frequency == sample_rate / 2)) {
 
@@ -919,6 +1323,74 @@ if (
     assert(!found_precomputed_value);
 
     get_mel_precomputed_values_mel_64_nfft_2048_sr_22048_fmax_8000(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
+if (
+    n_mel == 32u &&
+    n_fft == 2048u &&
+    sample_rate == 30000u && 
+    (max_frequency == 0u || max_frequency == sample_rate / 2)) {
+
+    assert(!found_precomputed_value);
+
+    get_mel_precomputed_values_mel_32_nfft_2048_sr_30000_fmax_0(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
+if (
+    n_mel == 32u &&
+    n_fft == 2048u &&
+    sample_rate == 30000u && 
+    max_frequency == 8000u) {
+
+    assert(!found_precomputed_value);
+
+    get_mel_precomputed_values_mel_32_nfft_2048_sr_30000_fmax_8000(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
+if (
+    n_mel == 64u &&
+    n_fft == 2048u &&
+    sample_rate == 30000u && 
+    (max_frequency == 0u || max_frequency == sample_rate / 2)) {
+
+    assert(!found_precomputed_value);
+
+    get_mel_precomputed_values_mel_64_nfft_2048_sr_30000_fmax_0(
+        n_mel,
+        mel_centre_freq_float_buffer,
+        mel_centre_freq_next_bin_buffer,
+        mel_centre_freq_prev_bin_buffer,
+        mel_freq_weights_buffer);
+    found_precomputed_value = true;
+}
+
+if (
+    n_mel == 64u &&
+    n_fft == 2048u &&
+    sample_rate == 30000u && 
+    max_frequency == 8000u) {
+
+    assert(!found_precomputed_value);
+
+    get_mel_precomputed_values_mel_64_nfft_2048_sr_30000_fmax_8000(
         n_mel,
         mel_centre_freq_float_buffer,
         mel_centre_freq_next_bin_buffer,
