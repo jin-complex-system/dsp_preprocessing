@@ -1,6 +1,7 @@
-# Generated headers and audio
+# Generated files
 _output_processed/*
 _audio_headers/*
+_output_edge_unit_tests/*
 
 # Test output files
 *_test_output*
