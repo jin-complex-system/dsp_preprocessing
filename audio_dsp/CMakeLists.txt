@@ -1,5 +1,163 @@
 add_compile_definitions(TEST_ON_DESKTOP)
 
+## Create static library for desktop
+# Used for building upper-level libraries
+add_library(
+        audio_dsp_static SHARED
+
+        # Precomputed Constants - Hann Window
+        include/precomputed_window/hann_window/hann_window_no_scale_1024.h
+        include/precomputed_window/hann_window/hann_window_scale_1024.h
+
+        include/precomputed_window/hann_window/hann_window_no_scale_2048.h
+        include/precomputed_window/hann_window/hann_window_scale_2048.h
+
+        # Precomputed Constants - Mel float
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_1024_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_1024_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_32_fft_2048_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_2048_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_2048_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_2048_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_2048_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_2048_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_float/mel_centre_frequencies_float_mel_64_fft_2048_sr_44100_fmax_8000.h
+
+        # Precomputed Constants - Mel next bin
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_1024_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_1024_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_32_fft_2048_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_next_bin/mel_centre_frequencies_next_bin_mel_64_fft_2048_sr_44100_fmax_8000.h
+
+        # Precomputed Constants - Mel prev bin
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_1024_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_1024_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_2048_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_2048_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_2048_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_2048_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_2048_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_32_fft_2048_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_centre_frequencies_prev_bin/mel_centre_frequencies_prev_bin_mel_64_fft_2048_sr_44100_fmax_8000.h
+
+        # Precomputed Constants - Mel weights
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_1024_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_1024_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_2048_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_2048_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_2048_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_2048_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_2048_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_32_fft_2048_sr_44100_fmax_8000.h
+
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_22048_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_22048_fmax_8000.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_30000_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_30000_fmax_8000.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_44100_fmax_0.h
+        include/precomputed_mel/mel_weights/mel_frequency_weights_mel_64_fft_2048_sr_44100_fmax_8000.h
+
+        # Header files
+        include/audio_dsp_fft.h
+        include/hann_window_compute.h
+        include/mel_spectrogram.h
+        include/power_spectrum.h
+        include/power_to_decibel.h
+
+        # Source files
+        src/audio_dsp_fft.c
+        src/hann_window_compute.c
+        src/mel_get_precomputed.c
+        src/mel_spectrogram.c
+        src/power_to_decibel.c
+        src/mel_utils.c
+        src/power_spectrum.c
+)
+target_link_libraries(
+        audio_dsp_static PUBLIC
+
+        # Use static version
+        statistics_static
+        utils_static
+        kissfft
+)
+target_include_directories(
+        audio_dsp_static PUBLIC
+
+        include
+)
+
 ## Create shared library for desktop
 add_library(
         audio_dsp_shared SHARED

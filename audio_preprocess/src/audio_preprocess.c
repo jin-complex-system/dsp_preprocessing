@@ -1,0 +1,184 @@
+#include "audio_preprocess.h"
+
+#include <stddef.h>
+#include <math.h>
+#include <assert.h>
+#include <string.h>
+
+#include <precomputed_window/hann_window/hann_window_scale_1024.h>
+#include <precomputed_window/hann_window/hann_window_scale_2048.h>
+
+#include <power_spectrum.h>
+#include <mel_spectrogram.h>
+#include <power_to_decibel.h>
+
+
+static const
+struct audio_preprocess_parameters*
+pParametersSet = NULL;
+
+static const
+float*
+pHannWindow = NULL;
+
+void
+audio_preprocess_setup(
+    const struct audio_preprocess_parameters* pParameters) {
+    /// Check pParameters
+    {
+        assert(pParameters != NULL);
+        assert(pParameters->n_fft > 0 && pParameters->n_fft % 2 == 0);
+        assert(pParameters->hop_length > 0 && pParameters->hop_length % 2 == 0);
+        assert(pParameters->n_fft >= pParameters->hop_length);
+
+        assert(pParameters->max_frequency == 0 || pParameters->max_frequency <= pParameters->sample_rate);
+
+        // TODO: Add more checks
+    }
+    pParametersSet = pParameters;
+
+    switch(pParametersSet->n_fft) {
+        case 2048:
+            assert(pParametersSet->n_fft == HANN_WINDOW_SCALE_2048_BUFFER_LENGTH);
+            pHannWindow = HANN_WINDOW_SCALE_2048_BUFFER;
+            break;
+        case 1024:
+            assert(pParametersSet->n_fft == HANN_WINDOW_SCALE_1024_BUFFER_LENGTH);
+            pHannWindow = HANN_WINDOW_SCALE_1024_BUFFER;
+            break;
+        default:
+            pHannWindow = NULL;
+            assert(false);
+            break;
+    }
+
+    // initialise_power_spectrum(pParametersSet->n_fft);
+    assert(pParametersSet != NULL);
+}
+
+void
+audio_preprocess_deinit(void) {
+    deinit_power_spectrum();
+
+    pHannWindow = NULL;
+    pParametersSet = NULL;
+}
+
+void
+audio_preprocess_compute(
+    const int16_t* audio_input_buffer,
+    const uint32_t audio_input_buffer_length,
+    const uint32_t num_valid_audio_elements,
+    float* power_spectrum_buffer,
+    const uint32_t power_spectrum_buffer_length,
+    float* mel_spectrogram_buffer,
+    const uint32_t mel_spectrogram_buffer_length) {
+    /// Check module state
+    {
+        assert(pParametersSet != NULL);
+        assert(pHannWindow != NULL);
+    }
+
+    /// Check parameters
+    {
+        assert(audio_input_buffer != NULL);
+        assert(power_spectrum_buffer != NULL);
+        assert(mel_spectrogram_buffer != NULL);
+
+        assert(num_valid_audio_elements <= pParametersSet->num_seconds * pParametersSet->num_seconds);
+        assert(mel_spectrogram_buffer_length >= pParametersSet->num_cropped_frames);
+        // TODO: Add more checks
+    }
+    /*
+
+    /// Constants derived from pParametersSet and parameters
+    const uint32_t AUDIO_FRAME_LENGTH = pParametersSet->n_fft;
+    const uint32_t WINDOW_LENGTH = pParametersSet->n_fft;
+    uint32_t num_valid_frames = (
+        num_valid_audio_elements / pParametersSet->hop_length -
+        pParametersSet->n_fft / pParametersSet->hop_length) + 1;
+    if (num_valid_frames > pParametersSet->num_cropped_frames) {
+        num_valid_frames = pParametersSet->num_cropped_frames;
+    }
+    // TODO: Add more checks
+
+    float* shifted_buffer = NULL;
+    uint32_t num_frames_process = 0u;
+    float max_mel = 1e-16f;
+    uint32_t left_padding_length = 0;
+
+    /// Will need to pad
+    if (num_valid_frames < pParametersSet->num_cropped_frames) {
+        num_frames_process = num_valid_frames;
+        if (pParametersSet->left_padding) {
+            left_padding_length = (pParametersSet->num_cropped_frames - num_frames_process) / 2;
+        }
+        shifted_buffer = mel_spectrogram_buffer + left_padding_length;
+    }
+    /// Will need to crop so process less frames
+    else if (num_valid_frames >= pParametersSet->num_cropped_frames) {
+        num_frames_process = pParametersSet->num_cropped_frames;
+        shifted_buffer = mel_spectrogram_buffer;
+    }
+    else {
+        assert(false);
+    }
+    const uint32_t shifted_buffer_length = pParametersSet->n_mels * num_frames_process;
+    const uint32_t right_padding_length = left_padding_length;
+
+    assert(num_frames_process != 0);
+    assert(shifted_buffer != NULL);
+
+    /// Clear buffers
+    memset((void*)audio_input_buffer, 0, sizeof(audio_input_buffer));
+    memset(power_spectrum_buffer, 0, sizeof(power_spectrum_buffer));
+    memset(mel_spectrogram_buffer, 0, sizeof(mel_spectrogram_buffer));
+
+    /// Compute mel spectrogram
+    for (uint32_t frame_iterator = 0; frame_iterator < num_frames_process; frame_iterator++) {
+        const uint32_t audio_iterator = frame_iterator * pParametersSet->hop_length;
+        const uint32_t mel_iterator = frame_iterator * pParametersSet->n_mels;
+
+        compute_power_spectrum_audio_samples(
+            &audio_input_buffer[audio_iterator],
+            AUDIO_FRAME_LENGTH,
+            &power_spectrum_buffer[0],
+            power_spectrum_buffer_length,
+            NULL,
+            0u,
+            pHannWindow,
+            WINDOW_LENGTH
+        );
+
+        const float temp_max = compute_power_spectrum_into_mel_spectrogram(
+            &power_spectrum_buffer[0],
+            power_spectrum_buffer_length,
+            &mel_spectrogram_buffer[mel_iterator],
+            pParametersSet->n_fft,
+            pParametersSet->sample_rate,
+            pParametersSet->max_frequency,
+            pParametersSet->n_mels
+        );
+
+        if (temp_max > max_mel) {
+            max_mel = temp_max;
+        }
+    }
+
+    /// Convert mel spectrogram to decibel and scale
+    convert_power_to_decibel_and_scale(
+        shifted_buffer,
+        (uint8_t*)shifted_buffer,
+        shifted_buffer_length,
+        max_mel);
+
+    /// If needed, clear the right side of shifted_buffer
+    if (right_padding_length > 0) {
+        memset(
+        shifted_buffer + shifted_buffer_length,
+        0,
+        right_padding_length * sizeof(uint8_t));
+    }
+    */
+}
+

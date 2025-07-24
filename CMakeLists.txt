@@ -26,6 +26,7 @@ add_subdirectory(utils)
 add_subdirectory(statistics)
 add_subdirectory(audio_dsp)
 add_subdirectory(scaler)
+add_subdirectory(audio_preprocess)
 
 # Add external libraries
 add_subdirectory(external/kissfft)
