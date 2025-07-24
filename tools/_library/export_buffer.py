@@ -11,7 +11,7 @@ def get_empty_cog_dict():
     return {
         "file_prefix": "my_float",
         "data_array": None,
-        "comment_strings": "/n"
+        "comment_strings": "/n",
     }
 
 
@@ -53,7 +53,8 @@ def export_ndarray(
     assert (
             ndarray_type == "float" or
             ndarray_type == "uint16" or
-            ndarray_type == "int16")
+            ndarray_type == "int16" or
+            ndarray_type == "uint8")
 
     # Create target directory, if it does not exist
     os.makedirs(name=os.path.dirname(target_filepath), exist_ok=True)

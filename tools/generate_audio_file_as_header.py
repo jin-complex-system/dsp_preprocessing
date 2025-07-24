@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 
-def _generate_audio_file_as_header(
+def generate_audio_file_as_header(
         audio_filepath,
         audio_type,
         output_directory):
@@ -78,7 +78,7 @@ def generate_audio_file_as_header_main():
     audio_type = np.int16
 
     for audio_filepath in audio_filepaths:
-        _generate_audio_file_as_header(
+        generate_audio_file_as_header(
             audio_filepath=audio_filepath,
             audio_type=audio_type,
             output_directory=output_directory,)
