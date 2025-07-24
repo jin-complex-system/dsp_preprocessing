@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
+#include <audio_preprocess.h>
+
 #include <cmath>
 #include <cassert>
 #include <cstring>
 
 /// Constants
 #include <audio/human_voice.h>
-
-#include <audio_preprocess.h>
 
 /// Audio DSP
 #include <precomputed_window/hann_window/hann_window_scale_2048.h>
@@ -17,8 +17,7 @@
 #include <mel_spectrogram.h>
 #include <power_to_decibel.h>
 
-
-TEST(AudioPreprocess, ExampleHumanVoiceNoCropping) {
+TEST(AudioPreprocess, ExampleHumanVoiceCropping) {
     /// Define basic constants
     constexpr uint32_t SAMPLING_RATE_PER_SECOND = 44100;
     assert(SAMPLING_RATE_PER_SECOND == HUMAN_VOICE_SAMPLE_RATE);
@@ -40,6 +39,7 @@ TEST(AudioPreprocess, ExampleHumanVoiceNoCropping) {
     /// Buffer lengths
     constexpr uint32_t POWER_SPECTRUM_BUFFER_LENGTH = N_FFT * 2;
     constexpr uint32_t MEL_SPECTROGRAM_BUFFER_LENGTH = N_MELS * NUM_FRAMES;
+    constexpr uint32_t OUTPUT_BUFFER_LENGTH = MEL_SPECTROGRAM_BUFFER_LENGTH;
 
     /// Define test buffers
     int16_t
@@ -48,37 +48,42 @@ TEST(AudioPreprocess, ExampleHumanVoiceNoCropping) {
     power_spectrum_buffer[POWER_SPECTRUM_BUFFER_LENGTH];
     float
     mel_spectrogram_buffer[MEL_SPECTROGRAM_BUFFER_LENGTH];
+    uint8_t
+    output_buffer[OUTPUT_BUFFER_LENGTH];
 
+    /*
     /// Compute
     {
         // Intentional if we can't copy the entire buffer
         memcpy((void*)audio_input_buffer, (void*)HUMAN_VOICE_BUFFER, sizeof(audio_input_buffer));
 
-        // constexpr audio_preprocess_parameters parameters = {
-        //     .n_fft = N_FFT,
-        //     .hop_length = HOP_LENGTH,
-        //     .n_mels = N_MELS,
-        //     .sample_rate = SAMPLING_RATE_PER_SECOND,
-        //     .num_seconds = 7u,
-        //     .max_frequency = MAX_FREQUENCY,
-        //
-        //     .num_cropped_frames = 0u,
-        //     .left_padding = false,
-        // };
-        // audio_preprocess_setup(&parameters);
+        constexpr audio_preprocess_parameters parameters = {
+            .n_fft = N_FFT,
+            .hop_length = HOP_LENGTH,
+            .n_mels = N_MELS,
+            .sample_rate = SAMPLING_RATE_PER_SECOND,
+            .num_seconds = 7u,
+            .max_frequency = MAX_FREQUENCY,
 
-        // audio_preprocess_compute(
-        //     audio_input_buffer,
-        //     AUDIO_INPUT_BUFFER_LENGTH,
-        //     NUM_VALID_AUDIO_ELEMENTS,
-        //     power_spectrum_buffer,
-        //     POWER_SPECTRUM_BUFFER_LENGTH,
-        //     mel_spectrogram_buffer,
-        //     MEL_SPECTROGRAM_BUFFER_LENGTH);
-        // audio_preprocess_deinit();
+            .num_cropped_frames = 384u,
+            .left_padding = false,
+        };
+        audio_preprocess_compute(
+            audio_input_buffer,
+            AUDIO_INPUT_BUFFER_LENGTH,
+            NUM_VALID_AUDIO_ELEMENTS,
+            power_spectrum_buffer,
+            POWER_SPECTRUM_BUFFER_LENGTH,
+            mel_spectrogram_buffer,
+            MEL_SPECTROGRAM_BUFFER_LENGTH,
+            output_buffer,
+            OUTPUT_BUFFER_LENGTH,
+            parameters);
     }
+    */
 
     /// TODO: Compare expected results
     {
     }
 }
+

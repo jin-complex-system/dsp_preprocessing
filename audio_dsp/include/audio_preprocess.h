@@ -3,6 +3,12 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <assert.h>
+#include <power_spectrum.h>
+
+#include <precomputed_window/hann_window/hann_window_scale_1024.h>
+#include <precomputed_window/hann_window/hann_window_scale_2048.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,23 +28,9 @@ struct audio_preprocess_parameters {
     uint16_t max_frequency;
 
     /// Cropping
-    uint32_t num_cropped_frames;      // Set to 0 if not used
+    uint32_t num_cropped_frames;
     bool left_padding;              // If false, do centre cropping
 };
-
-/**
- * Setup module audio_preprocess
- * @param pParameters pointer object to valid parameters; throws assert() if invalid
- */
-void
-audio_preprocess_setup(
-    const struct audio_preprocess_parameters* pParameters);
-
-/**
- * Deinitialise module audio_preprocess
- */
-void
-audio_preprocess_deinit(void);
 
 /**
  * Perform computation of audio DSP. Presumes audio_preprocess_parameters is initialised
@@ -50,8 +42,10 @@ audio_preprocess_deinit(void);
  * @param num_valid_audio_elements number of valid audio elements inside audio_input_buffer
  * @param power_spectrum_buffer
  * @param power_spectrum_buffer_length
- * @param mel_spectrogram_buffer output is returned here as (uint8_t*)mel_spectrogram_buffer
+ * @param mel_spectrogram_buffer
  * @param mel_spectrogram_buffer_length
+ * @param output_buffer
+ * @param output_buffer_length
  */
 void
 audio_preprocess_compute(
@@ -61,9 +55,12 @@ audio_preprocess_compute(
     float* power_spectrum_buffer,
     const uint32_t power_spectrum_buffer_length,
     float* mel_spectrogram_buffer,
-    const uint32_t mel_spectrogram_buffer_length);
+    const uint32_t mel_spectrogram_buffer_length,
+    uint8_t* output_buffer,
+    const uint32_t output_buffer_length,
+    const struct audio_preprocess_parameters);
 
-/* Provide C++ Compatibility */
+    /* Provide C++ Compatibility */
 #ifdef __cplusplus
 };
 #endif
