@@ -133,12 +133,6 @@ TEST(AudioDSPApp, CheckPowerSpectrum) {
                 num_frames_comparison * POWER_SPECTRUM_LENGTH * sizeof(float));
         EXPECT_EQ(power_spectrum_memcmp_result, 0);
 
-        EXPECT_EQ(0, 1);
-        std::cout << power_spectrum_buffer[0] << std::endl;
-        std::cout << power_spectrum_buffer[1] << std::endl;
-        std::cout << power_spectrum_buffer[2] << std::endl;
-        std::cout << power_spectrum_buffer[3] << std::endl;
-
         /// Locate different values
         if (power_spectrum_memcmp_result != 0) {
             std::cout << "Power spectrum buffer mismatch!" << std::endl;

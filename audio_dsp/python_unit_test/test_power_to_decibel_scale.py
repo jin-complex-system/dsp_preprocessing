@@ -76,7 +76,7 @@ class AudioDSP_PowerToDecibelScale_PythonTestCase(unittest.TestCase):
         # Compare computation times
         target_total_time = target_end_time - target_start_time
         librosa_total_time = librosa_end_time - librosa_start_time
-        self.assertGreater(
+        self.assertLesser(
             a=target_total_time,
             b=librosa_total_time)
         print("Librosa time: {}, target time: {}".format(
