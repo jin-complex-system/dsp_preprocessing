@@ -172,7 +172,7 @@ def generate_mel_spectrogram_and_buffers(
             ))
         if max_mel > top_mel:
             top_mel = max_mel
-    mel_spec = np.reshape(mel_spec, newshape=-1)  # In older python versions, use newshape
+    mel_spec = np.reshape(mel_spec, newshape=-1, order="C")  # In older python versions, use newshape
 
     assert(top_mel > 1e-16)
 
@@ -292,6 +292,7 @@ def generate_edge_unit_tests():
     power_spectrum_flattened = np.reshape(
         power_spectrum,
         newshape=-1,
+        order="C",
     )
     power_spectrum_cog_dict = eb.get_empty_cog_dict()
     power_spectrum_cog_dict["file_prefix"] = "{}_POWER_SPECTRUM".format(audio_basename.upper())
@@ -330,6 +331,7 @@ def generate_edge_unit_tests():
     mel_spec_unflattened = np.reshape(
         mel_spec,
         newshape=mel_spectrogram_expected_shape,
+        order="C",
     )
     save_plots(
         target_array=mel_spec_unflattened,
@@ -354,6 +356,7 @@ def generate_edge_unit_tests():
     scaled_mel_spec_uint_unflattened = np.reshape(
         scaled_mel_spec_uint,
         newshape=mel_spectrogram_expected_shape,
+        order="C",
     )
     save_plots(
         target_array=scaled_mel_spec_uint_unflattened,
@@ -385,6 +388,7 @@ def generate_edge_unit_tests():
     loaded_mel_spec_uint_unflattened = np.reshape(
         loaded_mel_spec_uint_,
         newshape=(n_mels, max_num_frames),
+        order="C",
     )
     save_plots(
         loaded_mel_spec_uint_unflattened,
