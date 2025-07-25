@@ -7,11 +7,13 @@ add_library(
         include/insertion_sort.h
         include/log_approximation.h
         include/square_root_approximation.h
+        include/transpose_buffer.h
 
         src/convert_complex.c
         src/insertion_sort.c
         src/log_approximation.c
         src/square_root_approximation.c
+        src/transpose_buffer.c
 )
 target_include_directories(
         utils_static PUBLIC
@@ -27,11 +29,13 @@ add_library(
         include/insertion_sort.h
         include/log_approximation.h
         include/square_root_approximation.h
+        include/transpose_buffer.h
 
         src/convert_complex.c
         src/insertion_sort.c
         src/log_approximation.c
         src/square_root_approximation.c
+        src/transpose_buffer.c
 )
 target_include_directories(
         utils_shared PUBLIC
@@ -48,6 +52,7 @@ add_executable(
         unit_test/test_logarithms_from_complex.cpp
         unit_test/test_magnitude_and_power_from_complex.cpp
         unit_test/test_square_root_approximation.cpp
+        unit_test/test_transpose_buffer.cpp
 
         unit_test/constants/FFT_audio/rfft_output.h
         unit_test/constants/FFT_audio/rfft_log_magnitude.h

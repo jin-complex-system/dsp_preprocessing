@@ -324,3 +324,57 @@ class utils_c:
         return self.libutils.square_root_approximation(
             ctypes.c_float(target_value_float),
         )
+
+    def transpose_buffer(
+            self,
+            target_array,
+            num_rows_uint32,
+            num_columns_uint32):
+        """
+        Transpose buffer
+        :param target_array:
+        :param num_rows_uint32:
+        :param num_columns_uint32:
+        :return: transposed buffer, flattened
+        """
+        # Check parameters
+        assert (self.libutils is not None)
+        assert (num_rows_uint32 > 0 and isinstance(num_rows_uint32, int))
+        assert (num_columns_uint32 > 0 and isinstance(num_columns_uint32, int))
+        assert (
+            target_array is not None and
+            len(target_array) > 0)
+        assert (
+                target_array.dtype == np.uint8 or
+                isinstance(target_array[0], int)
+        )
+
+        # Constants
+        buffer_length = num_rows_uint32 * num_columns_uint32
+
+        # Prepare input buffer with a deep copy
+        input_buffer = np.copy(target_array, order='C')
+
+        # Flattened buffer
+        input_buffer = np.reshape(input_buffer, newshape=-1)  # For backwards compatability
+        assert (len(input_buffer) == buffer_length)
+
+        # Prepare output buffer
+        output_buffer = np.zeros(shape=buffer_length, dtype=np.uint8)
+
+        # Set the return types and argument types
+        self.libutils.transpose_buffer.restype = None
+        self.libutils.transpose_buffer.argtypes = [
+            np.ctypeslib.ndpointer(dtype=np.uint8, ndim=1, flags='C_CONTIGUOUS'),
+            np.ctypeslib.ndpointer(dtype=np.uint8, ndim=1, flags='C_CONTIGUOUS'),
+            ctypes.c_uint32,
+            ctypes.c_uint32,
+        ]
+        self.libutils.transpose_buffer(
+            input_buffer,
+            output_buffer,
+            ctypes.c_uint32(num_rows_uint32),
+            ctypes.c_uint32(num_columns_uint32),
+        )
+
+        return output_buffer

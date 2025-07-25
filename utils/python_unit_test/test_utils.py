@@ -17,11 +17,12 @@ FLOAT_ERROR_NUM_PLACES = 4
 MINIMUM_VALUE_FOR_LOG = -37.929779052734375
 MINIMUM_FLOAT_VALUE = 1.175494351e-38
 
+
 class Utils_PythonTestCase(unittest.TestCase):
     def test_compute_power_from_complex_arrays(self):
         values_list = [
             0.0, 2000.0, 0.001, 1.0, -1.0, 2.0, -2.0, 4.0, 16.0, 0.2, -0.65, 99.0,
-            200.0, 150.0, 3.1, -1e-5, 0.0001913713349495083, 5*1e-3,
+            200.0, 150.0, 3.1, -1e-5, 0.0001913713349495083, 5 * 1e-3,
             3346.006, 3270.84912109375,
         ]
         assert (len(values_list) % 2 == 0 and len(values_list) >= 4)
@@ -79,7 +80,7 @@ class Utils_PythonTestCase(unittest.TestCase):
     def test_compute_magnitude_from_complex_arrays(self):
         values_list = [
             0.0, 2000.0, 0.001, 1.0, -1.0, 2.0, -2.0, 4.0, 16.0, 0.2, -0.65, 99.0,
-            200.0, 150.0, 3.1, -1e-5, 0.0001913713349495083, 5*1e-3,
+            200.0, 150.0, 3.1, -1e-5, 0.0001913713349495083, 5 * 1e-3,
             3346.006, 3270.84912109375,
         ]
         assert (len(values_list) % 2 == 0 and len(values_list) >= 4)
@@ -264,6 +265,51 @@ class Utils_PythonTestCase(unittest.TestCase):
                 expected_value,
                 delta=relative_error_tolerance,
                 msg=assert_fail_msg,
+            )
+
+    def test_transpose_buffer(self):
+        # Base
+        original_buffer_rows = 2
+        original_buffer_columns = 3
+        original_buffer_length = original_buffer_rows * original_buffer_columns
+        original_buffer = np.array(
+            object=[[1, 2, 3], [4, 5, 6]],
+            dtype=np.uint8,
+            order='C')
+        flattened_original_buffer = np.reshape(original_buffer, newshape=-1) # For backwards compatability
+        assert (original_buffer.shape == (original_buffer_rows, original_buffer_columns))
+        assert (len(flattened_original_buffer) == original_buffer_length)
+
+        transposed_buffer = np.transpose(a=original_buffer)
+        flattened_transposed_buffer = np.reshape(transposed_buffer, newshape=-1) # For backwards compatability
+        assert (transposed_buffer.shape == (original_buffer_columns, original_buffer_rows))
+        assert (len(flattened_transposed_buffer) == original_buffer_length)
+
+        first_transpose_output_buffer = utils_lib.transpose_buffer(
+            target_array=original_buffer,
+            num_rows_uint32=original_buffer_rows,
+            num_columns_uint32=original_buffer_columns,
+        )
+        second_transpose_output_buffer = utils_lib.transpose_buffer(
+            target_array=transposed_buffer,
+            num_rows_uint32=original_buffer_columns,
+            num_columns_uint32=original_buffer_rows,
+        )
+
+        for iterator in range(0, original_buffer_length):
+            self.assertEqual(
+                first=flattened_transposed_buffer[iterator],
+                second=first_transpose_output_buffer[iterator],
+                msg="{} vs {}".format(
+                    flattened_transposed_buffer,
+                    first_transpose_output_buffer),
+            )
+            self.assertEqual(
+                first=flattened_original_buffer[iterator],
+                second=second_transpose_output_buffer[iterator],
+                msg="{} vs {}".format(
+                    flattened_original_buffer,
+                    second_transpose_output_buffer),
             )
 
 
